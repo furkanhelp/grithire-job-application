@@ -12,7 +12,8 @@ import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 // CLOUDINARY
 import cloudinary from "cloudinary";
-
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 // MIDDLEWARES
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import {authenticateUser} from "./middleware/authMiddleware.js";
