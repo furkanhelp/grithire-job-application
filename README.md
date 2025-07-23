@@ -6246,7 +6246,7 @@ export const updateUser = async (req, res) => {
 - create loading component (import/export)
 - check for loading in DashboardLayout page
 
-components/Loading.jsx
+components/Loading.jsxx
 
 ```js
 const Loading = () => {
