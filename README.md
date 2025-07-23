@@ -126,4 +126,4 @@ If you like this project or want to collaborate:
 
 [Instagram](https://instagram.com/furkan_help)
 
-[Email](frknyrdm0@gmail.com)
+Email: frknyrdm0@gmail.com
