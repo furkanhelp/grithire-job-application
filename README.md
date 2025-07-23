@@ -124,4 +124,6 @@ If you like this project or want to collaborate:
 
 [LinkedIn](https://www.linkedin.com/in/furkanyardm/)
 
-Email: frknyrdm0@gmail.com
+[Instagram](https://instagram.com/furkan_help)
+
+[Email](frknyrdm0@gmail.com)
