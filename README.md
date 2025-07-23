@@ -23,25 +23,61 @@ A full-stack, modern Job Tracking Application designed to help users manage thei
 
 📄 Add/Edit/Delete Jobs (position, company, status, etc.)
 
-📊 Beautiful Charts powered by Recharts
+✅ User authentication with JWT & cookies
+
+📊 Insightful charts via Recharts to visualize your job search progress
 
 📅 Track Job Status (Interview, Declined, Pending, etc.)
 
-🔎 Search & Filter by job status, type, and more
+📅 Date formatting with Dayjs
+
+🔍 Search, filter, and sort applications by status, type, keywords and more
+
+🗃️ Upload and manage company logos with Cloudinary
+
+🔐 Secure password hashing with bcryptjs
 
 📈 Stats Dashboard with visual insights
 
+🚫 Error handling with express-async-errors
+
 🧪 Mock Data Integration with Mockaroo for realistic development data
+
+🌐 Fully responsive, clean and intuitive UI
 
 🌙 Dark Mode 
 
-## 🛠️ Tech Stack
-Tech	Description
-Next.js	React-based full-stack framework
-Recharts	Lightweight chart library for data visualization
-Tailwind CSS	Utility-first CSS framework
+## 🚀 Tech Stack
+### Frontend:
+- [React](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [Axios](https://axios-http.com/)
+- [React Toastify](https://fkhadra.github.io/react-toastify/)
+- [Recharts](https://recharts.org/)
+- [Dayjs](https://day.js.org/)
+
+### Backend:
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [JWT (JSON Web Token)](https://jwt.io/)
+- [Express Validator](https://express-validator.github.io/docs/)
+- [bcryptjs](https://github.com/dcodeIO/bcrypt.js)
+- [Multer](https://github.com/expressjs/multer)
+- [Cloudinary](https://cloudinary.com/)
+- [express-async-errors](https://www.npmjs.com/package/express-async-errors)
+- [cookie-parser](https://www.npmjs.com/package/cookie-parser)
+- [Concurrently](https://www.npmjs.com/package/concurrently)
 
 Render	Deployment platform for frontend
+
+## 🛠️ Getting Started
+
+### Prerequisites
+- Node.js >= 18
+- MongoDB instance (local or Atlas)
+- Cloudinary account for image uploads
 
 ## 🧰 How to Run Locally
 
@@ -68,10 +104,17 @@ This allows users to quickly gain insight into their job hunt progress.
 
 
 ## 🎯 Why I Built This
-As a passionate developer, I wanted to solve a real problem many job seekers face: managing job applications. This app was built from scratch with modern tooling and clean code structure. It reflects both my frontend and backend capabilities, along with my attention to UI/UX.
+Strong full-stack development skills
+
+Code quality and maintainability
+
+Real-world application design
+
+RESTful API architecture
+
+Clean UI/UX with meaningful data visualization
 
 ## 📌 Future Improvements
-
 
 
 ## 📬 Contact
