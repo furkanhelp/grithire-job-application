@@ -115,7 +115,7 @@ RESTful API architecture
 Clean UI/UX with meaningful data visualization
 
 ## 📌 Future Improvements
-
+I'm working on modern UI design. This is a prototype for now
 
 ## 📬 Contact
 If you like this project or want to collaborate:
