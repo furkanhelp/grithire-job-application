@@ -30,6 +30,7 @@ import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
 import ErrorElement from './components/ErrorElement';
 
+
 export const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
   document.body.classList.toggle('dark-theme', isDarkTheme);
