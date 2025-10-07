@@ -1,19 +1,33 @@
-const FormRowSelect = ({ name, labelText, list, defaultValue= '', onChange}) => {
+const FormRowSelect = ({
+  name,
+  labelText,
+  list,
+  defaultValue = "",
+  className = "",
+  ...props
+}) => {
   return (
     <div className="form-row">
-      <label htmlFor={name} className="form-label">
-        {labelText || name}
+      <label
+        htmlFor={name}
+        className={`form-label text-gray-700 dark:text-gray-300 ${className}`}
+      >
+        {labelText}
       </label>
       <select
         name={name}
         id={name}
-        className="form-select"
+        className={`form-select dark:bg-gray-700 dark:text-white dark:border-gray-600 ${className}`}
         defaultValue={defaultValue}
-        onChange={onChange}
+        {...props}
       >
         {list.map((itemValue) => {
           return (
-            <option key={itemValue} value={itemValue}>
+            <option
+              key={itemValue}
+              value={itemValue}
+              className="dark:bg-gray-700 dark:text-white"
+            >
               {itemValue}
             </option>
           );
@@ -21,5 +35,6 @@ const FormRowSelect = ({ name, labelText, list, defaultValue= '', onChange}) => 
       </select>
     </div>
   );
-}
-export default FormRowSelect
+};
+
+export default FormRowSelect;

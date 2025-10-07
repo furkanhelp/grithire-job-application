@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -14,12 +14,12 @@ import {
   AllJobs,
   Admin,
   Profile,
-  EditJob
-} from './pages'
+  EditJob,
+} from "./pages";
 
-import { action as registerAction } from './pages/Register';
+import { action as registerAction } from "./pages/Register";
 import { action as loginAction } from "./pages/Login";
-import { loader as dashboardLoader } from './pages/DashboardLayout';
+import { loader as dashboardLoader } from "./pages/DashboardLayout";
 import { action as addJobAction } from "./pages/AddJob";
 import { loader as allJobsLoader } from "./pages/AllJobs";
 import { loader as editJobLoader } from "./pages/EditJob";
@@ -28,15 +28,10 @@ import { action as deleteJobAction } from "./pages/DeleteJob";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
-import ErrorElement from './components/ErrorElement';
+import ErrorElement from "./components/ErrorElement";
 
-
-export const checkDefaultTheme = () => {
-  const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
-  document.body.classList.toggle('dark-theme', isDarkTheme);
-  return isDarkTheme;
-}
-checkDefaultTheme();
+// Import the ThemeProvider
+import { ThemeProvider } from "./components/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -111,13 +106,17 @@ const router = createBrowserRouter([
   },
 ]);
 
-
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient} >
-      <RouterProvider router={router} />;
-      <ReactQueryDevtools initialIsOpen={false}/>
-    </QueryClientProvider>
+    <ThemeProvider>
+      {" "}
+      {/* Wrap everything with ThemeProvider */}
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
+
 export default App;

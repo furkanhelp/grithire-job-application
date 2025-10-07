@@ -5,7 +5,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { checkDefaultTheme } from "../App";
 
 const userQuery = {
   queryKey: ["user"],
@@ -31,15 +30,36 @@ const DashboardLayout = ({ queryClient }) => {
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
+
+  // Initialize theme from localStorage
+  const [isDarkTheme, setIsDarkTheme] = useState(() => {
+    return localStorage.getItem("darkTheme") === "true";
+  });
+
   const [isAuthError, setIsAuthError] = useState(false);
+
+  // Apply theme classes
+  const applyThemeClasses = (darkTheme) => {
+    const html = document.documentElement;
+
+    if (darkTheme) {
+      html.classList.add("dark");
+    } else {
+      html.classList.remove("dark");
+    }
+  };
 
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme;
     setIsDarkTheme(newDarkTheme);
-    document.body.classList.toggle("dark-theme", newDarkTheme);
     localStorage.setItem("darkTheme", newDarkTheme);
+    applyThemeClasses(newDarkTheme);
   };
+
+  // Apply theme on component mount and changes
+  useEffect(() => {
+    applyThemeClasses(isDarkTheme);
+  }, [isDarkTheme]);
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -80,20 +100,28 @@ const DashboardLayout = ({ queryClient }) => {
         logoutUser,
       }}
     >
-      <Wrapper>
-        <main className="dashboard">
+      {/* Fixed container with proper alignment */}
+      <div
+        className={`min-h-screen flex flex-col transition-colors duration-300 ${
+          isDarkTheme
+            ? "bg-gradient-to-br from-gray-900 to-black text-white"
+            : "bg-white text-gray-900"
+        }`}
+      >
+        <main className="flex-1 flex">
           <SmallSidebar />
           <BigSidebar />
-          <div>
+          <div className="flex-1 flex flex-col">
             <Navbar />
-            <div className="dashboard-page">
+            <div className="flex-1 dashboard-page p-4 overflow-auto">
               {isPageLoading ? <Loading /> : <Outlet context={{ user }} />}
             </div>
           </div>
         </main>
-      </Wrapper>
+      </div>
     </DashboardContext.Provider>
   );
 };
+
 export const useDashboardContext = () => useContext(DashboardContext);
-export default DashboardLayout;
+export default DashboardLayout
