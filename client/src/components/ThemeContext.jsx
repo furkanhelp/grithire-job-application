@@ -15,7 +15,7 @@ export const ThemeProvider = ({ children }) => {
     if (darkTheme) {
       html.classList.add("dark");
       body.style.background =
-        "linear-gradient(135deg, #111827 0%, #000000 100%)";
+        "linear-gradient(135deg, #26143f 0%, #000000 100%)";
       body.style.color = "white";
     } else {
       html.classList.remove("dark");

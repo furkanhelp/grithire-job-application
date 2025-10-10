@@ -19,10 +19,12 @@ import {
   SiTailwindcss,
 } from "react-icons/si";
 import ScrollReveal from "../components/ScrollReveal";
-
 import ThemeToggle from "../components/ThemeToggle";
-  
-
+import MagicBento from "../components/MagicBento";
+import FeaturesSection from "../components/FeaturesSection";
+import Testimonials from "../components/Testimonials";
+import PricingSection from "../components/PricingSection";
+import { useRef } from "react";
 
 const items = [
   { label: "Home", href: "#" },
@@ -63,10 +65,7 @@ const Landing = () => {
     <Wrapper>
       {/* Navbar with Theme Toggle */}
       <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-50 p-4">
-        {/* Empty div to balance the layout */}
         <div className="w-1/3"></div>
-
-        {/* Centered PillNav */}
         <div className="w-1/3 flex justify-center">
           <PillNav
             logo={logo}
@@ -87,12 +86,10 @@ const Landing = () => {
           />
         </div>
 
-        {/* Theme Toggle in Top-Right - Using your ThemeToggle component */}
         <div className="w-1/3 flex justify-end ">
           <ThemeToggle />
         </div>
       </div>
-
       <div className="w-full h-screen relative">
         <Iridescence
           color={[0.3, 0, 0.2]}
@@ -101,13 +98,6 @@ const Landing = () => {
           speed={1.0}
         />
       </div>
-
-      {/* <nav>
-        <Link to="/">
-        <Logo />
-        </Link>
-        </nav> */}
-
       <div
         className="absolute left-[55%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center font-medium 
   w-full max-w-[90vw] px-4
@@ -137,14 +127,22 @@ const Landing = () => {
             { sentence: "Break free from Generic AI", highlight: [3, 4] },
           ]}
         />
+        <p
+          className="mt-4 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+      text-gray-600 dark:text-gray-300 leading-relaxed break-words
+      mx-auto max-w-[90%] sm:!max-w-[85%]"
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero
+          quis iste ut explicabo natus sequi unde? Sunt quam ducimus voluptatem
+          nemo? Reiciendis, perferendis esse inventore vero quaerat atque omnis?
+        </p>
       </div>
-
       <div
-        className="absolute top-[70%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 text-center 
-    px-4 py-3 
-    sm:px-3 sm:py-2 
-    md:px-5 md:py-3
-    flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 "
+        className="absolute 
+  top-[calc(50%+250px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
+  left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+  text-center flex flex-col sm:flex-row justify-center items-center 
+  gap-3 sm:gap-4 md:gap-6 w-full max-w-[90vw] px-4"
       >
         <Link to="/register">
           <AnimatedGradientButton
@@ -168,7 +166,6 @@ const Landing = () => {
           </AnimatedGradientButton>
         </Link>
       </div>
-
       <div className="w-full py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-6xl font-black text-black dark:text-white mb-6 tracking-tight">
@@ -216,7 +213,6 @@ const Landing = () => {
           }
         `}</style>
       </div>
-
       <div className="w-full py-12 px-4 sm:px-6 lg:px-8 from-gray-900 to-black rounded-3xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
           {/* Text Content - Left side */}
@@ -225,7 +221,7 @@ const Landing = () => {
               baseOpacity={0}
               enableBlur={true}
               baseRotation={0}
-              blurStrength={5}
+              blurStrength={3}
               containerClassName="!my-0"
               textClassName="!text-lg leading-8 font-normal !text-left" // Custom text styles
             >
@@ -247,7 +243,7 @@ const Landing = () => {
           <div className="flex-1 flex justify-center lg:justify-end order-1 lg:order-2">
             <div className="w-64 h-64 sm:w-80 sm:h-80 lg:w-100 lg:h-100">
               <DotLottieReact
-                src="https://lottie.host/357510dc-d418-4bc8-bb99-782ad7c92a66/lgQK2eufzB.lottie"
+                src="https://lottie.host/ec94b46a-a716-4d21-befb-db25fbfd0860/GkC9RPvMj5.lottie"
                 loop
                 autoplay
               />
@@ -255,7 +251,6 @@ const Landing = () => {
           </div>
         </div>
       </div>
-
       <div className="w-full py-12 px-4 sm:px-6 lg:px-8 from-gray-900 to-black rounded-3xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
           {/* Lottie Animation - Now on left side */}
@@ -294,40 +289,23 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* <div className="container page">
-        <div className="info">
-          <p>
-            Pug drinking vinegar fam craft beer pork belly trust fund food
-            truck, slow-carb 8-bit. Sriracha flexitarian hexagon, knausgaard
-            kitsch celiac enamel pin vibecession +1. Pour-over jean shorts
-            ramps, retro swag thundercats ugh photo booth man bun aesthetic
-            bushwick wolf paleo. Vice green juice church-key solarpunk,
-            meditation taxidermy slow-carb gorpcore organic heirloom offal tilde
-            poutine. Sartorial umami ennui, fingerstache before they sold out
-            same 3 wolf moon raw denim XOXO scenester glossier ascot pickled.
-            Tumblr austin vibecession pop-up poke enamel pin cray tattooed yes
-            plz knausgaard gastropub edison bulb pork belly gatekeep.
-          </p>
-
-          <Link to="/register" className="btn register-link">
-            Register
-          </Link>
-          <Link to="/login" className="btn">
-            Login / Demo User
-          </Link>
-        </div>
-        <img src={main} alt="grit" className="img main-img" /> */}
-      {/* <DotLottieReact
-        src="https://lottie.host/357510dc-d418-4bc8-bb99-782ad7c92a66/lgQK2eufzB.lottie"
-        loop
-        autoplay
-      /> */}
-      <DotLottieReact
-        className="img main-img"
-        src="https://lottie.host/ec94b46a-a716-4d21-befb-db25fbfd0860/GkC9RPvMj5.lottie"
-        loop
-        autoplay
+      <MagicBento
+        textAutoHide={true}
+        enableStars={true}
+        enableSpotlight={true}
+        enableBorderGlow={true}
+        enableTilt={true}
+        enableMagnetism={true}
+        clickEffect={true}
+        spotlightRadius={300}
+        particleCount={12}
+        glowColor="132, 0, 255"
+        enableImageReveal={true}
       />
+
+      <FeaturesSection />
+      <Testimonials/>
+      <PricingSection/>
     </Wrapper>
   );
 };
