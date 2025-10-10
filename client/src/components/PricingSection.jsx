@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function PricingSection() {
   const plans = [
     {
@@ -123,8 +125,15 @@ export default function PricingSection() {
                   </span>
                 </div>
                 {/* CTA Button */}
-                <button
-                  className={`w-full !py-3 px-6 rounded-xl font-semibold transition-all duration-300 cursor-pointer ${
+                <Link
+                  href={
+                    plan.name === "Free"
+                      ? "/register"
+                      : plan.name === "Startup"
+                      ? "/register"
+                      : "/register"
+                  }
+                  className={`w-full !py-3 px-6 rounded-xl font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center ${
                     plan.isMostPop
                       ? "bg-gradient-to-r from-purple-500 to-purple-900 text-white hover:shadow-lg hover:shadow-purple-500/25"
                       : plan.price === 0
@@ -133,7 +142,7 @@ export default function PricingSection() {
                   }`}
                 >
                   {plan.price === 0 ? "Get Started Free" : "Get Started"}
-                </button>
+                </Link>
               </div>
 
               {/* Features List */}
