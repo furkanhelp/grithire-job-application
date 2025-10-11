@@ -24,6 +24,7 @@ import MagicBento from "../components/MagicBento";
 import FeaturesSection from "../components/FeaturesSection";
 import Testimonials from "../components/Testimonials";
 import PricingSection from "../components/PricingSection";
+import FAQSection from "../components/FAQSection";
 import { useRef } from "react";
 
 const items = [
@@ -90,7 +91,7 @@ const Landing = () => {
           <ThemeToggle />
         </div>
       </div>
-      <div className="w-full h-screen relative">
+      <div className="w-full h-screen relative pointer-events-none">
         <Iridescence
           color={[0.3, 0, 0.2]}
           mouseReact={true}
@@ -100,7 +101,7 @@ const Landing = () => {
       </div>
       <div
         className="absolute left-[55%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center font-medium 
-  w-full max-w-[90vw] px-4
+  w-full max-w-[90vw] !px-4 z-50
   sm:max-w-[80vw] sm:px-6
   md:max-w-[70vw] 
   lg:max-w-[60vw] 
@@ -109,40 +110,43 @@ const Landing = () => {
         <SentenceFlip
           sentences={[
             {
-              sentence: "The home for your AI assistants",
-              highlight: [1, 4, 5],
+              sentence: "Your personal dashboard for job applications",
+              highlight: [1, 3, 4],
             },
             {
-              sentence: "Build personal AI assistants your way",
-              highlight: [1, 2, 3],
-            },
-            {
-              sentence: "Build smarter assistants, your unique way",
-              highlight: [1, 2],
-            },
-            {
-              sentence: "Create custom AI with custom prompts",
+              sentence: "Keep your job search organized and efficient",
               highlight: [2, 4, 5],
             },
-            { sentence: "Break free from Generic AI", highlight: [3, 4] },
+            {
+              sentence: "Manage offers, interviews, and rejections easily",
+              highlight: [2, 3, 5],
+            },
+            {
+              sentence: "Focus on applying — we handle the tracking",
+              highlight: [1, 4],
+            },
+            {
+              sentence: "Your job hunt, simplified and structured",
+              highlight: [2, 5],
+            },
           ]}
         />
         <p
-          className="mt-4 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+          className="!mt-5 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
       text-gray-600 dark:text-gray-300 leading-relaxed break-words
-      mx-auto max-w-[90%] sm:!max-w-[85%]"
+      mx-auto !max-w-[90%] sm:!max-w-[85%]"
         >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero
-          quis iste ut explicabo natus sequi unde? Sunt quam ducimus voluptatem
-          nemo? Reiciendis, perferendis esse inventore vero quaerat atque omnis?
+          Grithire helps you organize your entire job search from applications
+          to interviews all in one intuitive dashboard. Track progress, set
+          reminders, and stay focused on landing your next opportunity.
         </p>
       </div>
       <div
         className="absolute 
-  top-[calc(50%+250px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
+  top-[calc(55%+250px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
   left-1/2 transform -translate-x-1/2 -translate-y-1/2 
   text-center flex flex-col sm:flex-row justify-center items-center 
-  gap-3 sm:gap-4 md:gap-6 w-full max-w-[90vw] px-4"
+  !gap-3 sm:gap-4 md:gap-6 w-full !max-w-[90vw] px-4 z-50"
       >
         <Link to="/register">
           <AnimatedGradientButton
@@ -304,8 +308,9 @@ const Landing = () => {
       />
 
       <FeaturesSection />
-      <Testimonials/>
-      <PricingSection/>
+      <Testimonials />
+      <PricingSection />
+      <FAQSection/>
     </Wrapper>
   );
 };

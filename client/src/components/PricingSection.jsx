@@ -126,7 +126,7 @@ export default function PricingSection() {
                 </div>
                 {/* CTA Button */}
                 <Link
-                  href={
+                  to={
                     plan.name === "Free"
                       ? "/register"
                       : plan.name === "Startup"
