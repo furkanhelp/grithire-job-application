@@ -192,7 +192,7 @@ export default function TestimonialsSection() {
         {/* Header Section */}
         <div className="!max-w-1xl !mx-auto text-center">
           <h2
-            className="bg-gradient-to-tl from-white to-purple-400 dark:from-black
+            className="bg-gradient-to-tl from-black via-purple-800 to-pink-800
           bg-clip-text text-transparent !text-6xl sm:text-4xl font-sans
           !font-bold leading-[1.5] !tracking-[-0.025em]"
           >

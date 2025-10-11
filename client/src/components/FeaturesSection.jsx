@@ -125,9 +125,9 @@ export default function FeaturesSection() {
   return (
     <section className="!py-30 from-black to-gray-900 dark:from-white">
       <div className="!max-w-screen-xl text-center !mx-auto px-4 md:px-8">
-        <div className="!max-w-2xl !mx-auto text-center">
+        <div className="!max-w-1xl !mx-auto text-center">
           <h3
-            className="bg-gradient-to-tl from-white to-purple-400 dark:from-black
+            className="bg-gradient-to-tl from-black via-purple-800 to-pink-800
           bg-clip-text text-transparent !text-6xl sm:text-4xl font-sans
           !font-bold leading-[1.5] !tracking-[-0.025em]"
           >

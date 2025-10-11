@@ -112,7 +112,7 @@ export default function FAQSection() {
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-60"></div>
             <h2
-              className="bg-gradient-to-br from-white via-purple-200 to-pink-200
+              className="bg-gradient-to-br from-white via-purple-800 to-pink-900
           bg-clip-text text-transparent !text-5xl sm:!text-6xl font-sans
           !font-bold leading-[1.2] !tracking-tight whitespace-nowrap"
             >
