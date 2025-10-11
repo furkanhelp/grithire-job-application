@@ -14,8 +14,8 @@ const cardData = [
     title: "Analytics",
     description: "Insights on your progress",
     label: "Efficiency",
-    animatedFile: "/dist/assets/dashboard.svg", // SVG for desktop
-    image: "/dist/assets/dashboard.svg",
+    animatedFile: "/dashboard.svg", // SVG for desktop
+    image: "/dashboard.svg",
     countUp: {
       value: 4,
       suffix: "",
@@ -28,16 +28,16 @@ const cardData = [
     title: "Interviews",
     description: "View upcoming or past interviews",
     label: "Connectivity",
-    animatedFile: "/dist/assets/consulting.svg", // SVG for desktop
-    image: "/dist/assets/consulting.svg",
+    animatedFile: "/consulting.svg", // SVG for desktop
+    image: "/consulting.svg",
   },
   {
     color: "#060010",
     title: "Security",
     description: "Enterprise-grade protection",
     label: "Protection",
-    animatedFile: "/dist/assets/security.svg", // SVG for desktop
-    image: "/dist/assets/security.svg",
+    animatedFile: "/security.svg", // SVG for desktop
+    image: "/security.svg",
     countUp: {
       value: 100,
       suffix: "%",
