@@ -92,7 +92,7 @@ export default function TestimonialsSection() {
     if (!scrollContainer) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.5;
+    const scrollSpeed = 0.8;
 
     const autoScroll = () => {
       if (isPausedRef1.current) {
@@ -142,7 +142,7 @@ export default function TestimonialsSection() {
     if (!scrollContainer) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.5;
+    const scrollSpeed = 0.8;
 
     const autoScroll = () => {
       if (isPausedRef2.current) {
@@ -196,10 +196,10 @@ export default function TestimonialsSection() {
           bg-clip-text text-transparent !text-6xl sm:text-4xl font-sans
           !font-bold leading-[1.5] !tracking-[-0.025em]"
           >
-            Loved by devs worldwide
+            What Our Clients Say
           </h2>
           <p className="!mt-3 !mx-auto text-gray-600 dark:text-gray-300">
-            See what developers are saying about our platform
+            See what clients are saying about our platform
           </p>
         </div>
 
@@ -212,14 +212,15 @@ export default function TestimonialsSection() {
             {[...testimonials, ...testimonials].map((testimonial, index) => (
               <div
                 key={`${testimonial.id}-${index}-1`}
-                className="flex-shrink-0 w-100 bg-gradient-to-br 
+                className="flex-shrink-0 w-100 bg-gradient-to-r 
                 rounded-2xl p-6 border transition-all duration-300
-                border-gray-800 from-[#26143f] to-black hover:shadow-gray-800 hover:border-violet-600"
+                border-gray-800 from-[#26143f] to-black
+                 hover:shadow-gray-800 hover:border-violet-600"
               >
-                <div className="flex items-start mb-4">
+                <div className="flex items-start !mb-4">
                   <div
                     className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 
-                  rounded-full mt-2 mr-2"
+                  rounded-full !mt-2 !mr-2"
                   ></div>
                   <p className="text-gray-300 leading-relaxed flex-1">
                     {testimonial.text}
@@ -232,7 +233,7 @@ export default function TestimonialsSection() {
                     </p>
                     <p className="text-gray-400 text-sm">{testimonial.role}</p>
                   </div>
-                  <div className="text-2xl">⭐</div>
+                  <div className="text-2xl"></div>
                 </div>
               </div>
             ))}
@@ -258,9 +259,10 @@ export default function TestimonialsSection() {
             {[...testimonials2, ...testimonials2].map((testimonial, index) => (
               <div
                 key={`${testimonial.id}-${index}-2`}
-                className="flex-shrink-0 w-100 bg-gradient-to-br 
+                className="flex-shrink-0 w-100 bg-gradient-to-r 
                 rounded-2xl p-6 border transition-all duration-300
-                border-gray-800 from-[#26143f] to-black hover:shadow-gray-800 hover:border-violet-600"
+                border-gray-800 from-[#26143f] to-black
+                 hover:shadow-gray-800 hover:border-violet-600"
               >
                 <div className="flex items-start mb-4">
                   <div
@@ -278,7 +280,7 @@ export default function TestimonialsSection() {
                     </p>
                     <p className="text-gray-400 text-sm">{testimonial.role}</p>
                   </div>
-                  <div className="text-2xl">⭐</div>
+                  <div className="text-2xl"></div>
                 </div>
               </div>
             ))}

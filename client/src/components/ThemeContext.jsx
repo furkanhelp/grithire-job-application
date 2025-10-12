@@ -7,20 +7,15 @@ export const ThemeProvider = ({ children }) => {
     return localStorage.getItem("darkTheme") === "true";
   });
 
-  
   const applyThemeClasses = (darkTheme) => {
     const html = document.documentElement;
-    const body = document.body;
 
     if (darkTheme) {
       html.classList.add("dark");
-      body.style.background =
-        "linear-gradient(135deg, #26143f 0%, #000000 100%)";
-      body.style.color = "white";
+      html.setAttribute("data-theme", "dark");
     } else {
       html.classList.remove("dark");
-      body.style.background = "";
-      body.style.color = "";
+      html.setAttribute("data-theme", "light");
     }
   };
 
@@ -31,14 +26,21 @@ export const ThemeProvider = ({ children }) => {
     applyThemeClasses(newDarkTheme);
   };
 
- 
   useEffect(() => {
     applyThemeClasses(isDarkTheme);
   }, [isDarkTheme]);
 
   return (
     <ThemeContext.Provider value={{ isDarkTheme, toggleDarkTheme }}>
-      {children}
+      <div
+        className={`min-h-screen transition-colors duration-300 ${
+          isDarkTheme
+            ? "bg-gradient-to-br from-[#26143f] to-black border-t border-gray-800/50 text-white"
+            : "bg-white text-gray-900"
+        }`}
+      >
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };

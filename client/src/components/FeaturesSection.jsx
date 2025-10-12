@@ -143,7 +143,7 @@ export default function FeaturesSection() {
             {features.map((item, idx) => (
               <li
                 key={idx}
-                className="bg-gradient-to-br from-[#26143f] to-black rounded-2xl p-6 border
+                className="bg-gradient-to-r from-[#26143f] to-black rounded-2xl p-6 border
                  border-gray-800 shadow-lg hover:shadow-gray-800 transition-all duration-300
                   hover:border-violet-600"
               >

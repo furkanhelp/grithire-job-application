@@ -1,9 +1,7 @@
-import styled from "styled-components";
 import Wrapper from "../assets/wrappers/LandingPage";
-import main from "../assets/images/main.svg";
-
+import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { Logo } from "../components";
+
 import logo from "../assets/images/favicon.ico";
 import Iridescence from "../components/Iridescence";
 import React from "react";
@@ -13,11 +11,18 @@ import SentenceFlip from "../components/SentenceFlip";
 import AnimatedGradientButton from "../components/Button";
 import LogoLoop from "../components/LogoLoop";
 import {
-  SiReact,
-  SiNextdotjs,
-  SiTypescript,
-  SiTailwindcss,
+  SiAmazon,
+  SiGoogle,
+  SiNetflix,
+  SiSpotify,
+  SiUber,
+  SiAirbnb,
+  SiStripe,
+  SiSlack,
+  SiFigma,
 } from "react-icons/si";
+import { FaApple } from "react-icons/fa";
+import { SiTesla } from "react-icons/si";
 import ScrollReveal from "../components/ScrollReveal";
 import ThemeToggle from "../components/ThemeToggle";
 import MagicBento from "../components/MagicBento";
@@ -25,7 +30,7 @@ import FeaturesSection from "../components/FeaturesSection";
 import Testimonials from "../components/Testimonials";
 import PricingSection from "../components/PricingSection";
 import FAQSection from "../components/FAQSection";
-import { useRef } from "react";
+import Footer from "../components/Footer";
 
 const items = [
   { label: "Home", href: "#" },
@@ -34,10 +39,17 @@ const items = [
 ];
 
 const techLogos = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
-  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+  { node: <SiAmazon />, title: "Amazon", href: "https://amazon.com" },
+  { node: <SiGoogle />, title: "Google", href: "https://google.com" },
+  { node: <FaApple />, title: "Apple", href: "https://apple.com" },
+  { node: <SiNetflix />, title: "Netflix", href: "https://netflix.com" },
+  { node: <SiSpotify />, title: "Spotify", href: "https://spotify.com" },
+  { node: <SiUber />, title: "Uber", href: "https://uber.com" },
+  { node: <SiAirbnb />, title: "Airbnb", href: "https://airbnb.com" },
+  { node: <SiStripe />, title: "Stripe", href: "https://stripe.com" },
+  { node: <SiTesla />, title: "Tesla", href: "https://tesla.com" },
+  { node: <SiSlack />, title: "Slack", href: "https://slack.com" },
+  { node: <SiFigma />, title: "Figma", href: "https://figma.com" },
 ];
 
 const imageLogos = [
@@ -122,7 +134,7 @@ const Landing = () => {
               highlight: [2, 3, 5],
             },
             {
-              sentence: "Focus on applying — we handle the tracking",
+              sentence: "Focus on applying we handle the tracking",
               highlight: [1, 4],
             },
             {
@@ -311,6 +323,8 @@ const Landing = () => {
       <Testimonials />
       <PricingSection />
       <FAQSection/>
+      <Footer/>
+      
     </Wrapper>
   );
 };

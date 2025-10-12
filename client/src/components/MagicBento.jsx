@@ -328,14 +328,14 @@ const MagicBento = ({
         }
         
         .card-responsive .card:nth-child(1) .card-title {
-        font-size: 5.5rem;
+        font-size: 3.5rem;
 
         }
         .card-responsive .card:nth-child(1) .card-description{
         font-size: 1.5rem;
         }
         .card-responsive .card:nth-child(1) .countup-number{
-        font-size: 5.5rem;
+        font-size: 3.5rem;
         }
 
         /* Interviews - Top right */

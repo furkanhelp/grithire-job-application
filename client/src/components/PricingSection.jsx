@@ -60,7 +60,7 @@ export default function PricingSection() {
         <div className="max-w-1xl !mx-auto text-center !mb-15">
           <h2
             className="bg-gradient-to-tl from-black via-purple-800 to-pink-800
-          bg-clip-text text-transparent !text-6xl sm:text-4xl font-sans
+          bg-clip-text text-transparent !text-6xl sm:text-4xl !font-sans
           !font-bold leading-[1.5] !tracking-[-0.025em]"
           >
             Simple, Transparent Pricing
@@ -77,8 +77,8 @@ export default function PricingSection() {
               key={idx}
               className={`relative rounded-2xl !p-10 border transition-all duration-300 ${
                 plan.isMostPop
-                  ? "bg-gradient-to-br from-gray-900/80 to-black/80 border-purple-500 shadow-lg shadow-purple-500/20 scale-105"
-                  : "bg-gradient-to-br from-gray-900/50 to-black/50 border-gray-800 hover:border-gray-600"
+                  ? "bg-gradient-to-br from-[#26143f] to-black border-purple-500 shadow-lg shadow-purple-500/20 scale-105"
+                  : "bg-gradient-to-br from-[#26143f] to-black border-gray-800 hover:border-gray-500 hover:shadow-gray-800"
               }`}
             >
               {/* Most Popular Badge */}
@@ -107,7 +107,11 @@ export default function PricingSection() {
 
               {/* Plan Header */}
               <div className="text-center !mb-8">
-                <h3 className="text-2xl font-bold text-white !mb-2">
+                <h3
+                  className="!text-5xl !font-sans !font-bold
+                bg-gradient-to-br from-white to-[#a5b4fc] bg-clip-text 
+                text-transparent !tracking-[-0.025em] !leading-[1.5] !mb-2"
+                >
                   {plan.name}
                 </h3>
                 <p className="text-gray-300 !mb-6">{plan.desc}</p>
