@@ -3,8 +3,6 @@
 import { cn } from "../utils/utils.js";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-
-// fontsource (if you're using @fontsource approach)
 import "@fontsource/raleway/400.css";
 import "@fontsource/raleway/500.css";
 import "@fontsource/raleway/600.css";
@@ -12,51 +10,39 @@ import "@fontsource/raleway/700.css";
 import "@fontsource/raleway/800.css";
 import "@fontsource/raleway/900.css";
 
-/**
- * WordFlipper - flips between a list of words (one per sentence column)
- * props:
- *   words: { word: string, isHighlighted: boolean }[]
- *   wordIndex: number (column index used for transition delay)
- */
+/* WordFlipper: show one word at a time from a column */
 const WordFlipper = ({ words, wordIndex }) => {
   const wordRef = useRef(null);
   const [wordHeight, setWordHeight] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // measure height synchronously to avoid flicker
   useLayoutEffect(() => {
     const measure = () => {
       if (!wordRef.current) return;
-      setWordHeight(wordRef.current.clientHeight);
+      setWordHeight(wordRef.current.clientHeight || 28);
     };
     measure();
-
-    // stable handler for add/removeEventListener
-    const handleResize = () => measure();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const onResize = () => measure();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   useEffect(() => {
     if (!Array.isArray(words) || words.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % words.length);
-    }, 1500);
-    return () => clearInterval(interval);
+    const id = setInterval(
+      () => setCurrentIndex((p) => (p + 1) % words.length),
+      1500
+    );
+    return () => clearInterval(id);
   }, [words]);
 
-  // Small debug aid: log when words change (remove in production)
-  useEffect(() => {
-    // console.debug(`WordFlipper col ${wordIndex}`, words);
-  }, [words, wordIndex]);
+  // fallback font-size that scales with viewport
+  const sizeClass =
+    "text-[clamp(1.25rem,4vw,2.5rem)] sm:text-[clamp(1.5rem,4.5vw,3rem)]";
 
   return (
-    <motion.div
-      layout="position"
-      className="text-3xl md:text-4xl lg:text-5xl relative"
-      data-debug={JSON.stringify({ wordIndex, words })}
-    >
-      {/* invisible sample used to measure height - keep it simple */}
+    <motion.div layout="position" className={`relative ${sizeClass} min-w-0`}>
+      {/* invisible sample used to measure height */}
       <p
         ref={wordRef}
         className="text-transparent opacity-0 select-none absolute"
@@ -69,8 +55,6 @@ const WordFlipper = ({ words, wordIndex }) => {
         <AnimatePresence mode="popLayout">
           {words.map((word, idx) => {
             if (idx !== currentIndex) return null;
-
-            // inline fallback color (hex for blue-500) ensures color even if Tailwind wasn't built with this class
             const fallbackStyle = word.isHighlighted
               ? { color: "#a246f3" }
               : undefined;
@@ -78,29 +62,22 @@ const WordFlipper = ({ words, wordIndex }) => {
             return (
               <motion.p
                 key={"word" + idx}
-                initial={{
-                  opacity: 0,
-                  filter: "blur(10px)",
-                  y: wordHeight / 2,
-                }}
+                initial={{ opacity: 0, filter: "blur(6px)", y: wordHeight / 2 }}
                 animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                exit={{ opacity: 0, filter: "blur(10px)", y: -wordHeight / 2 }}
+                exit={{ opacity: 0, filter: "blur(6px)", y: -wordHeight / 2 }}
                 transition={{
-                  duration: 0.1,
+                  duration: 0.14,
                   ease: "easeInOut",
-                  delay: wordIndex * 0.1,
+                  delay: wordIndex * 0.06,
                 }}
                 className={cn(
-                  "py-0.5",
-                  // Use your font family class if you configured Tailwind, otherwise fallback to standard font
-                  "font-raleway",
-                  word.isHighlighted
-                    ? "font-semibold text-blue-500"
-                    : "font-light text-gray-900"
+                  "py-0.5 font-raleway min-w-0 break-words",
+                  word.isHighlighted ? "font-semibold" : "font-light",
+                  word.isHighlighted ? "text-blue-500" : "text-gray-900"
                 )}
                 style={fallbackStyle}
               >
-                {word.word}
+                {word.word || "\u00A0" /* preserve height when word is empty */}
               </motion.p>
             );
           })}
@@ -110,10 +87,8 @@ const WordFlipper = ({ words, wordIndex }) => {
   );
 };
 
-/**
- * SentenceFlip - takes array of sentences: { sentence: string, highlight: number[] }
- */
-const SentenceFlip = ({ sentences }) => {
+/* SentenceFlip: split sentences into columns and rotate each column's words */
+const SentenceFlip = ({ sentences = [] }) => {
   const [cols, setCols] = useState(0);
 
   useEffect(() => {
@@ -121,26 +96,21 @@ const SentenceFlip = ({ sentences }) => {
       setCols(0);
       return;
     }
-
-    // find longest sentence by number of words
     const longest = sentences.reduce((acc, cur) => {
-      const accLen = acc.split(" ").length;
-      const curLen = cur.sentence.split(" ").length;
-      return curLen > accLen ? cur.sentence : acc;
-    }, "");
+      const a = acc.split(" ").length;
+      const b = cur.sentence.split(" ").length;
+      return b > a ? cur.sentence : acc;
+    }, sentences[0].sentence || "");
     setCols(longest.split(" ").length);
   }, [sentences]);
 
   return (
-    <div className="w-full flex flex-col justify-center ">
-      <div className="max-w-3xl place-self-center w-full " >
-        <div className="flex flex-wrap gap-x-2 justify-start ">
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-[680px]">
+        <div className="flex flex-wrap gap-x-2 gap-y-1 justify-center items-center">
           {Array.from({ length: cols }).map((_, colIndex) => {
-            // Build a list of words for this column (one per sentence),
-            // and normalize highlight arrays to numbers safely.
             const wordsToFlip = sentences.map((s) => {
               const splits = s.sentence.split(" ");
-              // normalize highlight -> set of numbers (handles string numbers too)
               const highlightSource = Array.isArray(s.highlight)
                 ? s.highlight
                 : [];
@@ -155,13 +125,12 @@ const SentenceFlip = ({ sentences }) => {
 
               const exists = splits.length > colIndex;
               const wordText = exists ? splits[colIndex] : "";
-
-              const isHighlighted = exists && highlightSet.has(colIndex);
+              // highlights are 1-based in your examples; adjust if needed
+              const isHighlighted = exists && highlightSet.has(colIndex + 1);
 
               return { word: wordText, isHighlighted };
             });
 
-            // debug attribute for quick inspection in devtools (remove in prod)
             return (
               <React.Fragment key={"sentence-col-" + colIndex}>
                 <WordFlipper words={wordsToFlip} wordIndex={colIndex} />

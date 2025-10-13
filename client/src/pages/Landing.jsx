@@ -78,7 +78,10 @@ const Landing = () => {
     <Wrapper>
       {/* Navbar with Theme Toggle */}
       <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-50 p-4">
+        {/* Left - Empty */}
         <div className="w-1/3"></div>
+
+        {/* Center - Navigation */}
         <div className="w-1/3 flex justify-center">
           <PillNav
             logo={logo}
@@ -99,25 +102,38 @@ const Landing = () => {
           />
         </div>
 
-        <div className="w-1/3 flex justify-end ">
-          <ThemeToggle />
+        {/* Right - ThemeToggle */}
+        <div className="w-1/3 flex justify-end">
+          <div className="relative">
+            {/* Desktop */}
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
+
+            {/* Mobile*/}
+            <div className="md:hidden absolute -bottom-14 -left-45 z-[1000]">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </div>
       <div className="w-full h-screen relative pointer-events-none">
         <Iridescence
-          color={[0.3, 0, 0.2]}
+          color={[0.2, 0, 0.3]}
           mouseReact={true}
-          amplitude={0.3}
-          speed={1.0}
+          amplitude={0.4}
+          speed={1.5}
         />
       </div>
       <div
-        className="absolute left-[55%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center font-medium 
-  w-full max-w-[90vw] !px-4 z-50
-  sm:max-w-[80vw] sm:px-6
-  md:max-w-[70vw] 
-  lg:max-w-[60vw] 
-  xl:max-w-[50vw]"
+        className="absolute left-1/2 top-1/2 
+    transform -translate-x-1/2 -translate-y-1/2 
+    text-center font-medium
+    w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%]
+    max-w-[600px]
+    px-4 sm:px-6
+    z-50
+    overflow-hidden"
       >
         <SentenceFlip
           sentences={[
@@ -146,7 +162,7 @@ const Landing = () => {
         <p
           className="!mt-5 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
       text-gray-600 dark:text-gray-300 leading-relaxed break-words
-      mx-auto !max-w-[90%] sm:!max-w-[85%]"
+      !mx-auto !max-w-[90%] sm:!max-w-[85%]"
         >
           Grithire helps you organize your entire job search from applications
           to interviews all in one intuitive dashboard. Track progress, set
@@ -155,7 +171,7 @@ const Landing = () => {
       </div>
       <div
         className="absolute 
-  top-[calc(55%+250px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
+  top-[calc(55%+150px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
   left-1/2 transform -translate-x-1/2 -translate-y-1/2 
   text-center flex flex-col sm:flex-row justify-center items-center 
   !gap-3 sm:gap-4 md:gap-6 w-full !max-w-[90vw] px-4 z-50"
@@ -184,8 +200,14 @@ const Landing = () => {
       </div>
       <div className="w-full py-12">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-6xl font-black text-black dark:text-white mb-6 tracking-tight">
-            <span className="bg-gradient-to-b from-black to-gray-900 dark:from-white dark:to-gray-950 bg-clip-text text-transparent drop-shadow-2xl">
+          <h2
+            className="text-4xl md:text-6xl font-black text-black
+           dark:text-white mb-6 tracking-tight"
+          >
+            <span
+              className="bg-gradient-to-b from-black to-gray-900 dark:from-white
+             dark:to-gray-950 bg-clip-text text-transparent drop-shadow-2xl"
+            >
               FEATURED{" "}
             </span>
 
@@ -322,9 +344,8 @@ const Landing = () => {
       <FeaturesSection />
       <Testimonials />
       <PricingSection />
-      <FAQSection/>
-      <Footer/>
-      
+      <FAQSection />
+      <Footer />
     </Wrapper>
   );
 };

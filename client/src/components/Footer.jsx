@@ -13,11 +13,17 @@ export default function Footer() {
             <div className="flex items-center !gap-3 !mb-5">
               <div
                 className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 
-              rounded-xl flex items-center justify-center"
+              rounded-xl flex items-center justify-center !mb-5"
               >
                 <span className="text-white font-bold text-lg">G</span>
               </div>
-              <span className="text-white text-xl font-bold">Grithire</span>
+              <span
+                className="!font-sans !font-bold bg-gradient-to-br
+               from-white to-[#a5b4fc] bg-clip-text text-2xl
+                text-transparent !tracking-[-0.025em] !leading-[1.5] !mb-6"
+              >
+                Grithire
+              </span>
             </div>
             <p className="text-gray-400 leading-relaxed !mb-6">
               Streamline your job search with intelligent tracking, application
@@ -64,7 +70,13 @@ export default function Footer() {
 
           {/* Product Column */}
           <div>
-            <h3 className="text-white font-semibold text-lg !mb-6">Product</h3>
+            <h3
+              className="!font-sans !font-bold bg-gradient-to-br
+               from-white to-[#a5b4fc] bg-clip-text 
+                text-transparent !tracking-[-0.025em] !leading-[1.5] !mb-6"
+            >
+              Product
+            </h3>
             <ul className="!space-y-4">
               {[
                 { name: "Features", href: "#features" },
@@ -87,7 +99,13 @@ export default function Footer() {
 
           {/* Company Column */}
           <div>
-            <h3 className="text-white font-semibold text-lg !mb-6">Company</h3>
+            <h3
+              className="!font-sans !font-bold bg-gradient-to-br
+               from-white to-[#a5b4fc] bg-clip-text 
+                text-transparent !tracking-[-0.025em] !leading-[1.5] !mb-6"
+            >
+              Company
+            </h3>
             <ul className="!space-y-4">
               {[
                 { name: "About", href: "/about" },
@@ -110,7 +128,13 @@ export default function Footer() {
 
           {/* Support Column */}
           <div>
-            <h3 className="text-white font-semibold text-lg !mb-6">Support</h3>
+            <h3
+              className="!font-sans !font-bold bg-gradient-to-br
+               from-white to-[#a5b4fc] bg-clip-text 
+                text-transparent !tracking-[-0.025em] !leading-[1.5] !mb-6"
+            >
+              Support
+            </h3>
             <ul className="!space-y-4">
               {[
                 { name: "Help Center", href: "/help" },

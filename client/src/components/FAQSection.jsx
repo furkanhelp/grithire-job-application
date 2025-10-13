@@ -128,7 +128,7 @@ export default function FAQSection() {
         {/* FAQ Content - Enhanced */}
         <div
           className="max-w-3xl gap-10 !mx-auto relative rounded-2xl 
-      bg-gradient-to-br from-gray-900/40 to-black/40 !p-8 md:!p-12 
+      bg-gradient-to-r from-[#26143f] to-black !p-8 md:!p-12 
       border border-gray-800/50 backdrop-blur-sm"
         >
           {faqsList.map((item, idx) => (
@@ -143,16 +143,16 @@ export default function FAQSection() {
           <p className="text-gray-400 !mb-6 text-lg !mx-auto">
             Still have questions? We're here to help.
           </p>
-          <Link to='/contact'>
-          <button
-            className="bg-gradient-to-r from-purple-900 to-pink-800
+          <Link to="/contact">
+            <button
+              className="bg-gradient-to-r from-purple-900 to-pink-800
             hover:from-purple-900 hover:to-pink-800 text-white !px-8 !py-4 
             rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/30 
             transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
             >
-            Contact Support
-          </button>
-              </Link>
+              Contact Support
+            </button>
+          </Link>
         </div>
       </div>
     </section>

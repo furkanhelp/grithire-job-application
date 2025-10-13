@@ -1,8 +1,6 @@
 import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
 import { useEffect, useRef } from "react";
 
-import "../assets/css/Iridescence.css";
-
 const vertexShader = `
 attribute vec2 uv;
 attribute vec2 position;
@@ -136,5 +134,5 @@ export default function Iridescence({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color, speed, amplitude, mouseReact]);
 
-  return <div ref={ctnDom} className="iridescence-container" {...rest} />;
+  return <div ref={ctnDom} className="w-full h-full" {...rest} />;
 }

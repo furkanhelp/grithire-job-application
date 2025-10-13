@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.nav`
-  height: var(--nav-height);
+  /* height: var(--nav-height);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,8 +33,8 @@ const Wrapper = styled.nav`
   .btn-container {
     display: flex;
     align-items: center;
-  }
-  @media (min-width: 992px) {
+  } */
+  /* @media (min-width: 992px) {
     position: sticky;
     top: 0;
     .nav-center {
@@ -46,6 +46,6 @@ const Wrapper = styled.nav`
     .logo-text {
       display: block;
     }
-  }
+  } */
 `;
 export default Wrapper;
