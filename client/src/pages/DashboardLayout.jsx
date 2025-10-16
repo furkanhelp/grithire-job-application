@@ -1,10 +1,17 @@
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Outlet, redirect, useNavigate, useNavigation } from "react-router-dom";
 import Wrapper from "../assets/wrappers/Dashboard";
-import { BigSidebar, Navbar, SmallSidebar, Loading } from "../components";
-import { createContext, useContext, useEffect, useState } from "react";
+import { FormRow } from "../components";
+import links from "../utils/links";
+import logo from "../assets/images/favicon.ico";
+import { Loading } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
+import StaggeredMenu from "../components/StaggeredMenu";
+import PillNav from "../components/PillNav";
+import ThemeToggle from "../components/ThemeToggle";
+import LogoutContainer from "../components/LogoutContainer";
 
 const userQuery = {
   queryKey: ["user"],
@@ -24,42 +31,63 @@ export const loader = (queryClient) => async () => {
 
 const DashboardContext = createContext();
 
+
+// Dashboard menu items for StaggeredMenu
+const dashboardMenuItems = links.map((link) => ({
+  label: link.text,
+  ariaLabel: `Go to ${link.text}`,
+  link: `/dashboard/${link.path === "." ? "" : link.path}`.replace(/\/$/, ""),
+  icon: link.icon,
+}));
+
+// Main navigation items
+const mainNavItems = [
+  { label: "Home", link: "/", ariaLabel: "Go to Home page" },
+  { label: "About", link: "/about", ariaLabel: "Go to About page" },
+  { label: "Services", link: "/services", ariaLabel: "Go to Services page" },
+  { label: "Contact", link: "/contact", ariaLabel: "Go to Contact page" },
+];
+
+// Combine both for the staggered menu
+const allMenuItems = [...mainNavItems, ...dashboardMenuItems];
+
+const socialItems = [
+  { label: "Twitter", link: "https://twitter.com" },
+  { label: "GitHub", link: "https://github.com" },
+  { label: "LinkedIn", link: "https://linkedin.com" },
+];
+
+
 const DashboardLayout = ({ queryClient }) => {
-  const { user } = useQuery(userQuery).data;
+  const queryResult = useQuery(userQuery);
+  const { user } = queryResult.data || {};
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
   const [showSidebar, setShowSidebar] = useState(false);
-
-  // Initialize theme from localStorage
-  const [isDarkTheme, setIsDarkTheme] = useState(() => {
-    return localStorage.getItem("darkTheme") === "true";
-  });
-
   const [isAuthError, setIsAuthError] = useState(false);
-
-  // Apply theme classes
-  const applyThemeClasses = (darkTheme) => {
-    const html = document.documentElement;
-
-    if (darkTheme) {
-      html.classList.add("dark");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [staggeredMenuItems, setStaggeredMenuItems] = useState([]);
+  const menuItemsRef = useRef(dashboardMenuItems);
+  
+useEffect(() => {
+  const updateMenuItems = () => {
+    if (window.innerWidth <= 1024) {
+      menuItemsRef.current = allMenuItems;
     } else {
-      html.classList.remove("dark");
+      menuItemsRef.current = dashboardMenuItems;
     }
+  
   };
 
-  const toggleDarkTheme = () => {
-    const newDarkTheme = !isDarkTheme;
-    setIsDarkTheme(newDarkTheme);
-    localStorage.setItem("darkTheme", newDarkTheme);
-    applyThemeClasses(newDarkTheme);
-  };
+  updateMenuItems();
+  window.addEventListener("resize", updateMenuItems);
 
-  // Apply theme on component mount and changes
-  useEffect(() => {
-    applyThemeClasses(isDarkTheme);
-  }, [isDarkTheme]);
+  return () => window.removeEventListener("resize", updateMenuItems);
+}, []);
+
+  if (queryResult.isLoading) return <Loading />;
+  if (queryResult.isError || !user) return redirect("/");
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -70,6 +98,17 @@ const DashboardLayout = ({ queryClient }) => {
     await customFetch.get("/auth/logout");
     queryClient.invalidateQueries();
     toast.success("Logging out...");
+  };
+
+  // Menu state handlers
+  const handleMenuOpen = () => {
+    setIsMenuOpen(true);
+   
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+    
   };
 
   customFetch.interceptors.response.use(
@@ -89,39 +128,119 @@ const DashboardLayout = ({ queryClient }) => {
     logoutUser();
   }, [isAuthError]);
 
+ 
   return (
     <DashboardContext.Provider
       value={{
         user,
         showSidebar,
-        isDarkTheme,
-        toggleDarkTheme,
         toggleSidebar,
         logoutUser,
       }}
     >
-      {/* Fixed container with proper alignment */}
-      <div
-        className={`min-h-screen flex flex-col transition-colors duration-300 ${
-          isDarkTheme
-            ? "bg-gradient-to-br from-gray-900 to-black text-white"
-            : "bg-white text-gray-900"
-        }`}
-      >
-        <main className="flex-1 flex">
-          <SmallSidebar />
-          <BigSidebar />
-          <div className="flex-1 flex flex-col">
-            <Navbar />
-            <div className="flex-1 dashboard-page p-4 overflow-auto">
-              {isPageLoading ? <Loading /> : <Outlet context={{ user }} />}
+      {/* Main Dashboard Layout */}
+      {/* Transparent Navigation Bar */}
+      <nav className="sticky top-0 z-30 bg-transparent backdrop-blur-md !p-4 hidden lg:block">
+        <div className="flex items-center justify-between">
+          {/* Left: Empty space for balance */}
+          <div className="w-1/3"></div>
+
+          {/* Center: PillNav - Centered */}
+          <div className="w-1/3 flex justify-center">
+            <PillNav
+              logo={logo}
+              logoAlt="Company Logo"
+              items={[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about" },
+                { label: "Services", href: "/services" },
+                { label: "Contact", href: "/contact" },
+              ]}
+              activeHref="/"
+              className="custom-nav rounded-full"
+              ease="power2.easeOut"
+              baseColor="transparent"
+              pillColor="oklch(12.9% 0.042 264.695)"
+              hoveredPillTextColor="#ffffff"
+              pillTextColor="#ffffff"
+              hideHamburger={true}
+            />
+          </div>
+
+          {/* Right: Theme toggle and logout */}
+          <div className="w-1/3 flex justify-end items-center !space-x-4">
+            <ThemeToggle />
+
+            <div className="hidden md:block">
+              <LogoutContainer />
             </div>
           </div>
-        </main>
+        </div>
+      </nav>
+      <div
+        className="min-h-screen flex bg-gradient-to-br
+         transition-colors duration-300"
+      >
+        {/* Staggered Menu - Left Side */}
+        <div
+          className={`relative h-full transition-all duration-500 ease-in-out
+  ${isMenuOpen ? "w-74" : "w-0"}`}
+        >
+          <div
+            className={`fixed top-0 left-0 h-full z-40 transition-transform duration-500 ease-in-out
+    ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <StaggeredMenu
+              position="left"
+              items={
+                window.innerWidth <= 1024 ? allMenuItems : dashboardMenuItems
+              }
+              socialItems={socialItems}
+              displaySocials={true}
+              displayItemNumbering={false}
+              menuButtonColor={"#6b7280"}
+              openMenuButtonColor={"#000000"}
+              changeMenuColorOnOpen={true}
+              colors={["#26143f", "#431185"]}
+              logoUrl={logo}
+              accentColor="#491396"
+              user={user}
+              onMenuOpen={handleMenuOpen}
+              onMenuClose={handleMenuClose}
+              onLogout={logoutUser}
+            />
+          </div>
+        </div>
+
+        <div
+          className={`flex-1 flex flex-col min-h-screen 
+            transition-all duration-500 ease-in-out`}
+        >
+          {/* Main Content Area - Full width container that shifts */}
+
+          {/* Main Content */}
+          <main className="flex-1 !p-4 md:p-6 lg:p-8 overflow-auto !mt-15 lg:!mt-0 ">
+            <div className="max-w-8xl !mx-auto ">
+              <div
+                className=" bg-gradient-to-r from-[#26143f] to-black dark:bg-white
+              backdrop-blur-md rounded-2xl shadow-xl border border-gray-200
+               dark:border-gray-700 !p-9 md:p-8"
+              >
+                {isPageLoading ? (
+                  <div className="flex justify-center items-center h-64 ">
+                    <Loading />
+                  </div>
+                ) : (
+                  <Outlet context={{ user }} />
+                )}
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </DashboardContext.Provider>
   );
 };
 
 export const useDashboardContext = () => useContext(DashboardContext);
-export default DashboardLayout
+export default DashboardLayout;

@@ -7,10 +7,11 @@ const FormRowSelect = ({
   ...props
 }) => {
   return (
-    <div className="form-row">
+    <div className="form-row bg-gradient-to-r from-[#26143f] to-black">
       <label
         htmlFor={name}
-        className={`form-label text-gray-700 dark:text-gray-300 ${className}`}
+        className={`form-label bg-gradient-to-r from-[#26143f]
+           to-black text-gray-700 dark:text-gray-300 ${className}`}
       >
         {labelText}
       </label>
@@ -26,7 +27,7 @@ const FormRowSelect = ({
             <option
               key={itemValue}
               value={itemValue}
-              className="dark:bg-gray-700 dark:text-white"
+              className="bg-gradient-to-r from-[#26143f] to-black dark:bg-gray-200 dark:text-white"
             >
               {itemValue}
             </option>

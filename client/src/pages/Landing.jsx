@@ -77,7 +77,8 @@ const Landing = () => {
   return (
     <Wrapper>
       {/* Navbar with Theme Toggle */}
-      <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-50 p-4">
+      <div className="flex justify-between items-center w-full 
+      fixed top-0 left-0 right-0 z-50 p-4">
         {/* Left - Empty */}
         <div className="w-1/3"></div>
 

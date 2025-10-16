@@ -109,14 +109,15 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <ThemeProvider>
-      {" "}
-      {/* Wrap everything with ThemeProvider */}
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <div className="transition-colors duration-500 ease-in-out min-h-screen">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </div>
     </ThemeProvider>
   );
 };
+
 
 export default App;
