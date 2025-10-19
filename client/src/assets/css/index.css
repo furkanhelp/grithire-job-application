@@ -334,7 +334,7 @@ button:disabled {
 
 /* title */
 
-.title {
+/* .title {
   text-align: center;
 }
 
@@ -350,10 +350,10 @@ button:disabled {
   width: var(--fluid-width);
   max-width: var(--max-width);
   margin: 0 auto;
-}
+} */
 
 /* BUTTONS AND BADGES */
-.pending {
+/* .pending {
   background: var(--primary-700);
   color: #dbdee9;
 }
@@ -365,7 +365,7 @@ button:disabled {
 .declined {
   background: #ffeeee;
   color: #d66a6a;
-}
+} */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

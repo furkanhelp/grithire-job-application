@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.article`
-  padding: 2rem;
+  /* padding: 2rem;
   background: var(--background-secondary-color);
   border-bottom: 5px solid ${(props) => props.color};
   border-radius: var(--border-radius);
@@ -38,7 +38,7 @@ const Wrapper = styled.article`
       font-size: 2rem;
       color: ${(props) => props.color};
     }
-  }
+  } */
 `;
 
 export default Wrapper;

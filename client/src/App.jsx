@@ -29,8 +29,6 @@ import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
 import ErrorElement from "./components/ErrorElement";
-
-// Import the ThemeProvider
 import { ThemeProvider } from "./components/ThemeContext";
 
 const queryClient = new QueryClient({
@@ -47,20 +45,9 @@ const router = createBrowserRouter([
     element: <HomeLayout />,
     errorElement: <Error />,
     children: [
-      {
-        index: true,
-        element: <Landing />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-        action: registerAction,
-      },
-      {
-        path: "login",
-        element: <Login />,
-        action: loginAction(queryClient),
-      },
+      { index: true, element: <Landing /> },
+      { path: "register", element: <Register />, action: registerAction },
+      { path: "login", element: <Login />, action: loginAction(queryClient) },
       {
         path: "dashboard",
         element: <DashboardLayout queryClient={queryClient} />,
@@ -88,11 +75,7 @@ const router = createBrowserRouter([
             element: <Profile />,
             action: profileAction(queryClient),
           },
-          {
-            path: "admin",
-            element: <Admin />,
-            loader: adminLoader,
-          },
+          { path: "admin", element: <Admin />, loader: adminLoader },
           {
             path: "edit-job/:id",
             element: <EditJob />,
@@ -118,6 +101,5 @@ const App = () => {
     </ThemeProvider>
   );
 };
-
 
 export default App;
