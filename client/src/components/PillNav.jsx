@@ -677,7 +677,7 @@ const PillNav = ({
           </ul>
 
           {/* Auth Buttons - At the bottom */}
-          <div className="!mt-auto !space-y-3">
+          <div className="!mt-15 !space-y-3">
             <Link
               to="/register"
               className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
