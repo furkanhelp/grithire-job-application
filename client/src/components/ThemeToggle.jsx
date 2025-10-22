@@ -10,7 +10,7 @@ const ThemeToggle = () => {
       onClick={toggleDarkTheme}
       whileTap={{ scale: 0.9 }}
       className={`relative w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 flex items-center justify-center 
-        transition-all duration-500 hover:scale-110 hover:shadow-lg backdrop-blur-sm
+        transition-all duration-500 hover:scale-110 hover:shadow-lg backdrop-blur-sm 
         ${
           isDarkTheme
             ? "bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-400/60"

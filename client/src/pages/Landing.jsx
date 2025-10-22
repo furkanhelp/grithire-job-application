@@ -25,6 +25,7 @@ import { FaApple } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
 import ScrollReveal from "../components/ScrollReveal";
 import ThemeToggle from "../components/ThemeToggle";
+import { useTheme } from "../components/ThemeContext"; 
 import MagicBento from "../components/MagicBento";
 import FeaturesSection from "../components/FeaturesSection";
 import Testimonials from "../components/Testimonials";
@@ -36,6 +37,7 @@ const items = [
   { label: "Home", href: "#" },
   { label: "About", href: "#" },
   { label: "Contact", href: "#" },
+  { label: "Login", href: "/login" },
 ];
 
 const techLogos = [
@@ -73,13 +75,15 @@ const imageLogos = [
 
 
 const Landing = () => {
-  
+  const { isDarkTheme, toggleDarkTheme } = useTheme();
   return (
     <Wrapper>
-      {/* Navbar with Theme Toggle */}
-      <div className="flex justify-between items-center w-full 
-      fixed top-0 left-0 right-0 z-50 p-4">
-        {/* Left - Empty */}
+      {/* Navbar with Theme Toggle - Alternative */}
+      <div
+        className="flex justify-between items-center w-full fixed top-0 left-0 
+      right-0 z-[60] pointer-events-auto !p-4"
+      >
+        {/* Left - Empty for balance */}
         <div className="w-1/3"></div>
 
         {/* Center - Navigation */}
@@ -100,25 +104,22 @@ const Landing = () => {
             pillColor="oklch(12.9% 0.042 264.695)"
             hoveredPillTextColor="#ffffff"
             pillTextColor="#ffffff"
+            isDarkTheme={isDarkTheme}
+            toggleDarkTheme={toggleDarkTheme}
           />
         </div>
 
         {/* Right - ThemeToggle */}
         <div className="w-1/3 flex justify-end">
-          <div className="relative">
-            {/* Desktop */}
-            <div className="hidden md:block">
-              <ThemeToggle />
-            </div>
-
-            {/* Mobile*/}
-            <div className="md:hidden absolute -bottom-14 -left-45 z-[1000]">
-              <ThemeToggle />
-            </div>
+          {/* Desktop */}
+          <div className="hidden md:block">
+            <ThemeToggle />
           </div>
         </div>
+
+       
       </div>
-      <div className="w-full h-screen relative pointer-events-none">
+      <div className="w-full h-screen relative pointer-events-auto">
         <Iridescence
           color={[0.2, 0, 0.3]}
           mouseReact={true}

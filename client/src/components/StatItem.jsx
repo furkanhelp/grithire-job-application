@@ -44,7 +44,7 @@ const StatItem = ({
           <CountUp
             to={trendValue}
             from={0}
-            direction="up" // Always count up, we'll handle the sign separately
+            direction="up"
             duration={1.5}
             delay={0.3 + delay}
             className="text-inherit"
@@ -54,7 +54,10 @@ const StatItem = ({
       </div>
 
       <div className="!space-y-2">
-        <h3 className="text-3xl font-bold text-gray-900 dark:text-white min-h-[2.5rem]">
+        <h3
+          className="text-3xl !font-bold text-gray-900 dark:text-white to-[#a5b4fc] min-h-[2.5rem]
+        !font-sans "
+        >
           <CountUp
             to={count}
             from={0}
