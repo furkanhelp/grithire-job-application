@@ -36,7 +36,7 @@ export const ThemeProvider = ({ children }) => {
         className={`min-h-screen transition-colors duration-300 ${
           isDarkTheme
             ? "bg-gradient-to-br from-[#26143f] to-black border-t border-gray-800/50 text-white"
-            : "bg-[rgb(178,137,255)]/45 text-gray-900"
+            : "bg-gradient-to-br from-[#ffffff] to-purple-700/70 "
         }`}
       >
         {children}
