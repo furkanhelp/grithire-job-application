@@ -46,47 +46,47 @@ const PillNav = ({
   };
 
   // handle outside clicks
- useEffect(() => {
-   const handlePointerDownOutside = (event) => {
-     if (!mobileMenuRef.current || !hamburgerRef.current) return;
+  useEffect(() => {
+    const handlePointerDownOutside = (event) => {
+      if (!mobileMenuRef.current || !hamburgerRef.current) return;
 
-     // Robust path detection
-     const path = event.composedPath ? event.composedPath() : event.path || [];
+      // Robust path detection
+      const path = event.composedPath ? event.composedPath() : event.path || [];
 
-     const clickedInsideMenu = path.includes(mobileMenuRef.current);
-     const clickedHamburger = path.includes(hamburgerRef.current);
+      const clickedInsideMenu = path.includes(mobileMenuRef.current);
+      const clickedHamburger = path.includes(hamburgerRef.current);
 
-     // Detect theme button 
-     const clickedThemeToggle = path.some((node) => {
-       try {
-         return node?.classList?.contains?.("theme-toggle-btn");
-       } catch {
-         return false;
-       }
-     });
+      // Detect theme button
+      const clickedThemeToggle = path.some((node) => {
+        try {
+          return node?.classList?.contains?.("theme-toggle-btn");
+        } catch {
+          return false;
+        }
+      });
 
-     if (
-       isMobileMenuOpen &&
-       !clickedInsideMenu &&
-       !clickedHamburger &&
-       !clickedThemeToggle
-     ) {
-       // close menu
-       toggleMobileMenu();
-     }
-   };
+      if (
+        isMobileMenuOpen &&
+        !clickedInsideMenu &&
+        !clickedHamburger &&
+        !clickedThemeToggle
+      ) {
+        // close menu
+        toggleMobileMenu();
+      }
+    };
 
-   // it runs early and works with composited events
-   document.addEventListener("pointerdown", handlePointerDownOutside, {
-     capture: true,
-   });
+    // it runs early and works with composited events
+    document.addEventListener("pointerdown", handlePointerDownOutside, {
+      capture: true,
+    });
 
-   return () => {
-     document.removeEventListener("pointerdown", handlePointerDownOutside, {
-       capture: true,
-     });
-   };
- }, [isMobileMenuOpen]);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDownOutside, {
+        capture: true,
+      });
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const layout = () => {
@@ -195,6 +195,21 @@ const PillNav = ({
 
     return () => window.removeEventListener("resize", onResize);
   }, [items, ease, initialLoadAnimation]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      // Prevent scrolling on background
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]); 
 
   const handleEnter = (i) => {
     const tl = tlRefs.current[i];
@@ -317,7 +332,6 @@ const PillNav = ({
     }`}
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => {
-      
         e.preventDefault();
         e.stopPropagation();
         toggleDarkTheme();
