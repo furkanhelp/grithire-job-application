@@ -78,15 +78,14 @@ const Landing = () => {
   const { isDarkTheme, toggleDarkTheme } = useTheme();
   return (
     <Wrapper>
-      {/* Navbar with Theme Toggle - Alternative */}
+      {/* Navbar with Theme Toggle */}
       <div
         className="flex justify-between items-center w-full fixed top-0 left-0 
       right-0 z-[60] pointer-events-auto !p-4"
       >
-        {/* Left - Empty for balance */}
+        {/* Empty for balance */}
         <div className="w-1/3"></div>
 
-        {/* Center - Navigation */}
         <div className="w-1/3 flex justify-center">
           <PillNav
             logo={logo}

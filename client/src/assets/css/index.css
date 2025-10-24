@@ -5,6 +5,8 @@
 
 @custom-variant dark (&:is(.dark *));
 *,
+
+
 ::after,
 ::before {
   margin: 0;
