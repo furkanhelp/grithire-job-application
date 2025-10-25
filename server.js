@@ -23,6 +23,9 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
 
+//GOOGLE AUTH
+import session from "express-session";
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -41,8 +44,85 @@ app.use(express.json());
 app.use(helmet());
 app.use(mongoSanitize());
 
+//GOOGLE
+import passport from "passport";
+import GoogleStrategy from "passport-google-oauth20";
+import User from "./models/UserModel.js";
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/api/v1/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log("Google profile received:", profile);
 
+        let user = await User.findOne({ googleId: profile.id });
+        if (user) {
+          console.log("Existing user found:", user.email);
+          return done(null, user);
+        }
+
+        user = await User.findOne({ email: profile.emails[0].value });
+        if (user) {
+          console.log("Linking Google account to existing user:", user.email);
+          user.googleId = profile.id;
+          user.avatar = profile.photos[0].value;
+          user.isVerified = true;
+          await user.save();
+          return done(null, user);
+        }
+
+        console.log("Creating new user with Google data");
+        user = await User.create({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          avatar: profile.photos[0].value,
+          location: "Unknown",
+          isVerified: true,
+        });
+
+        console.log("New user created:", user.email);
+        return done(null, user);
+      } catch (error) {
+        console.error("Google authentication error:", error);
+        return done(error, null);
+      }
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+
+// Session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+//
 app.use('/api/v1/jobs', authenticateUser, jobRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth", authRouter);

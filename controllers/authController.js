@@ -3,6 +3,8 @@ import User from '../models/UserModel.js';
 import { comparePassword, hashPassword } from "../utils/passwordUtils.js";
 import { UnauthenticatedError } from "../errors/customErrors.js";
 import { createJWT } from "../utils/tokenUtils.js";
+import passport from "passport";
+
 export const register = async (req, res) => {
     // FIRST REGISTER IS GOING TO BE ADMIN
     const isFirstAccount = (await User.countDocuments()) === 0;
@@ -46,3 +48,39 @@ export const logout = (req, res) => {
   });
   res.status(StatusCodes.OK).json({msg: 'user logged out!'})
 }
+
+//GOOGLE REGISTER CONTROLLER
+export const googleAuth = (req, res, next) => {
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })(req, res, next);
+};
+
+export const googleCallback = (req, res, next) => {
+  passport.authenticate(
+    "google",
+    {
+      failureRedirect: "/login",
+    },
+    (err, user) => {
+      if (err) {
+        console.error("Google auth error:", err);
+        return res.redirect("/login?error=auth_failed");
+      }
+
+      if (!user) {
+        return res.redirect("/login?error=user_not_found");
+      }
+
+      // Generate JWT token
+      const token = user.createJWT();
+
+      // Redirect to frontend with token
+      res.redirect(
+        `${
+          process.env.FRONTEND_URL || "http://localhost:5000"
+        }/dashboard?token=${token}`
+      );
+    }
+  )(req, res, next);
+};

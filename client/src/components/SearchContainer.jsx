@@ -146,7 +146,7 @@ const SearchContainer = () => {
           </div>
         </div>
 
-        {/* Reset Button - Centered */}
+        {/* Reset Button */}
         <div className="flex justify-center !pt-6">
           <button
             type="button"

@@ -4,7 +4,7 @@ import { FormRow, Logo } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import ThemeToggle from "../components/ThemeToggle";
-
+import GoogleLoginButton from "../components/GoogleLoginButton";
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
@@ -156,7 +156,7 @@ const Register = () => {
           <div className="md:w-3/5 !p-5 ">
             <div className="text-center !mb-2 items-center justify-center flex">
               <Link to="/">
-              <Logo/>
+                <Logo />
               </Link>
             </div>
             <h2
@@ -168,6 +168,23 @@ const Register = () => {
             <p className="text-gray-600 text-center !text-sm !mb-6">
               Fill in your details to register
             </p>
+
+            {/* Google Sign Up Button */}
+            <div className="!mb-4">
+              <GoogleLoginButton type="register" />
+            </div>
+
+            {/* Divider */}
+            <div className="relative mb-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
+                  Or continue with email
+                </span>
+              </div>
+            </div>
 
             <Form method="post" className="!space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -240,7 +257,7 @@ const Register = () => {
                 <div className="absolute inset-0 flex items-center"></div>
                 <div className="relative flex justify-center">
                   <div className="flex flex-col items-center space-y-3">
-                    {/* Text with solid background and subtle glow */}
+                  
                     <span
                       className="!px-4 !py-2 bg-white dark:bg-gray-900 font-medium rounded-full
                       bg-gradient-to-r from-purple-900 via-pink-500 to-purple-600 
@@ -249,7 +266,7 @@ const Register = () => {
                       backdrop-blur-sm relative"
                     >
                       Or try the demo
-                      {/* Subtle pulse effect */}
+                      
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-800/30 via-pink-900/30 to-purple-800/30 animate-pulse -z-10"></div>
                     </span>
 
