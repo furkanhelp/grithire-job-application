@@ -1,4 +1,6 @@
-import { Link, Form, redirect } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, Form, redirect, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { FormRow, Logo } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
@@ -11,9 +13,22 @@ export const action =
     const data = Object.fromEntries(formData);
     try {
       await customFetch.post("/auth/login", data);
-      queryClient.invalidateQueries();
+
+      // Get the user data immediately after successful login
+      const userResponse = await customFetch.get("/users/current-user");
+      const userData = userResponse.data.user;
+
+      // Update the query cache
+      queryClient.setQueryData(["user"], userData);
+
       toast.success("Login successful");
-      return redirect("/dashboard");
+
+      // Use window.location for immediate redirect
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
+
+      return null;
     } catch (error) {
       toast.error(error?.response?.data?.msg);
       return error;
@@ -21,6 +36,8 @@ export const action =
   };
 
 const Login = () => {
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -118,7 +135,7 @@ const Login = () => {
                   ></div>
                 </button>
               </div>
-  
+
               <div className="!pt-4 text-center border-t border-gray-200">
                 <p className="text-gray-600">
                   Not a member yet?{" "}

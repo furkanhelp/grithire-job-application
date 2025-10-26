@@ -6,6 +6,7 @@ const app = express();
 import morgan from "morgan";
 import mongoose from "mongoose";
 import cookieParser from 'cookie-parser';
+import cors from "cors";
 // ROUTERS
 import jobRouter from './routes/jobRouter.js';
 import authRouter from "./routes/authRouter.js";
@@ -126,6 +127,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "your-production-domain.com"
+        : "http://localhost:5173",
+    credentials: true, // This is IMPORTANT
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+app.use(cookieParser());
+app.use(express.json());
+
 app.use('/api/v1/jobs', authenticateUser, jobRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth", authRouter);

@@ -32,7 +32,7 @@ export const updateUser = async (req, res) => {
   }
   const updatedUser = await User.findByIdAndUpdate(req.user.userId, newUser);
 
-  // Now delete the old image from cloudinary (if a new one was uploaded)
+ 
   if (req.file && updatedUser.avatarPublicId) {
     await cloudinary.v2.uploader.destroy(updatedUser.avatarPublicId);
   }

@@ -1,3 +1,4 @@
+import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -16,10 +17,10 @@ import {
   Profile,
   EditJob,
 } from "./pages";
-
+import { AuthProvider} from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { action as registerAction } from "./pages/Register";
 import { action as loginAction } from "./pages/Login";
-import { loader as dashboardLoader } from "./pages/DashboardLayout";
 import { action as addJobAction } from "./pages/AddJob";
 import { loader as allJobsLoader } from "./pages/AllJobs";
 import { loader as editJobLoader } from "./pages/EditJob";
@@ -39,6 +40,11 @@ const queryClient = new QueryClient({
   },
 });
 
+
+const ProtectedRouteWrapper = ({ children }) => {
+  return <ProtectedRoute>{children}</ProtectedRoute>;
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,12 +52,21 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       { index: true, element: <Landing /> },
-      { path: "register", element: <Register />, action: registerAction },
-      { path: "login", element: <Login />, action: loginAction(queryClient) },
+      {
+        path: "register",
+        element: <Register />,
+        action: registerAction(queryClient),
+      },
+      { path: "login", 
+        element: <Login />, 
+        action: loginAction(queryClient) },
       {
         path: "dashboard",
-        element: <DashboardLayout queryClient={queryClient} />,
-        loader: dashboardLoader(queryClient),
+        element: (
+          <ProtectedRouteWrapper>
+            <DashboardLayout queryClient={queryClient} />
+          </ProtectedRouteWrapper>
+        ),
         children: [
           {
             index: true,
@@ -75,14 +90,21 @@ const router = createBrowserRouter([
             element: <Profile />,
             action: profileAction(queryClient),
           },
-          { path: "admin", element: <Admin />, loader: adminLoader },
+          {
+            path: "admin",
+            element: <Admin />,
+            loader: adminLoader,
+          },
           {
             path: "edit-job/:id",
             element: <EditJob />,
             loader: editJobLoader(queryClient),
             action: editJobAction(queryClient),
           },
-          { path: "delete-job/:id", action: deleteJobAction(queryClient) },
+          {
+            path: "delete-job/:id",
+            action: deleteJobAction(queryClient),
+          },
         ],
       },
     ],
@@ -94,8 +116,10 @@ const App = () => {
     <ThemeProvider>
       <div className="transition-colors duration-500 ease-in-out min-h-screen">
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <AuthProvider>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </AuthProvider>
         </QueryClientProvider>
       </div>
     </ThemeProvider>

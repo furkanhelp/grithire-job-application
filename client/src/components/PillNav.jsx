@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
 
 const PillNav = ({
   logo,
@@ -20,6 +21,7 @@ const PillNav = ({
   isDarkTheme,
   toggleDarkTheme,
 }) => {
+  const { user, logout } = useAuth();
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const circleRefs = useRef([]);
@@ -675,42 +677,77 @@ const PillNav = ({
               );
             })}
           </ul>
-
           {/* Auth Buttons - At the bottom */}
+        
           <div className="!mt-15 !space-y-3">
-            <Link
-              to="/register"
-              className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
-              transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border-0"
-              style={{
-                background: isDarkTheme
-                  ? "var(--pill-bg, #3f1d6e)" // 👈 Dark mode background
-                  : "#3f1d6e", // 👈 Light mode background
-                color: isDarkTheme
-                  ? "var(--hover-text, #fff)" // 👈 Dark mode text
-                  : "#FFFFFF", // 👈 Light mode text
-              }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Register
-            </Link>
-            <Link
-              to="/login"
-              className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
-              transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border"
-              style={{
-                background: "transparent",
-                color: isDarkTheme
-                  ? "var(--pill-text, #fff)" // 👈 Dark mode text
-                  : "#ffffff", // 👈 Light mode text
-                borderColor: isDarkTheme
-                  ? "var(--pill-bg, #fff)" // 👈 Dark mode border
-                  : "#3f1d6e", // 👈 Light mode border
-              }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Login / Demo User
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
+          transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border-0"
+                  style={{
+                    background: isDarkTheme
+                      ? "var(--pill-bg, #3f1d6e)"
+                      : "#3f1d6e",
+                    color: isDarkTheme ? "var(--hover-text, #fff)" : "#FFFFFF",
+                  }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full !py-3 !px-4 text-base font-semibold rounded-xl text-center 
+          transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border"
+                  style={{
+                    background: "transparent",
+                    color: isDarkTheme ? "var(--pill-text, #fff)" : "#ffffff",
+                    borderColor: isDarkTheme
+                      ? "var(--pill-bg, #fff)"
+                      : "#3f1d6e",
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              // User is not logged in - Show Register and Login
+              <>
+                <Link
+                  to="/register"
+                  className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
+          transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border-0"
+                  style={{
+                    background: isDarkTheme
+                      ? "var(--pill-bg, #3f1d6e)"
+                      : "#3f1d6e",
+                    color: isDarkTheme ? "var(--hover-text, #fff)" : "#FFFFFF",
+                  }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Register
+                </Link>
+                <Link
+                  to="/login"
+                  className="block !py-3 !px-4 text-base font-semibold rounded-xl text-center 
+          transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border"
+                  style={{
+                    background: "transparent",
+                    color: isDarkTheme ? "var(--pill-text, #fff)" : "#ffffff",
+                    borderColor: isDarkTheme
+                      ? "var(--pill-bg, #fff)"
+                      : "#3f1d6e",
+                  }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Login / Demo User
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

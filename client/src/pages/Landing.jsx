@@ -1,7 +1,5 @@
-import Wrapper from "../assets/wrappers/LandingPage";
-import { useRef } from "react";
 import { Link } from "react-router-dom";
-
+import { useAuth } from "../contexts/AuthContext";
 import logo from "../assets/images/favicon.ico";
 import Iridescence from "../components/Iridescence";
 import React from "react";
@@ -25,20 +23,14 @@ import { FaApple } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
 import ScrollReveal from "../components/ScrollReveal";
 import ThemeToggle from "../components/ThemeToggle";
-import { useTheme } from "../components/ThemeContext"; 
+import { useTheme } from "../components/ThemeContext";
 import MagicBento from "../components/MagicBento";
 import FeaturesSection from "../components/FeaturesSection";
 import Testimonials from "../components/Testimonials";
 import PricingSection from "../components/PricingSection";
 import FAQSection from "../components/FAQSection";
 import Footer from "../components/Footer";
-
-const items = [
-  { label: "Home", href: "#" },
-  { label: "About", href: "#" },
-  { label: "Contact", href: "#" },
-  { label: "Login", href: "/login" },
-];
+import LogoutContainer from "../components/LogoutContainer";
 
 const techLogos = [
   { node: <SiAmazon />, title: "Amazon", href: "https://amazon.com" },
@@ -54,70 +46,90 @@ const techLogos = [
   { node: <SiFigma />, title: "Figma", href: "https://figma.com" },
 ];
 
-const imageLogos = [
-  {
-    src: "/logos/company1.png",
-    alt: "Company 1",
-    href: "https://company1.com",
-  },
-  {
-    src: "/logos/company2.png",
-    alt: "Company 2",
-    href: "https://company2.com",
-  },
-  {
-    src: "/logos/company3.png",
-    alt: "Company 3",
-    href: "https://company3.com",
-  },
-];
-
-
-
 const Landing = () => {
+  const { user, isLoading } = useAuth();
   const { isDarkTheme, toggleDarkTheme } = useTheme();
+
+  
   return (
-    <Wrapper>
-      {/* Navbar with Theme Toggle */}
-      <div
-        className="flex justify-between items-center w-full fixed top-0 left-0 
-      right-0 z-[60] pointer-events-auto !p-4"
-      >
-        {/* Empty for balance */}
-        <div className="w-1/3"></div>
+    <>
+      {/* Navigation Bar */}
+      <div className="fixed top-0 left-0 right-0 z-60 pointer-events-auto">
+        <div className="flex justify-between items-center w-full !p-4">
+          {/* Empty for balance */}
+          <div className="w-1/3"></div>
 
-        <div className="w-1/3 flex justify-center">
-          <PillNav
-            logo={logo}
-            logoAlt="Company Logo"
-            items={[
-              { label: "Home", href: "/" },
-              { label: "About", href: "/about" },
-              { label: "Services", href: "/services" },
-              { label: "Contact", href: "/contact" },
-            ]}
-            activeHref="/"
-            className="custom-nav rounded-full opacity-65"
-            ease="power2.easeOut"
-            baseColor="transparent"
-            pillColor="oklch(12.9% 0.042 264.695)"
-            hoveredPillTextColor="#ffffff"
-            pillTextColor="#ffffff"
-            isDarkTheme={isDarkTheme}
-            toggleDarkTheme={toggleDarkTheme}
-          />
-        </div>
+          {/* Center Navigation */}
+          <div className="w-1/3 flex justify-center">
+            <PillNav
+              logo={logo}
+              logoAlt="Company Logo"
+              items={[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about" },
+                { label: "Services", href: "/services" },
+                { label: "Contact", href: "/contact" },
+              ]}
+              activeHref="/"
+              className="custom-nav rounded-full opacity-65"
+              ease="power2.easeOut"
+              baseColor="transparent"
+              pillColor="oklch(12.9% 0.042 264.695)"
+              hoveredPillTextColor="#ffffff"
+              pillTextColor="#ffffff"
+              isDarkTheme={isDarkTheme}
+              toggleDarkTheme={toggleDarkTheme}
+            />
+          </div>
 
-        {/* Right - ThemeToggle */}
-        <div className="w-1/3 flex justify-end">
-          {/* Desktop */}
-          <div className="hidden md:block">
-            <ThemeToggle />
+          {/* Right Section - Auth Buttons / User Menu */}
+          <div className="w-1/3 flex justify-end items-center !space-x-4">
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
+
+            {user ? (
+              // Logged in - Show Dashboard button and User Menu
+              <div className="flex items-center !space-x-4">
+                <Link to="/dashboard" className="hidden md:block">
+                  <button
+                    className="bg-gradient-to-r from-purple-600 
+                  to-blue-600 hover:from-purple-700 hover:to-blue-700 
+                  text-white font-semibold !py-2 !px-4 rounded-full transition-all 
+                  duration-300 transform hover:scale-105 shadow-lg"
+                  >
+                    Dashboard
+                  </button>
+                </Link>
+                <div className="hidden md:block">
+                  <LogoutContainer />
+                </div>
+              </div>
+            ) : (
+              // Not logged in - Show Sign Up and Login buttons
+              <div className="hidden md:flex items-center !space-x-3">
+                <Link to="/register">
+                  <button className="bg-transparent hover:bg-white/10 text-white font-semibold !py-2 !px-4 rounded-full border border-white transition-all duration-300 transform hover:scale-105">
+                    Sign Up
+                  </button>
+                </Link>
+                <Link to="/login">
+                  <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold !py-2 !px-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Login
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
-
-       
       </div>
+
+      {/* Always Visible Theme Toggle - Mobile */}
+      {/* <div className="fixed top-4 right-4 z-50 hidden lg:block">
+        <ThemeToggle />
+      </div> */}
+
+      {/* Main Content */}
       <div className="w-full h-screen relative pointer-events-auto">
         <Iridescence
           color={[0.2, 0, 0.3]}
@@ -126,13 +138,15 @@ const Landing = () => {
           speed={1.5}
         />
       </div>
+
+      
       <div
         className="absolute left-1/2 top-1/2 
     transform -translate-x-1/2 -translate-y-1/2 
     text-center font-medium
     w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%]
-    max-w-[600px]
-    px-4 sm:px-6
+    max-w-[700px]
+    !px-4 sm:px-6
     z-50
     overflow-hidden"
       >
@@ -162,7 +176,7 @@ const Landing = () => {
         />
         <p
           className="!mt-5 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
-      text-gray-600 dark:text-gray-300 leading-relaxed break-words
+      text-gray-500 leading-relaxed break-words
       !mx-auto !max-w-[90%] sm:!max-w-[85%]"
         >
           Grithire helps you organize your entire job search from applications
@@ -170,35 +184,41 @@ const Landing = () => {
           reminders, and stay focused on landing your next opportunity.
         </p>
       </div>
-      <div
-        className="absolute 
-  top-[calc(55%+150px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
-  left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-  text-center flex flex-col sm:flex-row justify-center items-center 
-  !gap-3 sm:gap-4 md:gap-6 w-full !max-w-[90vw] px-4 z-50"
-      >
-        <Link to="/register">
-          <AnimatedGradientButton
-            className=" register-link !w-30 !h-11 
-  sm:w-40 sm:h-14 
-  md:w-48 md:h-16 
-  flex items-center justify-center "
-          >
-            Register
-          </AnimatedGradientButton>
-        </Link>
 
-        <Link to="/login">
-          <AnimatedGradientButton
-            className=" !w-30 !h-11
-  sm:w-40 sm:h-14 
-  md:w-48 md:h-16 
-  flex items-center justify-center"
-          >
-            Login / Demo User
-          </AnimatedGradientButton>
-        </Link>
-      </div>
+      {/* Main CTA Buttons - Only show when not logged in */}
+      {!user && (
+        <div
+          className="absolute 
+        top-[calc(55%+150px)] sm:top-[calc(50%+130px)] md:top-[calc(50%+150px)] lg:top-[calc(50%+260px)] 
+        left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+        text-center flex flex-col sm:flex-row justify-center items-center 
+        !gap-3 sm:gap-4 md:gap-6 w-full !max-w-[90vw] px-4 z-50"
+        >
+          <Link to="/register">
+            <AnimatedGradientButton
+              className=" register-link !w-30 !h-11 
+            sm:w-40 sm:h-14 
+            md:w-48 md:h-16 
+            flex items-center justify-center "
+            >
+              Register
+            </AnimatedGradientButton>
+          </Link>
+
+          <Link to="/login">
+            <AnimatedGradientButton
+              className=" !w-30 !h-11
+            sm:w-40 sm:h-14 
+            md:w-48 md:h-16 
+            flex items-center justify-center"
+            >
+              Login / Demo User
+            </AnimatedGradientButton>
+          </Link>
+        </div>
+      )}
+
+      
       <div className="w-full py-12">
         <div className="text-center mb-12">
           <h2
@@ -252,7 +272,9 @@ const Landing = () => {
           }
         `}</style>
       </div>
-      <div className="w-full py-12 px-4 sm:px-6 lg:px-8 from-gray-900 to-black rounded-3xl">
+
+      
+      <div className="w-full !py-12 !px-4 sm:px-6 lg:px-8 from-gray-900 to-black rounded-3xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
           {/* Text Content - Left side */}
           <div className="flex-1 order-2 lg:order-1 lg:!px-20 xl:!px-80">
@@ -262,7 +284,7 @@ const Landing = () => {
               baseRotation={0}
               blurStrength={3}
               containerClassName="!my-0"
-              textClassName="!text-lg leading-8 font-normal !text-left" // Custom text styles
+              textClassName="text-gray-600 dark:text-gray-400 !text-lg leading-8 font-normal !text-left"
             >
               Pug drinking vinegar fam craft beer pork belly trust fund food
               truck, slow-carb 8-bit. Sriracha flexitarian hexagon, knausgaard
@@ -290,6 +312,8 @@ const Landing = () => {
           </div>
         </div>
       </div>
+
+     
       <div className="w-full py-12 px-4 sm:px-6 lg:px-8 from-gray-900 to-black rounded-3xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
           {/* Lottie Animation - Now on left side */}
@@ -310,7 +334,7 @@ const Landing = () => {
               baseRotation={0}
               blurStrength={10}
               containerClassName="!my-0"
-              textClassName="text-white !text-lg leading-8 font-normal !text-left"
+              textClassName="text-gray-600 dark:text-gray-400 !text-lg leading-8 font-normal !text-left"
             >
               Pug drinking vinegar fam craft beer pork belly trust fund food
               truck, slow-carb 8-bit. Sriracha flexitarian hexagon, knausgaard
@@ -347,7 +371,7 @@ const Landing = () => {
       <PricingSection />
       <FAQSection />
       <Footer />
-    </Wrapper>
+    </>
   );
 };
 

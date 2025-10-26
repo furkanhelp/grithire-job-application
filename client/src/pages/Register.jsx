@@ -6,35 +6,49 @@ import { toast } from "react-toastify";
 import ThemeToggle from "../components/ThemeToggle";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 
-export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-  try {
-    await customFetch.post("/auth/register", data);
-    toast.success("Registration successful");
-    return redirect("/login");
-  } catch (error) {
-    console.log(error);
-    toast.error(error?.response?.data?.msg);
-    return error;
-  }
-};
+export const action =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
+    try {
+      await customFetch.post("/auth/register", data);
+      toast.success("Registration successful");
+      return redirect("/login");
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.msg);
+      return error;
+    }
+  };
 
 const Register = () => {
   const navigate = useNavigate();
-  const loginDemoUser = async () => {
-    const data = {
-      email: "test@test.com",
-      password: "deneme123",
-    };
-    try {
-      await customFetch.post("/auth/login", data);
-      toast.success("Now You Can Look Around");
-      navigate("/dashboard");
-    } catch (error) {
-      toast.error(error?.response?.data?.msg);
-    }
-  };
+ const loginDemoUser = async () => {
+   const data = {
+     email: "test@test.com",
+     password: "deneme123",
+   };
+   try {
+     await customFetch.post("/auth/login", data);
+
+     // Get user data and update state
+     const userResponse = await customFetch.get("/users/current-user");
+     const userData = userResponse.data.user;
+
+     // Update localStorage and redirect
+     localStorage.setItem("user", JSON.stringify(userData));
+
+     toast.success("Now You Can Look Around");
+
+     // Force page reload to ensure state sync
+     setTimeout(() => {
+       window.location.href = "/";
+     }, 100);
+   } catch (error) {
+     toast.error(error?.response?.data?.msg);
+   }
+ };
   return (
     <>
       {/* Navbar with Theme Toggle */}

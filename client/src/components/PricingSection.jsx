@@ -186,7 +186,7 @@ export default function PricingSection() {
 
         {/* Additional Info */}
         <div className="!mt-10 !px-10 max-w-2xl text-center !mx-auto text-gray-600 dark:text-gray-300">
-          <p className="text-gray-400">
+          <p className="text-gray-600 dark:text-gray-600 ">
             All paid plans include a 14-day free trial. No credit card required
             for free plan.
           </p>

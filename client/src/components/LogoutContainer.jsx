@@ -1,10 +1,12 @@
 import { FaUserCircle, FaCaretDown, FaSignOutAlt } from "react-icons/fa";
 import { useState } from "react";
-import { useDashboardContext } from "../pages/DashboardLayout";
+import { useAuth } from "../contexts/AuthContext";
 
 const LogoutContainer = () => {
   const [showLogout, setShowLogout] = useState(false);
-  const { user, logoutUser } = useDashboardContext();
+  const { user, logout } = useAuth();
+
+  if (!user) return null;
 
   return (
     <div className="relative">
@@ -151,7 +153,7 @@ const LogoutContainer = () => {
             <div className="!p-4">
               <button
                 type="button"
-                onClick={logoutUser}
+                onClick={logout}
                 className="group relative w-full bg-gradient-to-r from-purple-800 to-pink-800 hover:from-purple-900
                  hover:to-pink-800 text-white !py-2 !px-2 rounded-xl font-semibold transition-all duration-300
                   transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
@@ -169,8 +171,10 @@ const LogoutContainer = () => {
                 </div>
 
                 {/* Shine Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/30 to-transparent transform 
-                -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <div
+                  className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/30 to-transparent transform 
+                -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"
+                ></div>
               </button>
 
               {/* Cancel Button */}

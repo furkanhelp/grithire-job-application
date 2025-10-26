@@ -1,9 +1,9 @@
 import { FormRow, FormRowSelect, SubmitBtn } from "../components";
-import { data, useOutletContext } from "react-router-dom";
-import { JOB_STATUS, JOB_TYPE } from "../../../utils/constants.js";
 import { Form, redirect } from "react-router-dom";
+import { JOB_STATUS, JOB_TYPE } from "../../../utils/constants.js";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
+import { useAuth } from "../contexts/AuthContext";
 
 export const action =
   (queryClient) =>
@@ -22,7 +22,7 @@ export const action =
   };
 
 const AddJob = () => {
-  const { user } = useOutletContext();
+  const { user } = useAuth(); 
 
   return (
     <div className="w-full">

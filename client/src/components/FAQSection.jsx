@@ -15,13 +15,13 @@ const FaqsCard = (props) => {
 
   return (
     <div
-      className="!space-y-5 !mt-6 overflow-hidden border-b border-gray-800/60 pb-6 
+      className="!space-y-5 !mt-6 overflow-hidden border-b border-gray-800/60 pb-1 
       last:border-b-0 group-hover:border-gray-700/60 transition-colors duration-300"
       key={idx}
       onClick={handleOpenAnswer}
     >
       <h4 className="cursor-pointer flex items-center justify-between text-xl
-       text-white font-semibold hover:text-purple-800 transition-colors duration-200">
+        font-semibold hover:text-purple-800 transition-colors duration-200">
         <span className="flex items-start">
           <span className="text-purple-800 !mr-3 !mt-1 text-lg">•</span>
           {faqsList.q}
@@ -66,7 +66,7 @@ const FaqsCard = (props) => {
         style={state ? { height: answerH } : { height: "0px" }}
       >
         <div className="!pt-2">
-          <p className="text-gray-300 leading-relaxed text-lg font-light !pl-6 
+          <p className=" leading-relaxed text-lg font-light !pl-6 
           border-l-3 border-purple-500/30">
             {faqsList.a}
           </p>
@@ -120,7 +120,7 @@ export default function FAQSection() {
             </h2>
             <div className="flex-1 h-px bg-gradient-to-l from-transparent via-pink-500 to-transparent opacity-60"></div>
           </div>
-          <p className="!mt-4 !mx-auto text-gray-400 dark:text-gray-300 text-lg font-light">
+          <p className="!mt-4 !mx-auto text-gray-700 dark:text-gray-400 text-lg font-light">
             Quick answers to common questions about our platform
           </p>
         </div>
@@ -128,8 +128,8 @@ export default function FAQSection() {
         {/* FAQ Content - Enhanced */}
         <div
           className="max-w-3xl gap-10 !mx-auto relative rounded-2xl 
-      bg-gradient-to-r from-[#26143f] to-black !p-8 md:!p-12 
-      border border-gray-800/50 backdrop-blur-sm"
+       !p-8 md:!p-12 rounded-2xl shadow-xl overflow-hidden
+      backdrop-blur-sm"
         >
           {faqsList.map((item, idx) => (
             <div key={idx} className="group">
@@ -140,7 +140,7 @@ export default function FAQSection() {
 
         {/* Additional Help */}
         <div className="text-center !mt-12 ">
-          <p className="text-gray-400 !mb-6 text-lg !mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 !mb-6 text-lg !mx-auto">
             Still have questions? We're here to help.
           </p>
           <Link to="/contact">

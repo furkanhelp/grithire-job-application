@@ -10,7 +10,7 @@ import "@fontsource/raleway/700.css";
 import "@fontsource/raleway/800.css";
 import "@fontsource/raleway/900.css";
 
-/* WordFlipper: show one word at a time from a column */
+
 const WordFlipper = ({ words, wordIndex }) => {
   const wordRef = useRef(null);
   const [wordHeight, setWordHeight] = useState(0);
@@ -71,9 +71,9 @@ const WordFlipper = ({ words, wordIndex }) => {
                   delay: wordIndex * 0.06,
                 }}
                 className={cn(
-                  "py-0.5 font-raleway min-w-0 break-words",
+                  "py-0.1 font-raleway min-w-0 break-words",
                   word.isHighlighted ? "font-semibold" : "font-light",
-                  word.isHighlighted ? "text-blue-500" : "text-gray-900"
+                  word.isHighlighted ? "text-blue-500" : "text-gray-300"
                 )}
                 style={fallbackStyle}
               >
@@ -87,7 +87,7 @@ const WordFlipper = ({ words, wordIndex }) => {
   );
 };
 
-/* SentenceFlip: split sentences into columns and rotate each column's words */
+
 const SentenceFlip = ({ sentences = [] }) => {
   const [cols, setCols] = useState(0);
 
@@ -106,7 +106,7 @@ const SentenceFlip = ({ sentences = [] }) => {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-[680px]">
+      <div className="w-full max-w-[780px]">
         <div className="flex flex-wrap gap-x-2 gap-y-1 justify-center items-center">
           {Array.from({ length: cols }).map((_, colIndex) => {
             const wordsToFlip = sentences.map((s) => {
