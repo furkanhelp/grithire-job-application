@@ -127,12 +127,12 @@ const DashboardLayout = ({ queryClient }) => {
       <div className="min-h-screen flex bg-gradient-to-br transition-colors duration-300">
         {/* Staggered Menu */}
         <div
-          className={`relative h-full transition-all duration-500 ease-in-out ${
+          className={` relative h-full transition-all duration-500 ease-in-out ${
             isMenuOpen ? "w-74" : "w-0"
           }`}
         >
           <div
-            className={`fixed top-0 left-0 h-full z-40 transition-transform duration-500 
+            className={` fixed top-0 left-0 h-full z-40 transition-transform duration-500 
             ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
             <StaggeredMenu
@@ -144,7 +144,7 @@ const DashboardLayout = ({ queryClient }) => {
               displaySocials={true}
               displayItemNumbering={false}
               menuButtonColor={"#6b7280"}
-              openMenuButtonColor={"#000000"}
+              openMenuButtonColor={"#ffffff"}
               changeMenuColorOnOpen={true}
               colors={["#26143f", "#431185"]}
               logoUrl={logo}
@@ -171,7 +171,7 @@ const DashboardLayout = ({ queryClient }) => {
                     <Loading />
                   </div>
                 ) : (
-                  <Outlet  />
+                  <Outlet />
                 )}
               </div>
             </div>

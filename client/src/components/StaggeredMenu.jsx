@@ -525,8 +525,10 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 left-0 h-full
-           bg-white flex flex-col overflow-y-auto !z-10 backdrop-blur-[12px] w-full sm:w-80"
+          className="staggered-menu-panel absolute top-0 left-0 h-full 
+          bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#cec1e0] to-[#9950ff]
+            flex flex-col overflow-y-auto !z-10 backdrop-blur-[12px] w-full sm:w-80"
           style={{ WebkitBackdropFilter: "blur(12px)" }}
           aria-hidden={!open}
         >
@@ -546,12 +548,9 @@ export const StaggeredMenu = ({
                     width={110}
                     height={24}
                   />
-                  <span className="text-white font-bold text-base sm:text-lg">
-                    G
-                  </span>
                 </div>
                 <div>
-                  <h1 className="!text-lg sm:!text-xl font-bold text-gray-900">
+                  <h1 className="!text-lg sm:!text-xl font-bold text-gray-900 dark:text-gray-300">
                     HIRE Dashboard
                   </h1>
                   <p className="text-xs sm:text-sm text-gray-500">
@@ -581,10 +580,10 @@ export const StaggeredMenu = ({
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="!text-xs sm:!text-sm !font-medium capitalize text-gray-900 dark:text-black truncate">
-                      {user?.name || user?.email}
+                    <p className="!text-xs sm:!text-sm !font-medium capitalize text-gray-900 dark:text-gray-300 truncate">
+                      {user?.name || user?.email} {user?.lastName}
                     </p>
-                    <p className="!text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <p className="!text-xs text-gray-600 dark:text-gray-400 truncate">
                       {user?.email}
                     </p>
                   </div>
@@ -605,8 +604,9 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <a
-                      className="sm-panel-item relative text-black !font-semibold !text-2xl sm:!text-[2.5rem] 
-                      cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase transition-[background,color] 
+                      className="sm-panel-item relative !font-sans !font-bold !text-2xl sm:!text-[2.5rem]
+                    
+                      cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase 
                       duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
                       href={it.link}
                       aria-label={it.ariaLabel}
@@ -627,7 +627,7 @@ export const StaggeredMenu = ({
                   aria-hidden="true"
                 >
                   <span
-                    className="sm-panel-item relative text-black font-semibold !text-2xl sm:!text-[3rem] 
+                    className="sm-panel-item relative  font-semibold !text-2xl sm:!text-[3rem] 
                   cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase transition-[background,color] 
                   duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
                   >
@@ -641,7 +641,7 @@ export const StaggeredMenu = ({
 
             {/* Logout Section */}
             <div className="sm-logout-section !p-4 border-t border-gray-200 !mt-auto">
-              <div className="bg-gradient-to-r from-red-50 to-purple-50 !rounded-xl !p-3 sm:!p-4">
+              <div className="bg-gradient-to-r !rounded-xl !p-3 sm:!p-4">
                 <button
                   onClick={onLogout}
                   className="w-full flex items-center justify-center !space-x-2 !px-4
@@ -662,7 +662,7 @@ export const StaggeredMenu = ({
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                     />
                   </svg>
-                  <span>Logout</span>
+                  <span>Log out</span>
                 </button>
               </div>
             </div>
@@ -674,8 +674,7 @@ export const StaggeredMenu = ({
                 aria-label="Social links"
               >
                 <h3
-                  className="sm-socials-title !m-0 text-sm sm:text-base font-medium 
-                [color:var(--sm-accent,#ff0000)]"
+                  className="sm-socials-title !m-0 text-sm sm:text-base font-medium !text-gray-500 dark:!text-gray-400"
                 >
                   Socials
                 </h3>
@@ -690,7 +689,7 @@ export const StaggeredMenu = ({
                         href={s.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="sm-socials-link !text-base sm:!text-[1.2rem] font-medium text-[#111] 
+                        className="sm-socials-link !text-base sm:!text-[1.2rem] font-medium !text-black dark:!text-white
                         no-underline relative inline-block !py-[2px] transition-[color,opacity]
                          duration-300 ease-linear"
                       >
@@ -824,7 +823,7 @@ export const StaggeredMenu = ({
   left: 0; 
   width: 100vw; 
   height: 100vh; 
-  background: white; 
+  
   backdrop-filter: blur(12px); 
   -webkit-backdrop-filter: blur(12px); 
   display: flex; 
@@ -912,7 +911,7 @@ export const StaggeredMenu = ({
 
 .sm-scope .sm-panel-item { 
   position: relative; 
-  color: #000; 
+  color: ; 
   font-weight: 600; 
   font-size: 2rem; 
   cursor: pointer; 

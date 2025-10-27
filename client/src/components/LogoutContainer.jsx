@@ -14,7 +14,8 @@ const LogoutContainer = () => {
       <button
         type="button"
         onClick={() => setShowLogout(!showLogout)}
-        className="group relative flex items-center !space-x-3 
+        className="group relative flex items-center !space-x-3 bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3]
          hover:from-pink-50 hover:to-purple-50 dark:hover:from-purple-900/20
           dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600
            hover:border-indigo-200 dark:hover:border-purple-500/50 rounded-2xl !px-2 !py-2 
@@ -46,13 +47,15 @@ const LogoutContainer = () => {
         {/* User Info */}
         <div className="flex flex-col items-start min-w-0">
           <span
-            className="capitalize text-sm font-semibold text-gray-900 dark:text-white group-hover:text-red-600
+            className="capitalize text-sm !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 group-hover:text-red-600
            dark:group-hover:text-red-400 transition-colors duration-200 truncate max-w-[120px]"
           >
             {user?.name}
+            {user?.lastName}
           </span>
           <span
-            className="capitalize text-xs text-gray-500 dark:text-gray-400 group-hover:text-red-500
+            className="capitalize text-xs text-gray-700 dark:text-gray-400 group-hover:text-red-500
            dark:group-hover:text-red-300 transition-colors duration-200"
           >
             {user?.role || "User"}
@@ -166,7 +169,7 @@ const LogoutContainer = () => {
                 {/* Content */}
                 <div className="relative flex items-center justify-center !space-x-2">
                   <FaSignOutAlt className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  <span>Sign Out</span>
+                  <span>Log out</span>
                 </div>
 
                 {/* Shine Effect */}
