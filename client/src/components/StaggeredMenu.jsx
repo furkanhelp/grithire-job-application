@@ -65,7 +65,7 @@ export const StaggeredMenu = ({
       }
       preLayerElsRef.current = preLayers;
 
-      // Use transform instead of xPercent for better mobile performance
+      
       const offscreen = position === "left" ? -100 : 100;
       gsap.set([panel, ...preLayers], { xPercent: offscreen });
 
@@ -81,7 +81,7 @@ export const StaggeredMenu = ({
     return () => ctx.revert();
   }, [menuButtonColor, position]);
 
-  // Rest of your GSAP animation functions remain the same...
+  
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
@@ -140,7 +140,7 @@ export const StaggeredMenu = ({
       panelInsertTime
     );
 
-    // Animate sidebar header and user info first
+    // Animate sidebar header
     if (sidebarHeader) {
       tl.fromTo(
         sidebarHeader,
@@ -214,7 +214,7 @@ export const StaggeredMenu = ({
       }
     }
 
-    // Animate logout section last
+    // Animate logout section
     if (logoutSection) {
       tl.fromTo(
         logoutSection,

@@ -15,8 +15,7 @@ const LogoutContainer = () => {
         type="button"
         onClick={() => setShowLogout(!showLogout)}
         className="group relative flex items-center !space-x-3 
-        bg-gradient-to-r from-slate-100 to-gray-100 dark:from-gray-700
-         dark:to-gray-800 hover:from-pink-50 hover:to-purple-50 dark:hover:from-purple-900/20
+         hover:from-pink-50 hover:to-purple-50 dark:hover:from-purple-900/20
           dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600
            hover:border-indigo-200 dark:hover:border-purple-500/50 rounded-2xl !px-2 !py-2 
            transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-lg"

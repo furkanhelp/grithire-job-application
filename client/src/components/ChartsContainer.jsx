@@ -11,12 +11,15 @@ const ChartsContainer = ({ data }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-tr bg-gray-100 dark:bg-[#1a0f2e] to-[#26143f]
+      className="
        rounded-2xl shadow-lg border border-gray-400 dark:border-gray-900 !p-6 !mb-8"
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between !mb-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h4
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+          >
             Monthly Applications
           </h4>
           <p className="text-gray-600 !mt-2">

@@ -162,7 +162,7 @@ const DashboardLayout = ({ queryClient }) => {
           <main className="flex-1 !p-4 md:p-6 lg:p-8 overflow-auto !mt-15 lg:mt-0 w-full">
             <div className="w-full">
               <div
-                className="bg-gradient-to-r from-[#26143f] to-black dark:bg-white 
+                className="
               backdrop-blur-md rounded-2xl shadow-xl border border-gray-200
                dark:border-gray-700 !p-4 md:p-6 lg:p-8 w-full"
               >

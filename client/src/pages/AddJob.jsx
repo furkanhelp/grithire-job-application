@@ -47,13 +47,12 @@ const AddJob = () => {
           </svg>
         </div>
         <h4
-          className="!text-3xl md:text-4xl !font-sans !font-bold bg-gradient-to-br
-         from-white to-[#a5b4fc] !tracking-[-0.025em] !leading-[1.5]
-          bg-clip-text text-transparent !mb-3"
+          className="!text-3xl md:text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-3"
         >
           Add New Job
         </h4>
-        <p className="text-gray-400 leading-relaxed text-lg">
+        <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-lg">
           Fill in the details below to create a new job posting
         </p>
       </div>
@@ -61,14 +60,14 @@ const AddJob = () => {
       <Form method="post" className="!space-y-5">
         {/* Main Form Container */}
         <div
-          className="bg-gradient-to-br from-[#1a0f2e] to-[#26143f] rounded-3xl 
-        !p-10 shadow-2xl border border-purple-500/20"
+          className=" rounded-3xl 
+        !p-10 shadow-2xl border border-gray-500/20"
         >
           {/* Company & Location Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 !gap-6 !mb-10">
+          <div className="grid !grid-cols-1 lg:!grid-cols-3 !gap-6 !mb-10">
             <div className="!space-y-2">
               <label
-                className="block text-sm font-semibold text-gray-300 uppercase 
+                className="block text-sm font-semibold  uppercase 
               tracking-wide"
               >
                 Company Name
@@ -77,15 +76,15 @@ const AddJob = () => {
                 <input
                   type="text"
                   name="company"
-                  defaultValue="Tech Corp"
-                  className="w-full !px-4 !py-4 bg-black/50 border-2 border-gray-700 
-                  rounded-2xl text-white placeholder-gray-500 focus:border-purple-500 
+                  defaultValue=""
+                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
+                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
                   focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                   placeholder="Enter company name"
                 />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -101,9 +100,54 @@ const AddJob = () => {
               </div>
             </div>
 
+            {/* Position */}
             <div className="!space-y-2">
               <label
-                className="block text-sm font-semibold text-gray-300 uppercase 
+                className="block text-sm font-semibold  uppercase 
+              tracking-wide"
+              >
+                Position
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="position"
+                  defaultValue=""
+                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
+                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
+                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                  placeholder="Enter position name"
+                />
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="!space-y-2">
+              <label
+                className="block text-sm font-semibold uppercase 
               tracking-wide"
               >
                 Job Location
@@ -112,15 +156,15 @@ const AddJob = () => {
                 <input
                   type="text"
                   name="jobLocation"
-                  defaultValue="Canada"
-                  className="w-full !px-4 !py-4 bg-black/50 border-2 border-gray-700 
-                  rounded-2xl text-white placeholder-gray-500 focus:border-purple-500 
+                  defaultValue=""
+                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
+                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
                   focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                   placeholder="Enter job location"
                 />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -145,96 +189,38 @@ const AddJob = () => {
 
           {/* Status & Type Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 !gap-6">
+            {/* Job Status Select */}
             <div className="!space-y-2">
               <label
-                className="block text-sm font-semibold text-gray-300 uppercase 
-              tracking-wide"
+                className="block text-sm font-semibold uppercase  tracking-wide"
               >
                 Job Status
               </label>
-              <div className="relative">
-                <select
-                  name="jobStatus"
-                  defaultValue={JOB_STATUS.INTERVIEW}
-                  className="w-full !px-4 !py-4 bg-black/50 border-2 border-gray-700 
-                  rounded-2xl text-white appearance-none focus:border-purple-500 
-                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                >
-                  {Object.values(JOB_STATUS).map((status) => (
-                    <option
-                      key={status}
-                      value={status}
-                      className="bg-gray-900 text-white"
-                    >
-                      {status}
-                    </option>
-                  ))}
-                </select>
-                <div
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 
-                pointer-events-none"
-                >
-                  <svg
-                    className="w-5 h-5 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <FormRowSelect
+                name="jobStatus"
+                list={Object.values(JOB_STATUS)}
+                defaultValue={JOB_STATUS.INTERVIEW}
+                className="!px-4 !py-4 border-2 border-gray-700 
+                rounded-2xl appearance-none focus:border-purple-500 
+                focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              />
             </div>
 
+            {/* Job Type Select */}
             <div className="!space-y-2">
               <label
-                className="block text-sm font-semibold text-gray-300 uppercase 
-              tracking-wide"
+                className="block text-sm font-semibold uppercase tracking-wide"
               >
                 Job Type
               </label>
-              <div className="relative">
-                <select
-                  name="jobType"
-                  defaultValue={JOB_TYPE.FULL_TIME}
-                  className="w-full !px-4 !py-4 bg-black/50 border-2 border-gray-700 
-                  rounded-2xl text-white appearance-none focus:border-purple-500 
-                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                >
-                  {Object.values(JOB_TYPE).map((type) => (
-                    <option
-                      key={type}
-                      value={type}
-                      className="bg-gray-900 text-white"
-                    >
-                      {type}
-                    </option>
-                  ))}
-                </select>
-                <div
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 
-                pointer-events-none"
-                >
-                  <svg
-                    className="w-5 h-5 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <FormRowSelect
+                name="jobType"
+                list={Object.values(JOB_TYPE)}
+                defaultValue={JOB_TYPE.FULL_TIME}
+                className="!px-4 !py-4 border-2 border-gray-700 
+                rounded-2xl appearance-none focus:border-purple-500 
+                focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              />
             </div>
           </div>
         </div>

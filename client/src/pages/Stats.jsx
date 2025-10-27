@@ -22,14 +22,14 @@ const Stats = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br bg-gray-300 dark:from-[#1a0f2e] to-[#26143f] !py-8 !px-4 
+      className="min-h-screen !py-8 !px-4 
     sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl !mx-auto">
         <div className="text-center !mb-12">
           <h1
-            className="text-2xl !font-sans !font-bold bg-gradient-to-r to-[#a5b4fc] !tracking-[-0.025em] from-white
-         !leading-[1.5] bg-clip-text text-transparent !mb-3"
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-3"
           >
             Application Analytics
           </h1>

@@ -21,10 +21,7 @@ const SearchContainer = () => {
   };
 
   return (
-    <div
-      className="bg-gradient-to-r from-[#1a0f2e] to-[#26143f] rounded-2xl !p-3 
-    sm:p-4 md:!p-6 shadow-xl border border-purple-500/20 "
-    >
+    <div className=" rounded-2xl !p-3 sm:p-4 md:!p-6 shadow-xl border border-gray-500/50 ">
       {/* Header Section */}
       <div className="text-center !mb-8">
         <div
@@ -32,7 +29,7 @@ const SearchContainer = () => {
          to-purple-950 rounded-2xl !mb-4 shadow-lg mx-auto"
         >
           <svg
-            className="w-8 h-8 text-white"
+            className="w-8 h-8 "
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -47,22 +44,24 @@ const SearchContainer = () => {
         </div>
 
         {/* Title and subtitle */}
-        <h3 className="text-2xl !font-sans !font-bold bg-gradient-to-r to-[#a5b4fc] !tracking-[-0.025em] from-white
-         !leading-[1.5] bg-clip-text text-transparent !mb-3">
+        <h3
+          className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-3"
+        >
           Search Jobs
         </h3>
-        <p className="text-gray-400 text-lg">Find your perfect job match</p>
+        <p className="text-gray-500 text-lg">Find your perfect job match</p>
       </div>
 
       <Form>
         {/* Main Search Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 !mb-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 !mb-5 w-full">
           {/* Search Input*/}
-          <div className="w-full lg:col-span-2">
-            <label className="block text-sm font-semibold text-gray-300 !mb-2.5">
+          <div className="w-full lg:col-span-2 ">
+            <label className="block text-sm font-semibold !my-5">
               Search Jobs
             </label>
-            <div className="relative">
+            <div className="relative ">
               <input
                 type="search"
                 name="search"
@@ -71,14 +70,14 @@ const SearchContainer = () => {
                 onChange={debounce((form) => {
                   submit(form);
                 })}
-                className="w-full !px-4 !py-4 bg-black/40 border-2 border-gray-600 
+                className="w-full !px-4 !py-4 border-2 border-gray-600 
                 rounded-xl text-white placeholder-gray-500
                 focus:border-purple-900 focus:ring-2 focus:ring-purple-500/20 
                 transition-all duration-300"
               />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 ">
                 <svg
-                  className="w-5 h-5 text-white"
+                  className="w-5 h-5 "
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -96,7 +95,7 @@ const SearchContainer = () => {
 
           {/* Job Status */}
           <div>
-            <label className="block text-sm font-semibold text-gray-300 !mb-4">
+            <label className="block text-sm font-semibold !my-4">
               Job Status
             </label>
             <FormRowSelect
@@ -113,7 +112,7 @@ const SearchContainer = () => {
 
           {/* Job Type */}
           <div>
-            <label className="block text-sm font-semibold text-gray-300 !mb-4">
+            <label className="block text-sm font-semibold !my-4">
               Job Type
             </label>
             <FormRowSelect
@@ -130,7 +129,7 @@ const SearchContainer = () => {
 
           {/* Sort By */}
           <div>
-            <label className="block  text-sm font-semibold text-gray-300 !mb-4">
+            <label className="block  text-sm font-semibold !my-4">
               Sort By
             </label>
             <FormRowSelect

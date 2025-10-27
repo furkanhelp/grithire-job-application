@@ -7,7 +7,6 @@ const FormRow = ({
   placeholder,
   simpleLayout = false,
 }) => {
-  // Simple layout for auth pages
   if (simpleLayout) {
     return (
       <div className="mb-4">
@@ -26,7 +25,7 @@ const FormRow = ({
     );
   }
 
-  // Original 2-column layout for other pages
+ 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 !gap-4 items-start !py-4 border-b border-gray-100 dark:border-gray-700">
       {/* Label Column */}

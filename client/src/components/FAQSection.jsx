@@ -128,7 +128,7 @@ export default function FAQSection() {
         {/* FAQ Content - Enhanced */}
         <div
           className="max-w-3xl gap-10 !mx-auto relative rounded-2xl 
-       !p-8 md:!p-12 rounded-2xl shadow-xl overflow-hidden
+       !p-8 md:!p-12 shadow-xl overflow-hidden
       backdrop-blur-sm"
         >
           {faqsList.map((item, idx) => (

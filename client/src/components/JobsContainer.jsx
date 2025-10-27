@@ -66,8 +66,8 @@ const JobsContainer = () => {
 
         {/* Title and stats */}
         <h2
-          className="text-2xl !font-sans !font-bold bg-gradient-to-r to-[#a5b4fc] !tracking-[-0.025em] from-white
-         !leading-[1.5] bg-clip-text text-transparent !mb-3"
+          className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-3"
         >
           Job Listings
         </h2>
@@ -76,7 +76,7 @@ const JobsContainer = () => {
             {totalJobs} job{jobs.length > 1 && "s"} found
           </p>
           <div className="bg-purple-500/20 !px-4 !py-2 rounded-xl border border-purple-500/30">
-            <span className="text-purple-300 font-semibold">
+            <span className=" !font-semibold">
               {jobs.length} Active
             </span>
           </div>

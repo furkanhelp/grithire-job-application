@@ -29,7 +29,8 @@ const Job = ({
 
   return (
     <div
-      className="bg-gradient-to-br from-[#1a0f2e] to-[#26143f] rounded-2xl !p-4 sm:p-6 shadow-xl border 
+      className="bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#b27cff] to-[#9950ff] rounded-2xl !p-4 sm:p-6 shadow-xl border 
     border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group"
     >
       {/* Header - Stack on mobile */}
@@ -43,16 +44,19 @@ const Job = ({
               {company.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-purple-200 transition-colors
-              break-words whitespace-normal">
+              <h3
+                className="!text-lg sm:text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r to-[#a5b4fc] from-white
+              break-words whitespace-normal"
+              >
                 {position}
               </h3>
-              <p className="text-gray-400 text-xs sm:text-sm truncate">
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm capitalize truncate">
                 {company}
               </p>
-        </div>
             </div>
           </div>
+        </div>
         <div
           className={`!px-3 !py-1 rounded-full text-xs font-semibold border ${statusColor} self-start sm:self-auto`}
         >
@@ -61,7 +65,7 @@ const Job = ({
       </div>
 
       {/* Job Info */}
-      <div className="!space-y-2 sm:space-y-3 !mb-4 sm:mb-6">
+      <div className="!space-y-2 sm:space-y-3 !mb-4 sm:mb-6 capitalize">
         <JobInfo
           icon={<FaLocationArrow className="w-4 h-4" />}
           text={jobLocation}
@@ -71,11 +75,11 @@ const Job = ({
       </div>
 
       {/* Actions - Full width on mobile */}
-      <div className="flex !space-x-2 sm:space-x-3 !pt-4 border-t border-gray-700">
+      <div className="flex !space-x-2 sm:space-x-3 !pt-4 border-t border-gray-600">
         <Link
           to={`../edit-job/${_id}`}
-          className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 border 
-          border-blue-500/30 hover:border-blue-500/50 !py-2 !px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-semibold text-center 
+          className="flex-1 text-white bg-fuchsia-900/20 hover:bg-fuchsia-900/20 border 
+          border-fuchsia-900/30 !py-2 !px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-semibold text-center 
           transition-all duration-200 transform hover:scale-105"
         >
           Edit
@@ -83,7 +87,7 @@ const Job = ({
         <Form method="post" action={`../delete-job/${_id}`} className="flex-1">
           <button
             type="submit"
-            className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 border border-red-500/30
+            className="w-full bg-red-700/20 hover:bg-red-800/30 text-red-900 hover:text-red-200 border border-red-500/30
              hover:border-red-500/50 !py-2 !px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200
               transform hover:scale-105"
           >

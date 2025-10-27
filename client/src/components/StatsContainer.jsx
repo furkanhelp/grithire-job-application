@@ -1,4 +1,3 @@
-// StatsContainer.jsx
 import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from "react-icons/fa";
 import StatItem from "./StatItem";
 
@@ -8,8 +7,8 @@ const StatsContainer = ({ defaultStats }) => {
       title: "pending applications",
       count: defaultStats?.pending || 0,
       icon: <FaSuitcaseRolling className="text-2xl" />,
-      color: "from-purple-500 to-indigo-800",
-      trend: "+12", // No % sign here
+      color: "from-purple-700 to-indigo-900",
+      trend: "+12",
       description: "Awaiting response",
     },
     {
@@ -17,7 +16,7 @@ const StatsContainer = ({ defaultStats }) => {
       count: defaultStats?.interview || 0,
       icon: <FaCalendarCheck className="text-2xl" />,
       color: "from-green-500 to-emerald-800",
-      trend: "+8", // No % sign here
+      trend: "+8",
       description: "Upcoming meetings",
     },
     {
@@ -25,7 +24,7 @@ const StatsContainer = ({ defaultStats }) => {
       count: defaultStats?.declined || 0,
       icon: <FaBug className="text-2xl" />,
       color: "from-red-500 to-rose-800",
-      trend: "-3", // No % sign here
+      trend: "-3",
       description: "Not proceeding",
     },
   ];

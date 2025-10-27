@@ -109,16 +109,19 @@ const PageBtnContainer = () => {
   return (
     <div className="flex flex-col items-center justify-between gap-4 !mt-10 w-full">
       {/* Page Info - Always centered */}
-      <div className="text-sm text-gray-400 text-center">
-        Page <span className="text-white font-semibold">{currentPage}</span> of{" "}
-        <span className="text-white font-semibold">{numOfPages}</span>
+      <div className="text-sm text-gray-500 dark:text-gray-400 text-center">
+        Page{" "}
+        <span className="text-white dark:text-white font-semibold">
+          {currentPage}
+        </span>{" "}
+        of <span className="text-white font-semibold">{numOfPages}</span>
       </div>
 
       {/* Pagination Controls - Stack on mobile */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-5 w-full sm:w-auto">
         {/* Previous Button - Full width on mobile */}
         <button
-          className="flex items-center justify-center !space-x-2 !px-4 !py-2 bg-black/30 text-gray-300 border border-gray-600
+          className="flex items-center justify-center !space-x-2 !px-4 !py-2 bg-black/50 text-gray-300 border border-gray-600
            rounded-xl hover:bg-purple-500/20 hover:border-purple-500/50 hover:text-white transition-all duration-200 
            transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 sm:w-auto"
           onClick={() => {
@@ -133,13 +136,13 @@ const PageBtnContainer = () => {
         </button>
 
         {/* Page Numbers - Wrap on mobile */}
-        <div className="flex items-center justify-center flex-wrap gap-1 sm:gap-2">
+        <div className="flex items-center justify-center flex-row sm:flex-wrap gap-1 sm:gap-2">
           {renderPageButtons()}
         </div>
 
         {/* Next Button - Full width on mobile */}
         <button
-          className="flex items-center justify-center !space-x-2 !px-4 !py-2 bg-black/30 text-gray-300 border border-gray-600 
+          className="flex items-center justify-center !space-x-2 !px-4 !py-2 bg-black/50 text-gray-300 border border-gray-600 
           rounded-xl hover:bg-purple-500/20 hover:border-purple-500/50 hover:text-white transition-all duration-200 transform
           hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 sm:w-auto"
           onClick={() => {
