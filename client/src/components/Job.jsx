@@ -1,8 +1,13 @@
+import {React, useState, useRef,  } from "react";
 import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from "react-icons/fa";
-import { Link, Form } from "react-router-dom";
+import { Link, Form, useNavigate,  } from "react-router-dom";
 import JobInfo from "./JobInfo";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useToast } from "../hooks/useToast";
+import { useQueryClient } from "@tanstack/react-query";
+import customFetch from "../utils/customFetch";
+
 day.extend(advancedFormat);
 
 const Job = ({
@@ -15,6 +20,9 @@ const Job = ({
   jobStatus,
 }) => {
   const date = day(createdAt).format("MMM Do, YYYY");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Status color mapping
   const statusColors = {
@@ -26,6 +34,30 @@ const Job = ({
   const statusColor =
     statusColors[jobStatus] ||
     "bg-gray-500/20 text-gray-300 border-gray-500/30";
+
+  const handleDelete = async () => {
+    toast.info("Deleting...", "Please wait while we remove the job");
+
+    try {
+      await customFetch.delete(`/jobs/${_id}`);
+      await queryClient.invalidateQueries(["jobs"]);
+
+      toast.success(
+        "Job Deleted Successfully",
+        `"${position}" at ${company} has been removed`
+      );
+
+      
+      setTimeout(() => {
+        navigate("/dashboard/all-jobs");
+      }, 1500);
+    } catch (error) {
+      toast.error(
+        "Delete Failed",
+        error?.response?.data?.msg || "Failed to delete job"
+      );
+    }
+  };
 
   return (
     <div
@@ -87,6 +119,7 @@ const Job = ({
         <Form method="post" action={`../delete-job/${_id}`} className="flex-1">
           <button
             type="submit"
+            onClick={handleDelete}
             className="w-full bg-red-700/20 hover:bg-red-800/30 text-red-900 hover:text-red-200 border border-red-500/30
              hover:border-red-500/50 !py-2 !px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200
               transform hover:scale-105"

@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import logo from "../assets/images/favicon.ico";
 import Iridescence from "../components/Iridescence";
 import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import useToast from "../hooks/useToast";
 import PillNav from "../components/PillNav";
 import SentenceFlip from "../components/SentenceFlip";
 import AnimatedGradientButton from "../components/Button";
@@ -19,7 +20,7 @@ import {
   SiSlack,
   SiFigma,
 } from "react-icons/si";
-import { FaApple } from "react-icons/fa";
+import { FaApple, FaSignOutAlt } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
 import ScrollReveal from "../components/ScrollReveal";
 import ThemeToggle from "../components/ThemeToggle";
@@ -48,10 +49,32 @@ const techLogos = [
 
 const Landing = () => {
   const { user, logout, isLoading } = useAuth();
- 
-  const { isDarkTheme, toggleDarkTheme } = useTheme();
 
-  
+  const { isDarkTheme, toggleDarkTheme } = useTheme();
+  const { toast } = useToast(); 
+  const navigate = useNavigate(); 
+
+const handleLogout = async () => {
+  try {
+    const userName = user?.name || "User";
+    await logout();
+    toast.success(
+      `Hope to see you again, ${userName}! 👋`,
+      "You have been successfully logged out"
+    );
+    
+    setTimeout(() => {
+      navigate("/");
+    }, 1500);
+  } catch (error) {
+    toast.error(
+      "Logout Failed",
+      "There was an issue logging out. Please try again."
+    );
+  }
+};
+
+
   return (
     <>
       {/* Navigation Bar */}
@@ -88,24 +111,79 @@ const Landing = () => {
             {user ? (
               // Compact User Menu
               <div className="relative group hidden md:block">
-                <LogoutContainer />
+                {/* User Info Trigger */}
+                <div className="flex items-center !space-x-3 cursor-pointer lg:block hidden">
+                  {/* Menu Text with Arrow */}
+
+                  <div
+                    className="border-2 border-black rounded-2xl bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#cec1e0] to-[#9950ff] 
+            hover:shadow-lg transition-all duration-300 transform group-hover:scale-105 "
+                  >
+                    <div
+                      className="text-center capitalize text-sm !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+                  bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70
+                  flex items-center !space-x-2"
+                    >
+                      {/* Logout Button */}
+                      <div className="pointer-events-none">
+                        <LogoutContainer />
+                      </div>
+                      <span className="mr-2">Menu</span>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Dropdown Menu */}
                 <div
-                  className="absolute right-0 top-full mt-2 w-48 bg-gradient-to-tr 
+                  className="absolute right-0 top-full mt-2 w-56 bg-gradient-to-tr 
            dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] 
                 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 opacity-0 
                 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 
                 transform group-hover:translate-y-0 translate-y-2"
                 >
+                  {/* User Info Header */}
+                  <div className="p-4 border-b border-white/20 dark:border-gray-600/30">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/50 shadow-lg bg-gradient-to-r from-purple-600 to-pink-600">
+                        {user.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={`${user.name} ${user.lastName}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-white text-lg font-bold">
+                            {user.name?.charAt(0)}
+                            {user.lastName?.charAt(0)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">
+                          {user.name} {user.lastName}
+                        </p>
+                        <p className="text-xs text-white/70 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-xs text-white/60">
+                        Welcome back!
+                      </span>
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+
                   <div className="p-2">
                     <Link
                       to="/dashboard"
-                      className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 group"
+                      className="flex items-center space-x-3 px-3 py-2.5 text-white hover:bg-white/10 rounded-xl transition-all duration-200 group"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100/20 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg
-                          className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                          className="w-4 h-4 text-blue-300 dark:text-blue-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -119,8 +197,10 @@ const Landing = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium text-sm">Dashboard</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="font-medium text-sm text-white">
+                          Dashboard
+                        </p>
+                        <p className="text-xs text-white/70">
                           Your job applications
                         </p>
                       </div>
@@ -129,11 +209,11 @@ const Landing = () => {
                     {/* Profile */}
                     <Link
                       to="/dashboard/profile"
-                      className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 group mt-1"
+                      className="flex items-center space-x-3 px-3 py-2.5 text-white hover:bg-white/10 rounded-xl transition-all duration-200 group mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-green-100/20 dark:bg-green-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg
-                          className="w-4 h-4 text-green-600 dark:text-green-400"
+                          className="w-4 h-4 text-green-300 dark:text-green-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -147,8 +227,10 @@ const Landing = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium text-sm">Profile</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="font-medium text-sm text-white">
+                          Profile
+                        </p>
+                        <p className="text-xs text-white/70">
                           Edit your information
                         </p>
                       </div>
@@ -157,11 +239,11 @@ const Landing = () => {
                     {/* Settings */}
                     <Link
                       to="/settings"
-                      className="flex items-center space-x-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 group mt-1"
+                      className="flex items-center space-x-3 px-3 py-2.5 text-white hover:bg-white/10 rounded-xl transition-all duration-200 group mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100/20 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg
-                          className="w-4 h-4 text-purple-600 dark:text-purple-400"
+                          className="w-4 h-4 text-purple-300 dark:text-purple-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -181,43 +263,76 @@ const Landing = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium text-sm">Settings</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="font-medium text-sm text-white">
+                          Settings
+                        </p>
+                        <p className="text-xs text-white/70">
                           Preferences & options
                         </p>
                       </div>
                     </Link>
+
                     {/* Theme Toggle */}
-                    <div className="flex items-center justify-center px-3 py-2.5 rounded-xl transition-all duration-200 group">
+                    <div className="flex items-center justify-between px-3 py-2.5 text-white hover:bg-white/10 rounded-xl transition-all duration-200 group mt-1">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg bg-orange-100/20 dark:bg-orange-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <svg
+                            className="w-4 h-4 text-orange-300 dark:text-orange-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-sm font-medium">Theme</span>
+                      </div>
                       <ThemeToggle />
                     </div>
-                    {/* Divider */}
-                    <div className="border-t border-gray-100 dark:border-gray-700 my-2"></div>
 
-                    {/* Enhanced Logout Button */}
-                    <div className="px-2 pb-1">
+                    {/* Divider */}
+                    <div className="border-t border-white/20 my-2"></div>
+                    {/* Logout Button */}
+                    <div className="!p-4">
                       <button
-                        onClick={logout}
-                        className="w-full flex items-center justify-center space-x-2 px-3 py-2.5
-                     bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 
-                     text-white rounded-xl font-medium text-sm transition-all duration-200 
-                     transform hover:scale-[1.02] active:scale-95 shadow-md hover:shadow-lg
-                     group border border-red-400/30"
+                        type="button"
+                        onClick={handleLogout}
+                        className="group relative w-full bg-gradient-to-r from-purple-800 to-pink-800 hover:from-purple-900
+                        hover:to-pink-800 text-white !py-2 !px-2 rounded-xl font-semibold transition-all duration-300
+                        transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
                       >
-                        <svg
-                          className="w-4 h-4 group-hover:scale-110 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                        <span className="font-semibold">Log out</span>
+                        
+                        <div
+                          className="absolute inset-0 bg-gradient-to-r from-purple-900 to-indigo-500 opacity-0 group-hover:opacity-100 
+                      transition-opacity duration-300"
+                        ></div>
+
+                       
+                        <div className="relative flex items-center justify-center !space-x-2">
+                          <FaSignOutAlt className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                          <span>Log out</span>
+                        </div>
+
+                       
+                        <div
+                          className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/30 to-transparent transform 
+                      -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"
+                        ></div>
+                      </button>
+
+                      {/* Cancel Button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowLogout(false)}
+                        className="w-full !mt-2 !py-2 !px-2 text-gray-700 dark:text-gray-400 hover:text-gray-800
+                        dark:hover:text-gray-200 text-sm font-medium transition-colors duration-200"
+                      >
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -225,7 +340,7 @@ const Landing = () => {
               </div>
             ) : (
               // Compact Auth Buttons
-              <div className="flex items-center !space-x-2 hidden md:flex">
+              <div className="flex items-center !space-x-2 hidden lg:flex">
                 <ThemeToggle />
                 <Link to="/register">
                   <button className="bg-gradient-to-r from-purple-900 to-pink-800 text-white font-semibold !py-2 !px-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg text-sm">

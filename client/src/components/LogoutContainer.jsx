@@ -1,12 +1,34 @@
 import { FaUserCircle, FaCaretDown, FaSignOutAlt } from "react-icons/fa";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/useToast"; 
 
 const LogoutContainer = () => {
   const [showLogout, setShowLogout] = useState(false);
   const { user, logout } = useAuth();
+  const { toast } = useToast();
 
   if (!user) return null;
+
+  const handleLogout = async () => {
+    try {
+      const userName = user?.name || "User";
+      await logout();
+      toast.success(
+        `Hope to see you again, ${userName}!👋`,
+        "You have been successfully logged out"
+      );
+    } catch (error) {
+      toast.error(
+        "Logout Failed",
+        "There was an issue logging out. Please try again."
+      );
+    } finally {
+      setShowLogout(false);
+    }
+  };
+
+  
 
   return (
     <div className="relative">
@@ -48,15 +70,14 @@ const LogoutContainer = () => {
         <div className="flex flex-col items-start min-w-0">
           <span
             className="capitalize text-sm !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 group-hover:text-red-600
-           dark:group-hover:text-red-400 transition-colors duration-200 truncate max-w-[120px]"
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 group-hover:text-gray-300
+           dark:group-hover:text-purple-900/50 transition-colors duration-200 truncate max-w-[120px]"
           >
-            {user?.name}
-            {user?.lastName}
+            {user?.name} {user?.lastName}
           </span>
           <span
-            className="capitalize text-xs text-gray-700 dark:text-gray-400 group-hover:text-red-500
-           dark:group-hover:text-red-300 transition-colors duration-200"
+            className="capitalize text-xs text-gray-700 dark:text-gray-400 group-hover:text-gray-700
+           dark:group-hover:text-purple-400/50 transition-colors duration-200"
           >
             {user?.role || "User"}
           </span>
@@ -64,7 +85,7 @@ const LogoutContainer = () => {
 
         {/* Animated Caret */}
         <FaCaretDown
-          className={`text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400 transition-all duration-300 transform ${
+          className={`text-white group-hover:text-purple-500 dark:group-hover:text-purple-500/50 transition-all duration-300 transform ${
             showLogout ? "rotate-180" : ""
           }`}
         />
@@ -87,13 +108,14 @@ const LogoutContainer = () => {
 
           {/* Dropdown Content */}
           <div
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-600 
+            className=" rounded-2xl shadow-2xl border bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] border-gray-200 dark:border-gray-600 
           overflow-hidden backdrop-blur-lg"
           >
             {/* User Summary */}
             <div
-              className="!p-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-blue-50
-             dark:from-gray-700/50 dark:to-blue-900/20"
+              className="!p-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3]"
             >
               <div className="flex items-center !space-x-3">
                 <div
@@ -111,10 +133,14 @@ const LogoutContainer = () => {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="capitalize text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <p
+                    className="capitalize text-sm font-semibold!font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+                  bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 truncate"
+                  >
                     {user?.name}
+                    {user?.lastName}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <p className="text-xs text-gray-700 dark:text-gray-400 truncate">
                     {user?.email}
                   </p>
                 </div>
@@ -128,7 +154,7 @@ const LogoutContainer = () => {
                   <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
                     12
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-700 dark:text-gray-400">
                     Jobs
                   </div>
                 </div>
@@ -136,7 +162,7 @@ const LogoutContainer = () => {
                   <div className="text-lg font-bold text-green-600 dark:text-green-400">
                     3
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-700 dark:text-gray-400">
                     Active
                   </div>
                 </div>
@@ -144,7 +170,7 @@ const LogoutContainer = () => {
                   <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
                     1
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-700 dark:text-gray-400">
                     Offers
                   </div>
                 </div>
@@ -155,7 +181,7 @@ const LogoutContainer = () => {
             <div className="!p-4">
               <button
                 type="button"
-                onClick={logout}
+                onClick={handleLogout}
                 className="group relative w-full bg-gradient-to-r from-purple-800 to-pink-800 hover:from-purple-900
                  hover:to-pink-800 text-white !py-2 !px-2 rounded-xl font-semibold transition-all duration-300
                   transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
@@ -183,7 +209,7 @@ const LogoutContainer = () => {
               <button
                 type="button"
                 onClick={() => setShowLogout(false)}
-                className="w-full !mt-2 !py-2 !px-2 text-gray-600 dark:text-gray-400 hover:text-gray-800
+                className="w-full !mt-2 !py-2 !px-2 text-gray-700 dark:text-gray-400 hover:text-gray-800
                  dark:hover:text-gray-200 text-sm font-medium transition-colors duration-200"
               >
                 Cancel

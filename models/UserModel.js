@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { createJWT } from "../utils/tokenUtils.js"; // Add this import
+import { createJWT } from "../utils/tokenUtils.js";
 
 const UserSchema = new mongoose.Schema({
   name: String,

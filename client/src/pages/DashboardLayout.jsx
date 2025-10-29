@@ -1,6 +1,10 @@
-// pages/DashboardLayout.js
 import { useState, useEffect, useRef } from "react";
-import { Outlet, useNavigate, useNavigation } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useNavigation,
+  useLocation,
+} from "react-router-dom";
 import { FormRow } from "../components";
 import links from "../utils/links";
 import logo from "../assets/images/favicon.ico";
@@ -22,15 +26,15 @@ const dashboardMenuItems = links.map((link) => ({
   icon: link.icon,
 }));
 
-// Main navigation items
+// Main navigation items 
 const mainNavItems = [
-  { label: "Home", link: "/", ariaLabel: "Go to Home page" },
-  { label: "About", link: "/about", ariaLabel: "Go to About page" },
-  { label: "Services", link: "/services", ariaLabel: "Go to Services page" },
-  { label: "Contact", link: "/contact", ariaLabel: "Go to Contact page" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact" },
 ];
 
-// Combine both for the staggered menu
+
 const allMenuItems = [...mainNavItems, ...dashboardMenuItems];
 
 const socialItems = [
@@ -42,11 +46,31 @@ const socialItems = [
 const DashboardLayout = ({ queryClient }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
   const [showSidebar, setShowSidebar] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuItemsRef = useRef(dashboardMenuItems);
+
+   const { data: currentUser, refetch } = useQuery({
+     queryKey: ["user"],
+     queryFn: async () => {
+       try {
+         const response = await customFetch.get("/users/current-user");
+         return response.data.user;
+       } catch (error) {
+         throw new Error("Failed to fetch user data");
+       }
+     },
+     enabled: false,
+   });
+
+ useEffect(() => {
+   if (location.pathname === "/dashboard") {
+     refetch();
+   }
+ }, [location.pathname, refetch]);
 
   useEffect(() => {
     const updateMenuItems = () => {
@@ -57,12 +81,15 @@ const DashboardLayout = ({ queryClient }) => {
       }
     };
 
+
+
     updateMenuItems();
     window.addEventListener("resize", updateMenuItems);
 
     return () => window.removeEventListener("resize", updateMenuItems);
   }, []);
 
+ 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -72,7 +99,6 @@ const DashboardLayout = ({ queryClient }) => {
     navigate("/");
   };
 
-  // Menu state handlers
   const handleMenuOpen = () => {
     setIsMenuOpen(true);
   };
@@ -87,7 +113,7 @@ const DashboardLayout = ({ queryClient }) => {
       <div className="fixed top-4 right-4 z-50 lg:hidden">
         <ThemeToggle />
       </div>
-
+      
       {/* Transparent Navigation Bar - Hidden on mobile */}
       <nav className="sticky top-0 z-30 bg-transparent backdrop-blur-md !p-4 hidden lg:block">
         <div className="flex items-center justify-between">
@@ -96,12 +122,7 @@ const DashboardLayout = ({ queryClient }) => {
             <PillNav
               logo={logo}
               logoAlt="Company Logo"
-              items={[
-                { label: "Home", href: "/" },
-                { label: "About", href: "/about" },
-                { label: "Services", href: "/services" },
-                { label: "Contact", href: "/contact" },
-              ]}
+              items={mainNavItems}
               activeHref="/"
               className="custom-nav rounded-full"
               ease="power2.easeOut"
@@ -123,9 +144,8 @@ const DashboardLayout = ({ queryClient }) => {
         </div>
       </nav>
 
-      {/* MAIN FIX: Simplified layout structure */}
+      {/* Staggered Menu */}
       <div className="min-h-screen flex bg-gradient-to-br transition-colors duration-300">
-        {/* Staggered Menu */}
         <div
           className={` relative h-full transition-all duration-500 ease-in-out ${
             isMenuOpen ? "w-74" : "w-0"

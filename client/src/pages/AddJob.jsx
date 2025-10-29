@@ -1,7 +1,8 @@
+import { useEffect, useRef } from "react";
 import { FormRow, FormRowSelect, SubmitBtn } from "../components";
-import { Form, redirect } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigate } from "react-router-dom";
 import { JOB_STATUS, JOB_TYPE } from "../../../utils/constants.js";
-import { toast } from "react-toastify";
+import { useToast } from "../hooks/useToast";
 import customFetch from "../utils/customFetch";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -13,20 +14,42 @@ export const action =
     try {
       await customFetch.post("/jobs", data);
       queryClient.invalidateQueries(["jobs"]);
-      toast.success("Job added successfully");
-      return redirect("all-jobs");
+      return {
+        success: true,
+        message: "Job added successfully",
+      };
     } catch (error) {
-      toast.error(error?.response?.data?.msg);
-      return error;
+      return {
+        success: false,
+        error: error?.response?.data?.msg,
+      };
     }
   };
 
 const AddJob = () => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
+  const actionData = useActionData();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const hasShownToastRef = useRef(false);
+
+  useEffect(() => {
+    if (actionData && !hasShownToastRef.current) {
+      hasShownToastRef.current = true;
+      if (actionData.success) {
+        toast.success(actionData.message, "");
+        setTimeout(() => {
+          navigate("/dashboard/all-jobs");
+        }, 2000);
+      } else {
+        toast.error("Error", actionData.error);
+      }
+    }
+  }, [actionData, toast, navigate]);
 
   return (
     <div className="w-full">
-      {/* Modern Header with Icon */}
+      
       <div className="text-center !mb-8">
         <div
           className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br
@@ -191,9 +214,7 @@ const AddJob = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 !gap-6">
             {/* Job Status Select */}
             <div className="!space-y-2">
-              <label
-                className="block text-sm font-semibold uppercase  tracking-wide"
-              >
+              <label className="block text-sm font-semibold uppercase  tracking-wide">
                 Job Status
               </label>
               <FormRowSelect
@@ -208,9 +229,7 @@ const AddJob = () => {
 
             {/* Job Type Select */}
             <div className="!space-y-2">
-              <label
-                className="block text-sm font-semibold uppercase tracking-wide"
-              >
+              <label className="block text-sm font-semibold uppercase tracking-wide">
                 Job Type
               </label>
               <FormRowSelect

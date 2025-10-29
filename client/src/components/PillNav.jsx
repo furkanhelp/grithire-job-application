@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
@@ -47,25 +47,17 @@ const PillNav = ({
     ["--pill-gap"]: "3px",
   };
 
-  // handle outside clicks
+  // handle outside clicks - FIXED
   useEffect(() => {
     const handlePointerDownOutside = (event) => {
       if (!mobileMenuRef.current || !hamburgerRef.current) return;
 
-      // Robust path detection
-      const path = event.composedPath ? event.composedPath() : event.path || [];
+      const clickedInsideMenu = mobileMenuRef.current.contains(event.target);
+      const clickedHamburger = hamburgerRef.current.contains(event.target);
 
-      const clickedInsideMenu = path.includes(mobileMenuRef.current);
-      const clickedHamburger = path.includes(hamburgerRef.current);
-
-      // Detect theme button
-      const clickedThemeToggle = path.some((node) => {
-        try {
-          return node?.classList?.contains?.("theme-toggle-btn");
-        } catch {
-          return false;
-        }
-      });
+      // Check if clicked on theme toggle
+      const themeToggle = event.target.closest('.theme-toggle-btn');
+      const clickedThemeToggle = !!themeToggle;
 
       if (
         isMobileMenuOpen &&
@@ -73,28 +65,22 @@ const PillNav = ({
         !clickedHamburger &&
         !clickedThemeToggle
       ) {
-        // close menu
         toggleMobileMenu();
       }
     };
 
-    // it runs early and works with composited events
-    document.addEventListener("pointerdown", handlePointerDownOutside, {
-      capture: true,
-    });
+    document.addEventListener("mousedown", handlePointerDownOutside);
 
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDownOutside, {
-        capture: true,
-      });
+      document.removeEventListener("mousedown", handlePointerDownOutside);
     };
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const layout = () => {
-      circleRefs.current.forEach((circle) => {
-        if (!circle?.parentElement) return;
-
+      const circles = circleRefs.current.filter(Boolean);
+      circles.forEach((circle) => {
+        if (!circle.parentElement) return;
         const pill = circle.parentElement;
         const rect = pill.getBoundingClientRect();
         const { width: w, height: h } = rect;
@@ -162,15 +148,15 @@ const PillNav = ({
       document.fonts.ready.then(layout).catch(() => {});
     }
 
-    const menu = mobileMenuRef.current;
-    if (menu) {
-      gsap.set(menu, {
-        visibility: "hidden",
-        opacity: 0,
-        scale: 0.8,
-        rotationX: 90,
-      });
-    }
+     const menu = mobileMenuRef.current;
+     if (menu) {
+       gsap.set(menu, {
+         visibility: "hidden",
+         opacity: 0,
+         scale: 0.8,
+         rotationX: 90,
+       });
+     }
 
     if (initialLoadAnimation) {
       const logo = logoRef.current;
@@ -211,7 +197,7 @@ const PillNav = ({
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, [isMobileMenuOpen]); 
+  }, [isMobileMenuOpen]);
 
   const handleEnter = (i) => {
     const tl = tlRefs.current[i];
@@ -248,6 +234,7 @@ const PillNav = ({
     });
   };
 
+  // FIXED: toggleMobileMenu function
   const toggleMobileMenu = () => {
     const newState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newState);
@@ -264,31 +251,33 @@ const PillNav = ({
 
       if (newState) {
         // Open animation - morph into X
-        gsap.to(lines[0], { rotation: 45, y: 8, duration: 0.4, ease });
-        gsap.to(lines[1], { rotation: -45, y: -8, duration: 0.4, ease });
+        gsap.to(lines[0], { rotation: 45, y: 6, duration: 0.3, ease });
+        gsap.to(lines[1], { rotation: -45, y: -6, duration: 0.3, ease });
         gsap.to(dot, { scale: 0, duration: 0.2, ease });
       } else {
         // Close animation - morph back from X
-        gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.4, ease });
-        gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.4, ease });
-        gsap.to(dot, { scale: 1, duration: 0.3, delay: 0.1, ease });
+        gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.3, ease });
+        gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.3, ease });
+        gsap.to(dot, { scale: 1, duration: 0.2, delay: 0.1, ease });
       }
     }
 
     if (menu) {
       if (newState) {
         // Open menu with 3D flip effect
-        gsap.set(menu, { visibility: "visible" });
-        menuTl.current = gsap.timeline().fromTo(
+        gsap.set(menu, { 
+          visibility: "visible",
+          display: "block" // ADDED: Ensure it's displayed
+        });
+        menuTl.current = gsap.timeline().to(
           menu,
-          { opacity: 0, scale: 0.8, rotationX: 90, y: 50 },
           {
             opacity: 1,
             scale: 1,
             rotationX: 0,
             y: 0,
-            duration: 0.6,
-            ease: "back.out(1.7)",
+            duration: 0.4,
+            ease: "back.out(1.2)",
             transformOrigin: "top center",
           }
         );
@@ -299,17 +288,20 @@ const PillNav = ({
           scale: 0.8,
           rotationX: 90,
           y: 50,
-          duration: 0.4,
+          duration: 0.3,
           ease: "power2.in",
           transformOrigin: "top center",
           onComplete: () => {
-            gsap.set(menu, { visibility: "hidden" });
+            gsap.set(menu, { 
+              visibility: "hidden",
+              display: "none" // ADDED: Ensure it's hidden
+            });
           },
         });
       }
     }
 
-    onMobileMenuClick?.();
+    onMobileMenuClick?.(newState);
   };
 
   const isExternalLink = (href) =>
@@ -365,16 +357,14 @@ const PillNav = ({
   );
 
   return (
-    <div
-      className="absolute top-[1em] z-[1000] w-full left-0 md:w-auto md:left-auto
-    "
-    >
+    <div className="absolute top-[1em] z-[1000] w-full left-0 lg:w-auto lg:left-auto">
       <nav
-        className={`w-full md:w-max flex items-center justify-between md:justify-start 
-          box-border !px-4 md:px-0  ${className}`}
+        className={`w-full lg:w-max flex items-center justify-between lg:justify-start 
+      box-border !px-4 lg:px-0 ${className}`}
         aria-label="Primary"
         style={cssVars}
       >
+        {/* Logo (left) - stays visible always */}
         {isRouterLink(items?.[0]?.href) ? (
           <Link
             to={items[0].href}
@@ -384,8 +374,7 @@ const PillNav = ({
             ref={(el) => {
               logoRef.current = el;
             }}
-            className="rounded-full !p-2 inline-flex items-center justify-center overflow-hidden
-            "
+            className="rounded-full !p-2 inline-flex items-center justify-center overflow-hidden"
             style={{
               width: "var(--nav-h)",
               height: "var(--nav-h)",
@@ -396,7 +385,7 @@ const PillNav = ({
               src={logo}
               alt={logoAlt}
               ref={logoImgRef}
-              className="w-full h-full object-cover block  "
+              className="w-full h-full object-cover block"
             />
           </Link>
         ) : (
@@ -407,7 +396,7 @@ const PillNav = ({
             ref={(el) => {
               logoRef.current = el;
             }}
-            className="rounded-full !p-2 inline-flex items-center justify-center overflow-hidden "
+            className="rounded-full !p-2 inline-flex items-center justify-center overflow-hidden"
             style={{
               width: "var(--nav-h)",
               height: "var(--nav-h)",
@@ -425,7 +414,7 @@ const PillNav = ({
 
         <div
           ref={navItemsRef}
-          className="relative items-center rounded-full hidden md:flex ml-2 "
+          className="relative items-center rounded-full hidden lg:flex ml-2"
           style={{
             height: "var(--nav-h)",
             background: "var(--base, #000)",
@@ -433,7 +422,7 @@ const PillNav = ({
         >
           <ul
             role="menubar"
-            className="list-none flex items-stretch m-0 !p-[3px] h-full "
+            className="list-none flex items-stretch m-0 !p-[3px] h-full"
             style={{ gap: "var(--pill-gap)" }}
           >
             {items.map((item, i) => {
@@ -450,7 +439,7 @@ const PillNav = ({
                 <>
                   <span
                     className="hover-circle absolute left-1/2 bottom-0 rounded-full z-[1] 
-                    block pointer-events-none "
+                    block pointer-events-none"
                     style={{
                       background: "var(--base, #000)",
                       willChange: "transform",
@@ -460,15 +449,15 @@ const PillNav = ({
                       circleRefs.current[i] = el;
                     }}
                   />
-                  <span className="label-stack relative inline-block leading-[1] z-[2] ">
+                  <span className="label-stack relative inline-block leading-[1] z-[2]">
                     <span
-                      className="pill-label relative z-[2] inline-block leading-[1] "
+                      className="pill-label relative z-[2] inline-block leading-[1]"
                       style={{ willChange: "transform" }}
                     >
                       {item.label}
                     </span>
                     <span
-                      className="pill-label-hover absolute left-0 top-0 z-[3] inline-block "
+                      className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
                       style={{
                         color: "var(--hover-text, #fff)",
                         willChange: "transform, opacity",
@@ -481,7 +470,7 @@ const PillNav = ({
                   {isActive && (
                     <span
                       className="absolute left-1/2 -bottom-[6px] -translate-x-1/2 w-3 h-3 
-                      rounded-full z-[4] "
+                      rounded-full z-[4]"
                       style={{ background: "var(--base, #000)" }}
                       aria-hidden="true"
                     />
@@ -493,7 +482,7 @@ const PillNav = ({
                 "relative overflow-hidden inline-flex items-center justify-center h-full no-underline rounded-full box-border font-semibold text-[16px] leading-[0] uppercase tracking-[0.2px] whitespace-nowrap cursor-pointer px-0";
 
               return (
-                <li key={item.href} role="none" className="flex h-full ">
+                <li key={item.href} role="none" className="flex h-full">
                   {isRouterLink(item.href) ? (
                     <Link
                       role="menuitem"
@@ -525,16 +514,15 @@ const PillNav = ({
           </ul>
         </div>
 
-        {/* Modern Hamburger Menu */}
+        {/* Modern Hamburger Menu - FIXED */}
         <button
           ref={hamburgerRef}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
           aria-expanded={isMobileMenuOpen}
-          className="md:hidden rounded-full flex flex-col items-center justify-center cursor-pointer 
-          !p-3 relative group backdrop-blur-md bg-gradient-to-br 
-          from-white/20 to-white/10 border border-white/30 shadow-lg 
-          hover:bg-white/30 transition-all duration-300"
+          className="lg:hidden rounded-full flex flex-col items-center justify-center cursor-pointer p-3 relative group
+        backdrop-blur-md bg-gradient-to-br from-white/20 to-white/10 border border-white/30 shadow-lg
+        hover:bg-white/30 transition-all duration-300"
           style={{
             width: "var(--nav-h)",
             height: "var(--nav-h)",
@@ -542,33 +530,27 @@ const PillNav = ({
         >
           {/* Animated Hamburger Lines */}
           <span
-            className=" hamburger-line w-5 h-0.5 rounded-full 
+            className="hamburger-line w-5 h-0.5 rounded-full 
             origin-center transition-all duration-300 ease-out
-            !mb-1.5 bg-black dark:!bg-white"
+            !mb-1.5"
             style={{ background: "var(--pill-bg, #ffffff)" }}
           />
           <span
             className="hamburger-line w-5 h-0.5 rounded-full 
-            origin-center transition-all duration-300 ease-out 
-            bg-black dark:!bg-white"
-            style={{ background: "var(--pill-bg, #ffffff)" }}
-          />
-          {/* Central Dot */}
-          <span
-            className="hamburger-dot absolute w-1 h-0 rounded-full 
-            transition-all duration-200 ease-out "
+            origin-center transition-all duration-300 ease-out"
             style={{ background: "var(--pill-bg, #ffffff)" }}
           />
         </button>
       </nav>
-      {/* Modern Mobile Menu */}
+
+      {/* Modern Mobile Menu - FIXED */}
       <div
         ref={mobileMenuRef}
-        className="md:hidden fixed inset-0 z-[999] !backdrop-blur-xl"
+        className="lg:hidden fixed inset-0 z-[999] !backdrop-blur-xl"
         style={{
           background: isDarkTheme
-            ? "linear-gradient(135deg, rgba(26, 15, 46, 0.98) 0%, rgba(38, 20, 63, 0.98) 100%)"
-            : "linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(178, 137, 255, 0.98) 100%)",
+            ? "linear-gradient(135deg, rgba(26,15,46,0.98) 0%, rgba(38,20,63,0.98) 100%)"
+            : "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(178,137,255,0.98) 100%)",
         }}
       >
         {/* Top Bar with Close button and Theme Toggle */}
@@ -582,7 +564,7 @@ const PillNav = ({
             />
             <h2
               className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 "
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
             >
               Grithire
             </h2>
@@ -633,22 +615,22 @@ const PillNav = ({
                       duration-200 hover:!scale-[1.02] hover:!shadow-md"
                       style={{
                         background: isActive
-                          ? "#3f1d6e" // Purple for active links (both modes)
+                          ? "#3f1d6e"
                           : isDarkTheme
-                          ? "rgba(139, 92, 246, 0.1)" // Light purple bg in dark
-                          : "rgba(139, 92, 246, 0.05)", // Very light purple bg in light
+                          ? "rgba(139, 92, 246, 0.1)"
+                          : "rgba(139, 92, 246, 0.05)",
                         color: isActive
-                          ? "#FFFFFF" // White text for active
+                          ? "#FFFFFF"
                           : isDarkTheme
-                          ? "#E5E7EB" // Light gray in dark
-                          : "#4B5563", // Dark gray in light
+                          ? "#E5E7EB"
+                          : "#4B5563",
                         border: isActive
                           ? "none"
                           : isDarkTheme
-                          ? "1px solid rgba(139, 92, 246, 0.3)" // Purple border in dark
-                          : "1px solid rgba(139, 92, 246, 0.2)", // Light purple border in light
+                          ? "1px solid rgba(139, 92, 246, 0.3)"
+                          : "1px solid rgba(139, 92, 246, 0.2)",
                       }}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={toggleMobileMenu}
                     >
                       {item.label}
                     </Link>
@@ -668,7 +650,7 @@ const PillNav = ({
                           ? "none"
                           : "1px solid rgba(255,255,255,0.15)",
                       }}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={toggleMobileMenu}
                     >
                       {item.label}
                     </a>
@@ -677,8 +659,8 @@ const PillNav = ({
               );
             })}
           </ul>
+
           {/* Auth Buttons - At the bottom */}
-        
           <div className="!mt-15 !space-y-3">
             {user ? (
               <>
@@ -692,14 +674,14 @@ const PillNav = ({
                       : "#3f1d6e",
                     color: isDarkTheme ? "var(--hover-text, #fff)" : "#FFFFFF",
                   }}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                 >
                   Dashboard
                 </Link>
                 <button
                   onClick={() => {
                     logout();
-                    setIsMobileMenuOpen(false);
+                    toggleMobileMenu();
                   }}
                   className="block w-full !py-3 !px-4 text-base font-semibold rounded-xl text-center 
           transition-all duration-200 hover:!scale-[1.02] hover:!shadow-md !border"
@@ -715,7 +697,6 @@ const PillNav = ({
                 </button>
               </>
             ) : (
-              // User is not logged in - Show Register and Login
               <>
                 <Link
                   to="/register"
@@ -727,7 +708,7 @@ const PillNav = ({
                       : "#3f1d6e",
                     color: isDarkTheme ? "var(--hover-text, #fff)" : "#FFFFFF",
                   }}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                 >
                   Register
                 </Link>
@@ -742,7 +723,7 @@ const PillNav = ({
                       ? "var(--pill-bg, #fff)"
                       : "#3f1d6e",
                   }}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                 >
                   Login / Demo User
                 </Link>

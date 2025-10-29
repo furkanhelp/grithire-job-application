@@ -598,29 +598,38 @@ export const StaggeredMenu = ({
               data-numbering={displayItemNumbering || undefined}
             >
               {items && items.length ? (
-                items.map((it, idx) => (
-                  <li
-                    className="sm-panel-itemWrap relative overflow-hidden leading-none"
-                    key={it.label + idx}
-                  >
-                    <a
-                      className="sm-panel-item relative !font-sans !font-bold !text-2xl sm:!text-[2.5rem]
-                    
-                      cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase 
-                      duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
-                      href={it.link}
-                      aria-label={it.ariaLabel}
-                      data-index={idx + 1}
+                items.map((it, idx) => {
+                  // Add admin check here
+                  if (
+                    it.label.toLowerCase() === "admin" &&
+                    user?.role !== "admin"
+                  ) {
+                    return null;
+                  }
+
+                  return (
+                    <li
+                      className="sm-panel-itemWrap relative overflow-hidden leading-none"
+                      key={it.label + idx}
                     >
-                      <span
-                        className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] 
-                      will-change-transform"
+                      <a
+                        className="sm-panel-item relative !font-sans !font-bold !text-2xl sm:!text-[2.5rem]
+            cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase 
+            duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
+                        href={it.link}
+                        aria-label={it.ariaLabel}
+                        data-index={idx + 1}
                       >
-                        {it.label}
-                      </span>
-                    </a>
-                  </li>
-                ))
+                        <span
+                          className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] 
+              will-change-transform"
+                        >
+                          {it.label}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })
               ) : (
                 <li
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
@@ -673,9 +682,7 @@ export const StaggeredMenu = ({
                 className="sm-socials !mt-4 !pt-4 flex flex-col !gap-3 border-t border-gray-200 !px-3"
                 aria-label="Social links"
               >
-                <h3
-                  className="sm-socials-title !m-0 text-sm sm:text-base font-medium !text-gray-500 dark:!text-gray-400"
-                >
+                <h3 className="sm-socials-title !m-0 text-sm sm:text-base font-medium !text-gray-500 dark:!text-gray-400">
                   Socials
                 </h3>
                 <ul

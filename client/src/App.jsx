@@ -17,7 +17,7 @@ import {
   Profile,
   EditJob,
 } from "./pages";
-import { AuthProvider} from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { action as registerAction } from "./pages/Register";
 import { action as loginAction } from "./pages/Login";
@@ -31,6 +31,7 @@ import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
 import ErrorElement from "./components/ErrorElement";
 import { ThemeProvider } from "./components/ThemeContext";
+import { ToastProvider } from "./hooks/useToast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,7 +40,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
 
 const ProtectedRouteWrapper = ({ children }) => {
   return <ProtectedRoute>{children}</ProtectedRoute>;
@@ -57,9 +57,11 @@ const router = createBrowserRouter([
         element: <Register />,
         action: registerAction(queryClient),
       },
-      { path: "login", 
-        element: <Login />, 
-        action: loginAction(queryClient) },
+      {
+        path: "login",
+        element: <Login />,
+        action: loginAction(queryClient),
+      },
       {
         path: "dashboard",
         element: (
@@ -110,18 +112,26 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
+const AppWithToasts = () => {
+  return (
+    <ToastProvider>
+      <RouterProvider router={router} />
+    </ToastProvider>
+  );
+};
 const App = () => {
   return (
     <ThemeProvider>
-      <div className="transition-colors duration-500 ease-in-out min-h-screen">
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <RouterProvider router={router} />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </AuthProvider>
-        </QueryClientProvider>
-      </div>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ToastProvider>
+            <div className="transition-colors duration-500 ease-in-out min-h-screen">
+              <RouterProvider router={router} />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </div>
+          </ToastProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };

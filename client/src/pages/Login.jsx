@@ -1,57 +1,112 @@
-import { useEffect } from "react";
-import { Link, Form, redirect, useNavigate } from "react-router-dom";
+import React from "react";
+import {
+  Link,
+  Form,
+  redirect,
+  useNavigate,
+  useActionData,
+  useNavigation,
+} from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../contexts/AuthContext";
 import { FormRow, Logo } from "../components";
 import customFetch from "../utils/customFetch";
-import { toast } from "react-toastify";
 import ThemeToggle from "../components/ThemeToggle";
+import { useToast } from "../hooks/useToast";
 
 export const action =
   (queryClient) =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
+
     try {
       await customFetch.post("/auth/login", data);
 
-      // Get the user data immediately after successful login
       const userResponse = await customFetch.get("/users/current-user");
       const userData = userResponse.data.user;
 
-      // Update the query cache
+      localStorage.setItem("user", JSON.stringify(userData));
       queryClient.setQueryData(["user"], userData);
 
-      toast.success("Login successful");
-
-      // Use window.location for immediate redirect
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 100);
-
-      return null;
+      return {
+        success: true,
+        message: "Login successful! Welcome back.",
+        user: userData,
+      };
     } catch (error) {
-      toast.error(error?.response?.data?.msg);
-      return error;
+      return {
+        success: false,
+        error: error?.response?.data?.msg || "Login failed.",
+      };
     }
   };
 
 const Login = () => {
-  const { user, login } = useAuth();
+  const { login } = useAuth();
+  const { toast } = useToast();
+  const actionData = useActionData();
   const navigate = useNavigate();
+  const hasShownToastRef = React.useRef(false); // Prevent multiple toasts
+ 
+  const { data: currentUser, refetch } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      try {
+        const response = await customFetch.get("/users/current-user");
+        return response.data.user;
+      } catch (error) {
+        throw new Error("Failed to fetch user data");
+      }
+    },
+    enabled: false,
+  });
+
+    const displayUser = actionData?.user || currentUser;
+
+  // Handle action data (success/error)
+  React.useEffect(() => {
+    if (actionData && !hasShownToastRef.current) {
+      hasShownToastRef.current = true;
+
+      if (actionData.success) {
+        login(actionData.user);
+
+        refetch();
+        const userName = actionData.user?.name || displayUser?.name || "User";
+        toast.success(
+          `Welcome Back ${userName}! 👋`,
+          "You have successfully logged in to your account"
+        );
+
+        setTimeout(() => {
+          navigate("/dashboard", {
+            replace: true,
+            state: {
+              timestamp: Date.now(),
+              from: "login",
+            },
+          });
+        }, 2000);
+      } else if (actionData.error) {
+        toast.error("Login Failed", actionData.error);
+      }
+    }
+  }, [actionData, toast, login, navigate, displayUser, refetch]);
+
+  // Reset the ref when the form is submitted again
+  React.useEffect(() => {
+    if (navigation.state === "submitting") {
+      hasShownToastRef.current = false;
+    }
+  }, [navigation.state]);
 
   return (
     <>
       {/* Navbar with Theme Toggle */}
-      <div
-        className="flex justify-between items-center w-full fixed top-0 
-      left-0 right-0 z-[60] pointer-events-auto !p-4"
-      >
-        {/* Empty for balance */}
+      <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-[60] pointer-events-auto !p-4">
         <div className="w-1/3"></div>
-
-        {/* Right - ThemeToggle */}
         <div className="w-1/3 flex justify-end">
-          {/* Desktop */}
           <div className="hidden md:block">
             <ThemeToggle />
           </div>
@@ -64,10 +119,7 @@ const Login = () => {
             <div className="text-center items-center justify-center flex !mb-5">
               <Logo />
             </div>
-            <h2
-              className="!text-4xl whitespace-nowrap !font-bold text-center !font-sans !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-2"
-            >
+            <h2 className="!text-4xl whitespace-nowrap !font-bold text-center !font-sans !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-2">
               Welcome Back
             </h2>
             <p className="text-gray-600 text-center text-sm !mb-6">
@@ -107,9 +159,7 @@ const Login = () => {
               <div className="flex justify-center !pt-5">
                 <button
                   type="submit"
-                  className="group relative !px-8 sm:!px-12 !py-3 sm:!py-4 bg-gradient-to-r from-purple-900 to-pink-800 
-                  hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 
-                  transform hover:scale-105 hover:shadow-2xl min-w-[160px] sm:min-w-[200px] overflow-hidden"
+                  className="group relative !px-8 sm:!px-12 !py-3 sm:!py-4 bg-gradient-to-r from-purple-900 to-pink-800 hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl min-w-[160px] sm:min-w-[200px] overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center justify-center !space-x-2 sm:!space-x-3">
                     <svg
@@ -127,12 +177,7 @@ const Login = () => {
                     </svg>
                     <span className="text-sm sm:text-base">Login</span>
                   </span>
-
-                  {/* Animated background effect */}
-                  <div
-                    className="absolute inset-0 bg-gradient-to-r from-pink-900 to-purple-900 
-                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  ></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-900 to-purple-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
               </div>
 
@@ -141,8 +186,7 @@ const Login = () => {
                   Not a member yet?{" "}
                   <Link
                     to="/register"
-                    className="text-gray-950 dark:text-gray-200 hover:text-purple-800 
-                    font-medium transition-colors duration-200"
+                    className="text-gray-950 dark:text-gray-200 hover:text-purple-800 font-medium transition-colors duration-200"
                   >
                     Register
                   </Link>
