@@ -16,6 +16,7 @@ import {
   Admin,
   Profile,
   EditJob,
+  JobDetails,
 } from "./pages";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -25,6 +26,7 @@ import { action as addJobAction } from "./pages/AddJob";
 import { loader as allJobsLoader } from "./pages/AllJobs";
 import { loader as editJobLoader } from "./pages/EditJob";
 import { action as editJobAction } from "./pages/EditJob";
+import { loader as jobDetailsLoader } from "./pages/JobDetails";
 import { action as deleteJobAction } from "./pages/DeleteJob";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
@@ -102,6 +104,12 @@ const router = createBrowserRouter([
             element: <EditJob />,
             loader: editJobLoader(queryClient),
             action: editJobAction(queryClient),
+          },
+           {
+            path: "job-details/:id",
+            element: <JobDetails />,
+            loader: jobDetailsLoader(queryClient), 
+            errorElement: <ErrorElement />,
           },
           {
             path: "delete-job/:id",

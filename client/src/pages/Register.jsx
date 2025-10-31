@@ -56,7 +56,7 @@ const Register = () => {
           "Account Created Successfully!",
           "You can now log in with your credentials"
         );
-        // Redirect after showing toast
+        
         setTimeout(() => {
           navigate("/login");
         }, 2000);
@@ -81,10 +81,7 @@ const Register = () => {
 
 
     try {
-      toast.info(
-        "Signing you in...",
-        "Please wait while we authenticate your demo account"
-      );
+      
 
       await customFetch.post("/auth/login", data);
 

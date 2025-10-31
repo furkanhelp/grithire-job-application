@@ -1,16 +1,62 @@
 import { useEffect, useRef } from "react";
-import { FormRow, FormRowSelect, SubmitBtn } from "../components";
-import { Form, redirect, useActionData, useNavigate } from "react-router-dom";
-import { JOB_STATUS, JOB_TYPE } from "../../../utils/constants.js";
+import {
+  FormRow,
+  FormRowSelect,
+  FormRowTextarea,
+
+  SubmitBtn,
+} from "../components";
+import { Form, useActionData, useNavigate } from "react-router-dom";
+import {
+  JOB_STATUS,
+  JOB_TYPE,
+  JOB_PRIORITY,
+} from "../../../utils/constants.js";
 import { useToast } from "../hooks/useToast";
-import customFetch from "../utils/customFetch";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  FaBuilding,
+  FaBriefcase,
+  FaMapMarkerAlt,
+  FaDollarSign,
+  FaEnvelope,
+  FaPhone,
+  FaGlobe,
+  FaCalendarAlt,
+  FaStickyNote,
+  FaUserTie,
+  FaCheck,
+} from "react-icons/fa";
+import FormRowDate from "../components/FormRowDate";
 
 export const action =
   (queryClient) =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
+
+    // Convert empty strings to null for optional fields
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "") {
+        data[key] = null;
+      }
+    });
+
+    // Convert date strings to ISO format
+    if (data.interviewDate) {
+      data.interviewDate = new Date(data.interviewDate).toISOString();
+    }
+    if (data.applicationDeadline) {
+      data.applicationDeadline = new Date(
+        data.applicationDeadline
+      ).toISOString();
+    }
+
+    // Convert boolean fields
+    if (data.isRemote) {
+      data.isRemote = data.isRemote === "true";
+    }
+
     try {
       await customFetch.post("/jobs", data);
       queryClient.invalidateQueries(["jobs"]);
@@ -49,11 +95,10 @@ const AddJob = () => {
 
   return (
     <div className="w-full">
-      
       <div className="text-center !mb-8">
         <div
-          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br
-         from-purple-800 to-purple-950 rounded-2xl !mb-4 shadow-lg"
+          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] rounded-2xl !mb-4 shadow-lg"
         >
           <svg
             className="w-8 h-8 text-white"
@@ -80,194 +125,271 @@ const AddJob = () => {
         </p>
       </div>
 
-      <Form method="post" className="!space-y-5">
-        {/* Main Form Container */}
+      <Form method="post" className="!space-y-8">
+        {/* Basic Information Section */}
         <div
-          className=" rounded-3xl 
-        !p-10 shadow-2xl border border-gray-500/20"
+          className="rounded-3xl !p-10 shadow-2xl bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] border border-gray-500/50"
         >
-          {/* Company & Location Row */}
-          <div className="grid !grid-cols-1 lg:!grid-cols-3 !gap-6 !mb-10">
-            <div className="!space-y-2">
-              <label
-                className="block text-sm font-semibold  uppercase 
-              tracking-wide"
-              >
-                Company Name
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="company"
-                  defaultValue=""
-                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
-                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
-                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                  placeholder="Enter company name"
-                />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    className="w-5 h-5 "
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          <h3
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+          >
+            <FaUserTie className="w-6 h-6 text-purple-600" />
+            Basic Information
+          </h3>
 
-            {/* Position */}
-            <div className="!space-y-2">
-              <label
-                className="block text-sm font-semibold  uppercase 
-              tracking-wide"
-              >
-                Position
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="position"
-                  defaultValue=""
-                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
-                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
-                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                  placeholder="Enter position name"
-                />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
+            <FormRow
+              type="text"
+              name="company"
+              labelText="Company Name "
+              defaultValue=""
+              placeholder="e.g., Tech Corp Inc."
+              icon={<FaBuilding className="w-4 h-4" />}
+              required={true}
+              className="!px-10 !py-4  border-2 border-gray-700 rounded-2xl focus:border-purple-500 
+              focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
 
-            <div className="!space-y-2">
-              <label
-                className="block text-sm font-semibold uppercase 
-              tracking-wide"
-              >
-                Job Location
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="jobLocation"
-                  defaultValue=""
-                  className="w-full !px-4 !py-4 bg-black/0 border-2 border-gray-700 
-                  rounded-2xl  placeholder-gray-500 focus:border-purple-500 
-                  focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                  placeholder="Enter job location"
-                />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    className="w-5 h-5 "
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+            <FormRow
+              type="text"
+              name="position"
+              labelText="Position "
+              defaultValue=""
+              placeholder="e.g., Senior Frontend Developer"
+              icon={<FaBriefcase className="w-4 h-4" />}
+              required={true}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
 
-          {/* Status & Type Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 !gap-6">
-            {/* Job Status Select */}
-            <div className="!space-y-2">
-              <label className="block text-sm font-semibold uppercase  tracking-wide">
-                Job Status
-              </label>
-              <FormRowSelect
-                name="jobStatus"
-                list={Object.values(JOB_STATUS)}
-                defaultValue={JOB_STATUS.INTERVIEW}
-                className="!px-4 !py-4 border-2 border-gray-700 
-                rounded-2xl appearance-none focus:border-purple-500 
-                focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-              />
-            </div>
+            <FormRow
+              type="text"
+              name="jobLocation"
+              labelText="Job Location "
+              defaultValue=""
+              placeholder="e.g., San Francisco, CA"
+              icon={<FaMapMarkerAlt className="w-4 h-4" />}
+              required={true}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
 
-            {/* Job Type Select */}
-            <div className="!space-y-2">
-              <label className="block text-sm font-semibold uppercase tracking-wide">
-                Job Type
-              </label>
-              <FormRowSelect
-                name="jobType"
-                list={Object.values(JOB_TYPE)}
-                defaultValue={JOB_TYPE.FULL_TIME}
-                className="!px-4 !py-4 border-2 border-gray-700 
-                rounded-2xl appearance-none focus:border-purple-500 
-                focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-              />
-            </div>
+            <FormRow
+              type="text"
+              name="salary"
+              labelText="Salary Range"
+              defaultValue=""
+              placeholder="e.g., $80,000 - $100,000"
+              icon={<FaDollarSign className="w-4 h-4" />}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
           </div>
         </div>
 
-        {/* Enhanced Submit Button */}
+        {/* Job Details Section */}
+        <div
+          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] border-gray-500/50"
+        >
+          <h3
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+          >
+            <FaBriefcase className="w-6 h-6 text-purple-600" />
+            Job Details
+          </h3>
+
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+            <FormRowSelect
+              name="jobStatus"
+              labelText="Application Status "
+              list={Object.values(JOB_STATUS)}
+              defaultValue={JOB_STATUS.PENDING}
+              displayFormat={(value) =>
+                value.charAt(0).toUpperCase() + value.slice(1)
+              }
+              required={true}
+              className="!px-4 !py-4 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowSelect
+              name="jobType"
+              labelText="Job Type "
+              list={Object.values(JOB_TYPE)}
+              defaultValue={JOB_TYPE.FULL_TIME}
+              displayFormat={(value) =>
+                value.charAt(0).toUpperCase() + value.slice(1)
+              }
+              required={true}
+              className="!px-4 !py-4  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowSelect
+              name="priority"
+              labelText="Priority Level"
+              list={Object.values(JOB_PRIORITY)}
+              defaultValue={JOB_PRIORITY.MEDIUM}
+              displayFormat={(value) =>
+                value.charAt(0).toUpperCase() + value.slice(1)
+              }
+              className="!px-4 !py-4  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowSelect
+              name="isRemote"
+              labelText="Work Type"
+              list={["false", "true"]}
+              defaultValue="false"
+              displayFormat={(value) =>
+                value === "true" ? "Remote" : "On-site"
+              }
+              className="!px-4 !py-4 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+            <FormRowDate
+              type="datetime-local"
+              name="interviewDate"
+              labelText="Interview Date & Time"
+              defaultValue=""
+              required={false}
+              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowDate
+              type="date"
+              name="applicationDeadline"
+              labelText="Application Deadline"
+              defaultValue=""
+              required={false}
+              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Job Description & Requirements */}
+        <div
+          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] border-gray-500/50"
+        >
+          <h3
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+          >
+            <FaStickyNote className="w-6 h-6 text-purple-600" />
+            Position Details
+          </h3>
+
+          <div className="space-y-6">
+            <FormRowTextarea
+              name="jobDescription"
+              labelText="Job Description"
+              defaultValue=""
+              placeholder="Describe the role, responsibilities, and what you'll be working on..."
+              rows={6}
+              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowTextarea
+              name="requirements"
+              labelText="Requirements & Qualifications"
+              defaultValue=""
+              placeholder="List the required skills, experience, and qualifications..."
+              rows={4}
+              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRowTextarea
+              name="benefits"
+              labelText="Benefits & Perks"
+              defaultValue=""
+              placeholder="Describe the benefits, perks, and company culture..."
+              rows={4}
+              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Contact & Application Information */}
+        <div
+          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] border-gray-500/50"
+        >
+          <h3
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+          >
+            <FaEnvelope className="w-6 h-6 text-purple-600" />
+            Contact & Application
+          </h3>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <FormRow
+              type="email"
+              name="contactEmail"
+              labelText="Contact Email"
+              defaultValue=""
+              placeholder="e.g., hiring@company.com"
+              icon={<FaEnvelope className="w-4 h-4" />}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRow
+              type="tel"
+              name="contactPhone"
+              labelText="Contact Phone"
+              defaultValue=""
+              placeholder="e.g., +1 (555) 123-4567"
+              icon={<FaPhone className="w-4 h-4" />}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+
+            <FormRow
+              type="url"
+              name="applicationUrl"
+              labelText="Application URL"
+              defaultValue=""
+              placeholder="e.g., https://company.com/careers/position"
+              icon={<FaGlobe className="w-4 h-4" />}
+              className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Additional Notes */}
+        <div
+          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] border-gray-500/50"
+        >
+          <h3
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+          >
+            <FaStickyNote className="w-6 h-6 text-purple-600" />
+            Additional Notes
+          </h3>
+
+          <FormRowTextarea
+            name="notes"
+            labelText="Personal Notes"
+            defaultValue=""
+            placeholder="Add any additional notes, reminders, or thoughts about this application..."
+            rows={4}
+            className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+          />
+        </div>
+
+        {/* Submit Button */}
         <div className="flex justify-center !pt-6">
           <button
-            type="submit"
-            className="group relative !px-12 !py-4 bg-gradient-to-r from-purple-900 to-pink-800
-             hover:from-purple-900 hover:to-pink-800 text-white 
-             font-bold rounded-2xl shadow-2xl transition-all duration-300 transform 
-             hover:scale-105 hover:shadow-2xl min-w-[200px] overflow-hidden"
+            text="Add Job"
+            submittingText="Adding Job..."
+            className="group relative !px-8 !py-4 bg-gradient-to-r from-purple-900 to-pink-800 
+          hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 
+          transform hover:scale-105 hover:shadow-2xl min-w-[150px] overflow-hidden"
           >
             <span className="relative z-10 flex items-center justify-center !space-x-3">
-              <svg
-                className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              <span>Add Job</span>
+            
+              <FaCheck className="w-4 h-4" />
+              <span>Submit</span>
             </span>
 
             {/* Animated background effect */}

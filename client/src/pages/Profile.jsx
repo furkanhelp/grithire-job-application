@@ -1,10 +1,16 @@
 import { FormRow } from "../components";
-import { redirect, useOutletContext } from "react-router-dom";
+import {
+  redirect,
+  useOutletContext,
+  useActionData,
+  useNavigation,
+  useNavigate,
+} from "react-router-dom";
 import { Form } from "react-router-dom";
 import customFetch from "../utils/customFetch";
-import { toast } from "react-toastify";
+import { useToast } from "../hooks/useToast"; 
 import { useAuth } from "../contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export const action =
   (queryClient) =>
@@ -12,18 +18,27 @@ export const action =
     const formData = await request.formData();
     const file = formData.get("avatar");
     const MAX_FILE_SIZE_BYTES = 1024 * 1024; // 1 MB
+
     if (file && file.size > MAX_FILE_SIZE_BYTES) {
-      toast.error("Image size too large (max 1MB)");
-      return null;
+      return {
+        success: false,
+        error: "Image size too large (max 1MB)",
+      };
     }
+
     try {
       await customFetch.patch("/users/update-user", formData);
       queryClient.invalidateQueries(["user"]);
-      toast.success("Profile updated successfully");
-      return redirect("/dashboard");
+
+      return {
+        success: true,
+        message: "Profile updated successfully",
+      };
     } catch (error) {
-      toast.error(error?.response?.data?.msg);
-      return null;
+      return {
+        success: false,
+        error: error?.response?.data?.msg || "Failed to update profile",
+      };
     }
   };
 
@@ -32,11 +47,45 @@ const Profile = () => {
   const { name, lastName, email, location } = user;
   const [previewImage, setPreviewImage] = useState(null);
 
+ 
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const hasShownToastRef = useRef(false);
+
+  // Handle action data for toast and navigation
+  useEffect(() => {
+    if (actionData && !hasShownToastRef.current) {
+      hasShownToastRef.current = true;
+
+      if (actionData.success) {
+        toast.success("Profile Updated!", actionData.message);
+
+       
+        setTimeout(() => {
+          navigate("/dashboard", {
+            state: { timestamp: Date.now() },
+          });
+        }, 2000);
+      } else if (actionData.error) {
+        toast.error("Update Failed", actionData.error);
+      }
+    }
+  }, [actionData, toast, navigate]);
+
+  // Reset the ref when form is submitted again
+  useEffect(() => {
+    if (navigation.state === "submitting") {
+      hasShownToastRef.current = false;
+    }
+  }, [navigation.state]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 1024 * 1024) {
-        toast.error("Image size too large (max 1MB)");
+        toast.error("File Too Large", "Image size too large (max 1MB)");
         return;
       }
       const reader = new FileReader();
@@ -45,6 +94,12 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCancel = () => {
+    toast.info("Cancelled", "Profile update was cancelled");
+    
+    navigate("/dashboard");
   };
 
   return (
@@ -85,6 +140,12 @@ const Profile = () => {
                       <img
                         src={previewImage}
                         alt="Preview"
+                        className="w-full h-full rounded-2xl object-cover"
+                      />
+                    ) : user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="Profile"
                         className="w-full h-full rounded-2xl object-cover"
                       />
                     ) : (
@@ -221,32 +282,62 @@ const Profile = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-end !pt-6">
             <button
               type="button"
+              onClick={handleCancel}
               className="px-8 py-3 border-2 border-gray-700 dark:border-gray-600 rounded-2xl text-gray-700 dark:text-gray-300 font-medium hover:border-gray-500 dark:hover:border-gray-400 transition-all duration-300"
             >
               Cancel
             </button>
             <button
               type="submit"
+              disabled={navigation.state === "submitting"}
               className="group relative !px-8 !py-3 bg-gradient-to-r from-purple-900 to-pink-800
              hover:from-purple-900 hover:to-pink-800 text-white 
              font-bold rounded-2xl shadow-2xl transition-all duration-300 transform 
-             hover:scale-105 hover:shadow-2xl min-w-[200px] overflow-hidden"
+             hover:scale-105 hover:shadow-2xl min-w-[200px] overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="relative z-10 flex items-center justify-center !space-x-3">
-                <svg
-                  className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-                <span>Update Profile</span>
+                {navigation.state === "submitting" ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Updating...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Update Profile</span>
+                  </>
+                )}
               </span>
 
               {/* Animated background effect */}

@@ -1,3 +1,4 @@
+import React from "react";
 
 const FormRow = ({
   type,
@@ -5,74 +6,39 @@ const FormRow = ({
   labelText,
   defaultValue = "",
   placeholder,
-  simpleLayout = false,
+  icon,
+  required = false,
+  onChange,
+  className = "",
+  ...props
 }) => {
-  if (simpleLayout) {
-    return (
-      <div className="mb-4">
+  return (
+    <div className="space-y-4">
+      {labelText && (
+        <label className="block text-sm font-semibold  text-gray-800 dark:text-gray-300 uppercase tracking-wide">
+          {labelText} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
+
+      <div className="relative">
+        {icon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {icon}
+          </div>
+        )}
         <input
           type={type}
-          id={name}
           name={name}
-          placeholder={placeholder}
+          id={name}
           defaultValue={defaultValue}
-          className="w-full !px-4 !py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
-                   bg-white dark:bg-gray-950 text-gray-900 dark:text-white 
-                   focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-                   transition-all duration-200 placeholder-gray-500 dark:placeholder-gray-400"
+          placeholder={placeholder}
+          required={required}
+          onChange={onChange}
+          className={`w-full ${className} ${
+            icon ? "pl-10" : ""
+          } dark:bg-transparent bg-white`}
+          {...props}
         />
-      </div>
-    );
-  }
-
- 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 !gap-4 items-start !py-4 border-b border-gray-100 dark:border-gray-700">
-      {/* Label Column */}
-      <div className="lg:col-span-1">
-        <label
-          htmlFor={name}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 !mb-1 lg:mb-0 lg:pt-2"
-        >
-          {labelText || name}
-        </label>
-      </div>
-
-      {/* Input Column */}
-      <div className="lg:col-span-2">
-        {type === "select" ? (
-          <select
-            id={name}
-            name={name}
-            defaultValue={defaultValue}
-            className="w-full !px-4 !py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700
-             text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all
-              duration-200"
-          >
-            {/* Options */}
-          </select>
-        ) : type === "textarea" ? (
-          <textarea
-            id={name}
-            name={name}
-            defaultValue={defaultValue}
-            rows={4}
-            className="w-full !px-4 !py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white
-             dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 
-             focus:border-transparent transition-all duration-200 resize-vertical"
-          />
-        ) : (
-          <input
-            type={type}
-            id={name}
-            name={name}
-            defaultValue={defaultValue}
-            placeholder={placeholder}
-            className="w-full !px-3 !py-1 border border-gray-300 dark:border-gray-600 rounded-xl 
-                     bg-white dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2
-                     focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-          />
-        )}
       </div>
     </div>
   );

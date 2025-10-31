@@ -5,6 +5,17 @@ import {
   useNavigation,
   useLocation,
 } from "react-router-dom";
+import {
+  FaHome,
+  FaInfoCircle,
+  FaConciergeBell,
+  FaEnvelope,
+  FaBriefcase,
+  FaChartBar,
+  FaList,
+  FaUserCog,
+  FaUser,
+} from "react-icons/fa";
 import { FormRow } from "../components";
 import links from "../utils/links";
 import logo from "../assets/images/favicon.ico";
@@ -22,18 +33,37 @@ import { useAuth } from "../contexts/AuthContext";
 const dashboardMenuItems = links.map((link) => ({
   label: link.text,
   ariaLabel: `Go to ${link.text}`,
-  link: `/dashboard/${link.path === "." ? "" : link.path}`.replace(/\/$/, ""),
+  link: link.path === "." ? "/dashboard" : `/dashboard/${link.path}`,
   icon: link.icon,
 }));
 
 // Main navigation items 
 const mainNavItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Contact", href: "/contact" },
+  {
+    label: "Home",
+    link: "/",
+    ariaLabel: "Go to Home",
+    icon: <FaHome className="w-5 h-5" />,
+  },
+  {
+    label: "About",
+    link: "/about",
+    ariaLabel: "Go to About",
+    icon: <FaInfoCircle className="w-5 h-5" />,
+  },
+  {
+    label: "Services",
+    link: "/services",
+    ariaLabel: "Go to Services",
+    icon: <FaConciergeBell className="w-5 h-5" />,
+  },
+  {
+    label: "Contact",
+    link: "/contact",
+    ariaLabel: "Go to Contact",
+    icon: <FaEnvelope className="w-5 h-5" />,
+  },
 ];
-
 
 const allMenuItems = [...mainNavItems, ...dashboardMenuItems];
 
@@ -113,7 +143,7 @@ const DashboardLayout = ({ queryClient }) => {
       <div className="fixed top-4 right-4 z-50 lg:hidden">
         <ThemeToggle />
       </div>
-      
+
       {/* Transparent Navigation Bar - Hidden on mobile */}
       <nav className="sticky top-0 z-30 bg-transparent backdrop-blur-md !p-4 hidden lg:block">
         <div className="flex items-center justify-between">
@@ -176,7 +206,7 @@ const DashboardLayout = ({ queryClient }) => {
             />
           </div>
         </div>
-
+        
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-h-screen w-full">
           <main className="flex-1 !p-4 md:p-6 lg:p-8 overflow-auto !mt-15 lg:mt-0 w-full">

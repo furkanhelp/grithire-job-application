@@ -1,22 +1,27 @@
 import Job from "./Job";
 import { useAllJobsContext } from "../pages/AllJobs";
 import PageBtnContainer from "./PageBtnContainer";
+import SearchContainer from "./SearchContainer";
+import { useNavigate } from "react-router-dom";
 
+import { IoMdAdd } from "react-icons/io";
 const JobsContainer = () => {
+  const navigate = useNavigate()
   const { data } = useAllJobsContext();
   const { jobs, totalJobs, numOfPages } = data;
 
   if (jobs.length === 0) {
     return (
       <div
-        className="bg-gradient-to-r from-[#1a0f2e] to-[#26143f] rounded-2xl !p-8 shadow-xl border
-       border-purple-500/20
-       text-center"
+        className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 text-center"
       >
-        <div className="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center !mx-auto !mb-4">
+        <div
+          className="w-20 h-20 bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] rounded-full flex items-center justify-center mx-auto mb-4"
+        >
           <svg
-            className="w-10 h-10 from-purple-800
-         to-purple-950"
+            className="w-10 h-10 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -30,24 +35,43 @@ const JobsContainer = () => {
           </svg>
         </div>
         <h3
-          className="text-2xl !font-sans !font-bold bg-gradient-to-r to-[#a5b4fc] !tracking-[-0.025em] from-white
-         !leading-[1.5] bg-clip-text text-transparent !mb-2"
+          className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-2"
         >
           No Jobs Found
         </h3>
-        <p className="text-gray-400">Try adjusting your search filters</p>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          Try adjusting your search filters or create a new job application.
+        </p>
+        {/* Add Your First Job */}
+        <button
+          onClick={()=>navigate("/dashboard")}
+          className="group my-5 relative !px-6 !py-3 bg-gradient-to-r from-purple-900 to-pink-800 
+            hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 
+            transform hover:scale-105 hover:shadow-2xl min-w-[150px] overflow-hidden
+            "
+        >
+          <span className="relative z-10 flex items-center justify-center !space-x-2">
+            <IoMdAdd className="w-4 h-4" />
+
+            <span>Add Your First Job</span>
+          </span>
+          {/* Animated background effect */}
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-pink-900 to-purple-900 
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </button>
       </div>
     );
   }
-
   return (
-    <div className="!space-y-6 w-full">
-      {/* Header Stats - Centered with Icon */}
-      <div className="text-center !mb-8">
-        {/* Icon above title */}
+    <div className="space-y-6 w-full">
+      {/* Header Stats */}
+      <div className="text-center mb-8">
         <div
-          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-800 to-purple-950 
-        rounded-2xl !mb-4 shadow-lg mx-auto !my-5"
+          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] rounded-2xl shadow-lg mx-auto mb-4"
         >
           <svg
             className="w-8 h-8 text-white"
@@ -64,19 +88,18 @@ const JobsContainer = () => {
           </svg>
         </div>
 
-        {/* Title and stats */}
         <h2
-          className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-3"
+          className="text-3xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-3"
         >
-          Job Listings
+          Job Applications
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
             {totalJobs} job{jobs.length > 1 && "s"} found
           </p>
-          <div className="bg-purple-500/20 !px-4 !py-2 rounded-xl border border-purple-500/30">
-            <span className=" !font-semibold">
+          <div className="bg-purple-100 dark:bg-purple-900 px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-800">
+            <span className="font-semibold text-purple-800 dark:text-purple-200">
               {jobs.length} Active
             </span>
           </div>
@@ -84,7 +107,7 @@ const JobsContainer = () => {
       </div>
 
       {/* Jobs Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
         {jobs.map((job) => (
           <Job key={job._id} {...job} />
         ))}
@@ -92,11 +115,12 @@ const JobsContainer = () => {
 
       {/* Pagination */}
       {numOfPages > 1 && (
-        <div className="!mt-10">
+        <div className="mt-10">
           <PageBtnContainer />
         </div>
       )}
     </div>
   );
 };
+
 export default JobsContainer;

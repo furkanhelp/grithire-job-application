@@ -1,6 +1,6 @@
 import { body, param, validationResult } from "express-validator";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "../errors/customErrors.js";
-import { JOB_STATUS, JOB_TYPE } from "../utils/constants.js";
+import { JOB_STATUS, JOB_TYPE, JOB_PRIORITY } from "../utils/constants.js";
 import mongoose from "mongoose";
 import Job from "../models/JobModel.js";
 import User from "../models/UserModel.js";
@@ -25,15 +25,77 @@ const withValidationErrors = (validateValues) => {
 };
 
 export const validateJobInput = withValidationErrors([
-  body("company").notEmpty().withMessage("company is required"),
-  body("position").notEmpty().withMessage("position is required"),
-  body("jobLocation").notEmpty().withMessage("job location is required"),
+  body("company")
+    .notEmpty()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("company is required"),
+
+  body("position")
+    .trim()
+    .isLength({ max: 100 })
+    .notEmpty()
+    .withMessage("position is required"),
+
+  body("jobLocation")
+    .trim()
+    .isLength({ max: 100 })
+    .notEmpty()
+    .withMessage("job location is required"),
+
   body("jobStatus")
     .isIn(Object.values(JOB_STATUS))
     .withMessage("invalid status value"),
+
   body("jobType")
     .isIn(Object.values(JOB_TYPE))
     .withMessage("invalid type value"),
+
+  body("priority")
+    .optional()
+    .isIn(Object.values(JOB_PRIORITY))
+    .withMessage("Invalid priority level"),
+
+  body("jobDescription")
+    .optional()
+    .trim()
+    .isLength({ max: 2000 })
+    .withMessage("Job description must be less than 2000 characters"),
+
+  body("requirements")
+    .optional()
+    .trim()
+    .isLength({ max: 1000 })
+    .withMessage("Requirements must be less than 1000 characters"),
+
+  body("contactEmail")
+    .optional()
+    .isEmail()
+    .withMessage("Please provide a valid email"),
+
+  body("applicationUrl")
+    .optional()
+    .isURL()
+    .withMessage("Please provide a valid URL"),
+
+  body("interviewDate")
+    .optional()
+    .isISO8601()
+    .withMessage("Please provide a valid date"),
+
+  body("applicationDeadline")
+    .optional()
+    .isISO8601()
+    .withMessage("Please provide a valid date"),
+  
+    (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
+      return res.status(400).json({ errors: errorMessages });
+    }
+    next();
+  },
 ]);
 
 export const validateIdParam = withValidationErrors([

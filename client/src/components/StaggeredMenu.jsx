@@ -1,5 +1,6 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState, } from "react";
 import { gsap } from "gsap";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/favicon.ico";
 
 export const StaggeredMenu = ({
@@ -21,6 +22,7 @@ export const StaggeredMenu = ({
   onMenuClose,
   onLogout,
 }) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
 
@@ -65,7 +67,6 @@ export const StaggeredMenu = ({
       }
       preLayerElsRef.current = preLayers;
 
-      
       const offscreen = position === "left" ? -100 : 100;
       gsap.set([panel, ...preLayers], { xPercent: offscreen });
 
@@ -81,7 +82,6 @@ export const StaggeredMenu = ({
     return () => ctx.revert();
   }, [menuButtonColor, position]);
 
-  
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
@@ -407,6 +407,44 @@ export const StaggeredMenu = ({
     onMenuClose,
   ]);
 
+  // In StaggeredMenu.jsx - Enhanced debug version
+  const handleItemClick = (e) => {
+    console.log("=== CLICK EVENT DEBUG ===");
+    console.log("Clicked item:", it.label);
+    console.log("Actual link:", actualLink);
+    console.log("Is external:", isExternal);
+    console.log("Menu open state:", openRef.current);
+    console.log("Event target:", e.target);
+    console.log("========================");
+
+    if (!isExternal && actualLink) {
+      e.preventDefault();
+      console.log(
+        `Preventing default and preparing to navigate to: ${actualLink}`
+      );
+
+      // Close menu
+      if (openRef.current) {
+        console.log("Closing menu...");
+        toggleMenu();
+      } else {
+        console.log("Menu already closed");
+      }
+
+      // Navigate after menu animation
+      setTimeout(() => {
+        console.log(`Navigating to: ${actualLink}`);
+        navigate(actualLink);
+      }, 300);
+    } else if (isExternal) {
+      console.log("External link - allowing default behavior");
+      // Let external links open normally
+    } else {
+      console.warn("No valid link found - preventing default");
+      e.preventDefault();
+    }
+  };
+
   return (
     <div
       className={`sm-scope z-40 ${
@@ -534,7 +572,7 @@ export const StaggeredMenu = ({
         >
           <div className="sm-panel-inner flex-1 flex flex-col !gap-4 sm:!gap-6">
             {/* Sidebar Header */}
-            <div className="sm-sidebar-header !p-4 sm:!p-4 !pt-16 sm:!pt-15 border-b border-gray-200">
+            <div className="sm-sidebar-header !p-4 sm:!p-4 !pt-16 sm:!pt-15 border-b border-gray-300">
               <div className="flex items-center !space-x-3">
                 <div
                   className="w-8 h-8 sm:w-10 sm:h-10 
@@ -559,10 +597,9 @@ export const StaggeredMenu = ({
                 </div>
               </div>
             </div>
-
             {/* User Info */}
             {user && (
-              <div className="!p-4 sm:!p-6 border-b border-gray-200 dark:border-gray-500">
+              <div className="!p-4 sm:!p-6  ">
                 <div className="flex items-center !space-x-3">
                   {user.avatar ? (
                     <img
@@ -590,8 +627,8 @@ export const StaggeredMenu = ({
                 </div>
               </div>
             )}
-
             {/* Navigation Items */}
+
             <ul
               className="sm-panel-list list-none m-0 !p-0 flex flex-col !gap-1 sm:!gap-2 flex-1 !px-4"
               role="list"
@@ -607,22 +644,49 @@ export const StaggeredMenu = ({
                     return null;
                   }
 
+                  const actualLink = it.link || it.href;
+                  const isExternal = actualLink?.startsWith("http");
+
+                  const handleItemClick = (e) => {
+                    if (!isExternal && actualLink) {
+                      e.preventDefault();
+                      // Close menu
+                      if (openRef.current) {
+                        toggleMenu();
+                      }
+
+                      setTimeout(() => {
+                        navigate(actualLink);
+                      }, 300);
+                    }
+                  };
+
                   return (
                     <li
-                      className="sm-panel-itemWrap relative overflow-hidden leading-none"
+                      className="sm-panel-itemWrap relative overflow-hidden leading-none whitespace-nowrap"
                       key={it.label + idx}
                     >
                       <a
                         className="sm-panel-item relative !font-sans !font-bold !text-2xl sm:!text-[2.5rem]
-            cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase 
-            duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
-                        href={it.link}
+              cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase 
+              duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]
+              flex items-center gap-4"
+                        href={isExternal ? actualLink : "/"}
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
                         aria-label={it.ariaLabel}
                         data-index={idx + 1}
+                        onClick={handleItemClick}
                       >
+                        {/* ADD ICON */}
+                        {it.icon && (
+                          <span className="text-xl sm:text-2xl flex-shrink-0">
+                            {it.icon}
+                          </span>
+                        )}
                         <span
                           className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] 
-              will-change-transform"
+                will-change-transform"
                         >
                           {it.label}
                         </span>
@@ -636,9 +700,9 @@ export const StaggeredMenu = ({
                   aria-hidden="true"
                 >
                   <span
-                    className="sm-panel-item relative  font-semibold !text-2xl sm:!text-[3rem] 
-                  cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase transition-[background,color] 
-                  duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
+                    className="sm-panel-item relative font-semibold !text-2xl sm:!text-[3rem] 
+          cursor-pointer leading-none !tracking-[-1px] sm:!tracking-[-2px] uppercase transition-[background,color] 
+          duration-150 ease-linear inline-block no-underline !pr-8 sm:!pr-[1.4em]"
                   >
                     <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                       No items
@@ -647,7 +711,6 @@ export const StaggeredMenu = ({
                 </li>
               )}
             </ul>
-
             {/* Logout Section */}
             <div className="sm-logout-section !p-4 border-t border-gray-200 !mt-auto">
               <div className="bg-gradient-to-r !rounded-xl !p-3 sm:!p-4">
@@ -675,11 +738,10 @@ export const StaggeredMenu = ({
                 </button>
               </div>
             </div>
-
             {/* Social Links */}
             {displaySocials && socialItems && socialItems.length > 0 && (
               <div
-                className="sm-socials !mt-4 !pt-4 flex flex-col !gap-3 border-t border-gray-200 !px-3"
+                className="sm-socials !mt-0 !pt-0 flex flex-col !gap-3 !px-3"
                 aria-label="Social links"
               >
                 <h3 className="sm-socials-title !m-0 text-sm sm:text-base font-medium !text-gray-500 dark:!text-gray-400">
