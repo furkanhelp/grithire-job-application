@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { JOB_STATUS, JOB_TYPE, JOB_SORT_BY } from "../utils/constants.js";
+import { JOB_STATUS, JOB_TYPE, JOB_PRIORITY } from "../utils/constants.js";
 
 const JobSchema = new mongoose.Schema(
   {
@@ -18,17 +18,12 @@ const JobSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
-      maxlength: 1000,
+      maxlength: 2000,
     },
     jobStatus: {
       type: String,
       enum: Object.values(JOB_STATUS),
       default: JOB_STATUS.PENDING,
-    },
-    jobSortBy: {
-      type: String,
-      enum: Object.values(JOB_SORT_BY),
-      default: JOB_SORT_BY.NEWEST_FIRST,
     },
     jobType: {
       type: String,
@@ -53,7 +48,7 @@ const JobSchema = new mongoose.Schema(
     requirements: {
       type: String,
       trim: true,
-      maxlength: 1000,
+      maxlength: 1500,
     },
     benefits: {
       type: String,
@@ -85,12 +80,11 @@ const JobSchema = new mongoose.Schema(
     notes: {
       type: String,
       trim: true,
-      maxlength: 2000,
     },
     priority: {
       type: String,
-      enum: ["low", "medium", "high"],
-      default: "medium",
+      enum: Object.values(JOB_PRIORITY),
+      default: JOB_PRIORITY.MEDIUM,
     },
     isRemote: {
       type: Boolean,
@@ -108,5 +102,6 @@ const JobSchema = new mongoose.Schema(
 
 JobSchema.index({ createdBy: 1, jobStatus: 1 });
 JobSchema.index({ createdBy: 1, createdAt: -1 });
+JobSchema.index({ createdBy: 1, priority: 1 }); 
 
 export default mongoose.model("Job", JobSchema);

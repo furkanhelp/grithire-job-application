@@ -552,7 +552,7 @@ const PillNav = ({
         </button>
       </nav>
 
-      {/* Modern Mobile Menu */}
+      {/* Modern Mobile Menu - FIXED */}
       <div
         ref={mobileMenuRef}
         className="lg:hidden fixed inset-0 z-[999] !backdrop-blur-xl"
@@ -562,23 +562,67 @@ const PillNav = ({
             : "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(178,137,255,0.98) 100%)",
         }}
       >
+        {/* Top Bar with Close button and Theme Toggle */}
+        <div className="flex justify-between items-center !p-6 !pb-4 border-b border-white/10">
+          {/* Logo and Title */}
+          <div className="flex items-center !space-x-3">
+            <img
+              src={logo}
+              alt={logoAlt}
+              className="w-10 h-10 rounded-full object-cover border border-white/30"
+            />
+            <h2
+              className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+            >
+              Grithire
+            </h2>
+          </div>
+
+          {/* Theme Toggle and Close button */}
+          <div className="flex items-center !space-x-3">
+            <div
+              onPointerDown={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <ThemeToggleButton />
+            </div>
+            <button
+              onClick={toggleMobileMenu}
+              className="!p-2 rounded-full bg-gradient-to-br from-white/70 to-white/20 border 
+              border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300"
+            >
+              <svg
+                className="w-5 h-5 dark:text-white text-black"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
         {/* Top Bar - unchanged */}
 
         {/* Menu Content */}
         <div className="flex flex-col !p-6 !pt-8 !h-[calc(100vh-80px)] !overflow-y-auto">
           {/* Navigation Links */}
           <ul className="!space-y-3 !mb-8">
-            {items.map((item, index) => {
-              const isActive = activeHref === item.link;
+            {items.map((item) => {
+              const isActive = activeHref === item.href;
               return (
-                <li key={generateUniqueKey(item, index)}>
-                  {" "}
-                  {/* FIXED KEY */}
-                  {isRouterLink(item.link) ? (
+                <li key={item.href}>
+                  {isRouterLink(item.href) ? (
                     <Link
-                      to={item.link}
+                      to={item.href}
                       className="block !py-3 !px-4 text-base font-medium rounded-xl transition-all 
-                        duration-200 hover:!scale-[1.02] hover:!shadow-md"
+                      duration-200 hover:!scale-[1.02] hover:!shadow-md"
                       style={{
                         background: isActive
                           ? "#3f1d6e"
@@ -602,9 +646,9 @@ const PillNav = ({
                     </Link>
                   ) : (
                     <a
-                      href={item.link}
+                      href={item.href}
                       className="block !py-3 !px-4 text-base font-medium rounded-xl transition-all 
-                        duration-200 hover:!scale-[1.02] hover:!shadow-md"
+                      duration-200 hover:!scale-[1.02] hover:!shadow-md"
                       style={{
                         background: isActive
                           ? "var(--pill-bg, #fff)"

@@ -11,7 +11,12 @@ import {
   getUpcomingInterviews,
 } from "../controllers/jobController.js";
 import {validateJobInput, validateIdParam} from '../middleware/validationMiddleware.js';
-import { checkForTestUser } from "../middleware/authMiddleware.js";
+import {
+  checkForTestUser,
+  authenticateUser,
+} from "../middleware/authMiddleware.js";
+
+router.use(authenticateUser);
 
 router.route('/')
 .get(getAllJobs)

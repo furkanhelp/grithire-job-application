@@ -1,39 +1,36 @@
-// pages/JobDetails.jsx
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import customFetch from "../utils/customFetch";
 import { useToast } from "../hooks/useToast";
-import {
-  FaLocationArrow,
-  FaBriefcase,
-  FaCalendarAlt,
-  FaDollarSign,
-  FaClock,
-  FaUserTie,
-  FaBuilding,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaEnvelope,
-  FaGlobe,
-  FaArrowLeft,
-  FaEdit,
-  FaTrash,
-  FaCopy,
-  FaExternalLinkAlt,
-  FaStar,
-  FaRegStar,
-  FaHome,
-  FaListUl,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaExclamationTriangle,
-} from "react-icons/fa";
-import { MdInsights, MdWork, MdDescription, MdPayment } from "react-icons/md";
-import { RiFocus2Line, RiCalendarScheduleLine } from "react-icons/ri";
-import { BiTimeFive, BiNote } from "react-icons/bi";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
+//React Icons
+import { FaBriefcase } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
+import { FaDollarSign } from "react-icons/fa";
+import { FaClock } from "react-icons/fa";
+import { FaUserTie } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaPhone} from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { FaCopy } from "react-icons/fa";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+import { FaHome} from "react-icons/fa";
+import { FaListUl } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
+import { FaTimesCircle } from "react-icons/fa";
+import {FaExclamationTriangle,} from "react-icons/fa";
+import { RiFocus2Line, RiCalendarScheduleLine } from "react-icons/ri";
+import { BiTimeFive, BiNote } from "react-icons/bi";
+import { MdInsights, MdWork, MdDescription, MdPayment } from "react-icons/md";
 
 day.extend(advancedFormat);
 day.extend(relativeTime);
@@ -77,7 +74,7 @@ const JobDetails = () => {
 
   // Status color mapping
   const statusColors = {
-    pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+    pending: "bg-yellow 700/80 text-yellow-700 border-yellow-700/30",
     interview: "bg-blue-500/20 text-blue-300 border-blue-500/30",
     declined: "bg-red-500/20 text-red-300 border-red-500/30",
     offer: "bg-green-500/20 text-green-300 border-green-500/30",
@@ -88,7 +85,7 @@ const JobDetails = () => {
   // Priority color mapping
   const priorityColors = {
     high: "bg-red-500/20 text-red-300 border-red-500/30",
-    medium: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+    medium: "bg-yellow-700/80 text-yellow-300 border-yellow-500/30",
     low: "bg-green-500/20 text-green-300 border-green-500/30",
   };
 
@@ -166,7 +163,10 @@ const JobDetails = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <FaTimesCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2
+            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-2"
+          >
             Failed to Load Job
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -175,7 +175,7 @@ const JobDetails = () => {
           </p>
           <button
             onClick={() => navigate("/dashboard/all-jobs")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-purple-600 text-gray-600 dark:text-gray-400 px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
           >
             Back to Jobs
           </button>
@@ -185,25 +185,32 @@ const JobDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-5 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
           <div className="flex-1">
             <button
               onClick={() => navigate("/dashboard/all-jobs")}
-              className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 mb-6 transition-colors duration-200 group"
+              className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 
+              hover:text-purple-600 dark:hover:text-purple-400 mb-6 transition-colors duration-200 group"
             >
               <FaArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="font-medium">Back to Jobs</span>
             </button>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+              <div
+                className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl 
+              flex items-center justify-center text-white font-bold text-2xl shadow-lg"
+              >
                 {job.company.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1">
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                <h1
+                  className="text-3xl lg:text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-3"
+                >
                   {job.position}
                 </h1>
                 <div className="flex flex-wrap items-center gap-3">
@@ -225,7 +232,10 @@ const JobDetails = () => {
                       Priority
                     </span>
                     {job.isRemote && (
-                      <span className="px-3 py-1 rounded-full text-sm font-semibold border bg-green-500/20 text-green-300 border-green-500/30">
+                      <span
+                        className="px-3 py-1 rounded-full text-sm font-semibold border bg-green-500/20 
+                      text-green-300 border-green-500/30"
+                      >
                         Remote
                       </span>
                     )}
@@ -238,23 +248,27 @@ const JobDetails = () => {
           <div className="flex gap-3">
             <button
               onClick={handleDuplicateJob}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200"
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 
+              text-gray-700 dark:text-gray-300 rounded-lg shadow-2xl hover:border-gray-400 dark:hover:border-gray-500 
+              transition-all duration-200"
             >
               <FaCopy className="w-4 h-4" />
               Duplicate
             </button>
             <button
               onClick={() => navigate(`/dashboard/edit-job/${job._id}`)}
-              className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg 
+              hover:bg-blue-700 transition-colors duration-200 font-medium"
             >
               <FaEdit className="w-4 h-4" />
               Edit Job
             </button>
             <button
               onClick={handleDeleteJob}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg 
+              hover:bg-red-700 transition-colors duration-200 font-medium"
             >
-              <FaTrash className="w-4 h-4" />
+              <FaTrash className="w-4 h-4 font-medium" />
               Delete
             </button>
           </div>
@@ -264,14 +278,20 @@ const JobDetails = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Job Overview Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+            <div
+              className="bg-gradient-to-tr 
+           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h2
+                className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-6 flex items-center gap-3"
+              >
                 <MdWork className="w-6 h-6 text-purple-600" />
                 Job Overview
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <InfoItem
                     icon={<FaBuilding className="w-5 h-5 text-purple-600" />}
                     label="Company"
@@ -330,16 +350,21 @@ const JobDetails = () => {
                 </div>
               </div>
             </div>
-
             {/* Job Description & Requirements */}
             {(job.jobDescription || job.requirements) && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+              <div
+                className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+                to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 "
+              >
+                <h2
+                  className="text-2xl justify-center !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+                >
                   <MdDescription className="w-6 h-6 text-purple-600" />
                   Position Details
                 </h2>
 
-                <div className="space-y-6">
+                <div className="space-y-6 ">
                   {job.jobDescription && (
                     <Section
                       title="Job Description"
@@ -364,15 +389,21 @@ const JobDetails = () => {
                 </div>
               </div>
             )}
-
             {/* Application Timeline */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+
+            <div
+              className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+                to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h2
+                className="text-2xl justify-center !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+                  bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+              >
                 <RiCalendarScheduleLine className="w-6 h-6 text-purple-600" />
                 Application Timeline
               </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <TimelineItem
                   status="completed"
                   title="Application Submitted"
@@ -426,12 +457,18 @@ const JobDetails = () => {
 
             {/* Notes Section */}
             {job.notes && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
+              <div
+                className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+                to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+              >
+                <h2
+                  className="text-2xl justify-center !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
+                >
                   <BiNote className="w-6 h-6 text-purple-600" />
                   Notes
                 </h2>
-                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                <p className="text-gray-800 dark:text-gray-300 whitespace-pre-line !leading-[1.5]">
                   {job.notes}
                 </p>
               </div>
@@ -441,11 +478,17 @@ const JobDetails = () => {
           {/* Sidebar */}
           <div className="space-y-8">
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div
+              className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+              to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h3
+                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+              >
                 Quick Actions
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-5">
                 <ActionButton
                   icon={<FaEdit className="w-4 h-4" />}
                   label="Edit Job Details"
@@ -484,8 +527,14 @@ const JobDetails = () => {
             </div>
 
             {/* Important Dates */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div
+              className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+              to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h3
+                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+              >
                 Important Dates
               </h3>
               <div className="space-y-4">
@@ -516,11 +565,17 @@ const JobDetails = () => {
 
             {/* Contact Information */}
             {(job.contactEmail || job.contactPhone) && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <div
+                className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+              to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+              >
+                <h3
+                  className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+                >
                   Contact Information
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-5">
                   {job.contactEmail && (
                     <ContactItem
                       icon={<FaEnvelope className="w-4 h-4" />}
@@ -551,11 +606,17 @@ const JobDetails = () => {
             )}
 
             {/* Status Overview */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div
+              className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] 
+              to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h3
+                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+              >
                 Status Overview
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <StatusItem
                   label="Current Status"
                   value={job.jobStatus}
@@ -587,7 +648,7 @@ const InfoItem = ({ icon, label, value }) => (
       {icon}
     </div>
     <div>
-      <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-sm text-gray-300 dark:text-gray-400">{label}</p>
       <p className="font-semibold text-gray-900 dark:text-white">{value}</p>
     </div>
   </div>
@@ -595,11 +656,18 @@ const InfoItem = ({ icon, label, value }) => (
 
 const Section = ({ title, content, icon }) => (
   <div>
-    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-      {icon}
+    <h4
+      className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+      bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5 flex items-center gap-2"
+      >
+        <div className="text-black dark:text-white">
+
+      {icon} 
+        </div>
       {title}
     </h4>
-    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+    <h4></h4>
+    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line !leading-[1.5]">
       {content}
     </p>
   </div>
@@ -625,13 +693,13 @@ const TimelineItem = ({ status, title, date, icon }) => (
             ? "text-green-600 dark:text-green-400"
             : status === "failed"
             ? "text-red-600 dark:text-red-400"
-            : "text-gray-600 dark:text-gray-400"
+            : "text-gray-700 dark:text-gray-300"
         }`}
       >
         {title}
       </p>
       {date && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{date}</p>
+        <p className="text-sm text-gray-300 dark:text-gray-500">{date}</p>
       )}
     </div>
   </div>
@@ -645,11 +713,11 @@ const ActionButton = ({
   variant = "secondary",
 }) => {
   const baseClasses =
-    "w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition-all duration-200";
+    "w-full cursor-pointer flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200";
   const variantClasses = {
     primary: "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400",
     secondary:
-      "border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 disabled:opacity-50",
+      "border  border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 disabled:opacity-50",
     danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-400",
   };
 
@@ -657,7 +725,7 @@ const ActionButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${baseClasses} ${variantClasses[variant]}`}
+      className={`${baseClasses} ${variantClasses[variant]} `}
     >
       {icon}
       {label}
@@ -667,7 +735,7 @@ const ActionButton = ({
 
 const DateItem = ({ label, date, icon, isPast = false }) => (
   <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 ">
       <div
         className={`w-8 h-8 rounded-lg flex items-center justify-center ${
           isPast ? "bg-red-100 dark:bg-red-900" : "bg-gray-100 dark:bg-gray-700"
@@ -683,7 +751,7 @@ const DateItem = ({ label, date, icon, isPast = false }) => (
           className={`text-xs ${
             isPast
               ? "text-red-600 dark:text-red-400"
-              : "text-gray-500 dark:text-gray-400"
+              : "text-gray-300 dark:text-gray-400"
           }`}
         >
           {date || "Not set"}
@@ -703,14 +771,15 @@ const ContactItem = ({ icon, label, value, href, isExternal = false }) => (
     href={href}
     target={isExternal ? "_blank" : "_self"}
     rel={isExternal ? "noopener noreferrer" : ""}
-    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-600 transition-colors duration-200"
+    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 
+    hover:border-purple-300 dark:hover:border-purple-600 transition-colors duration-200"
   >
     <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
       {icon}
     </div>
     <div className="flex-1">
-      <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
-      <p className="font-medium text-gray-900 dark:text-white">{value}</p>
+      <p className="text-sm text-gray-900 dark:text-gray-400">{label}</p>
+      <p className="font-medium text-gray-300 dark:text-white">{value}</p>
     </div>
     {isExternal && <FaExternalLinkAlt className="w-4 h-4 text-gray-400" />}
   </a>
@@ -718,7 +787,7 @@ const ContactItem = ({ icon, label, value, href, isExternal = false }) => (
 
 const StatusItem = ({ label, value, color }) => (
   <div className="flex items-center justify-between">
-    <span className="text-gray-600 dark:text-gray-400">{label}</span>
+    <span className="text-gray-300 dark:text-gray-400">{label}</span>
     <span
       className={`px-3 py-1 rounded-full text-sm font-semibold border ${
         color ||

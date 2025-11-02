@@ -157,7 +157,7 @@ const FormRowDate = ({
             value={formatDisplayDate(selectedDate)}
             placeholder="Select date"
             onClick={() => setIsOpen(!isOpen)}
-            className={`w-full !px-4 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black 
+            className={`w-full !px-4 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-transparent 
                focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 
                cursor-pointer pr-12 ${className}`}
           />

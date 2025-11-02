@@ -4,7 +4,9 @@ import {
   FormRowSelect,
   SubmitBtn,
   FormRowTextarea,
+
 } from "../components";
+import FormRowDate from "../components/FormRowDate";
 import {
   useLoaderData,
   useParams,
@@ -12,22 +14,31 @@ import {
   useNavigation,
   useNavigate,
 } from "react-router-dom";
+
+//React Icons
+import { FaBriefcase } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaDollarSign } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
+import { FaPhone } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa";
+import { FaStickyNote } from "react-icons/fa";
+import { FaExclamationTriangle } from "react-icons/fa";
 import {
-  FaBriefcase,
-  FaBuilding,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaDollarSign,
-  FaEnvelope,
-  FaPhone,
-  FaGlobe,
-  FaStickyNote,
-  FaExclamationTriangle,
   FaCheckCircle,
   FaArrowLeft,
+  FaHome,
 } from "react-icons/fa";
+
 import { MdDescription, MdWork, MdPayment } from "react-icons/md";
-import { JOB_STATUS, JOB_TYPE, JOB_PRIORITY } from "../../../utils/constants";
+import {
+  JOB_STATUS,
+  JOB_TYPE,
+  JOB_PRIORITY,
+  JOB_REMOTE,
+  JOB_REMOTE_LABELS,
+} from "../../../utils/constants";
 import { Form } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
 import customFetch from "../utils/customFetch";
@@ -59,6 +70,7 @@ export const loader =
     }
   };
 
+
 export const action =
   (queryClient) =>
   async ({ request, params }) => {
@@ -72,19 +84,17 @@ export const action =
       }
     });
 
+    // Convert boolean fields
+    if (data.isRemote) {
+      data.isRemote = data.isRemote === "true";
+    }
+
     // Convert date strings to ISO format
     if (data.interviewDate) {
       data.interviewDate = new Date(data.interviewDate).toISOString();
     }
     if (data.applicationDeadline) {
-      data.applicationDeadline = new Date(
-        data.applicationDeadline
-      ).toISOString();
-    }
-
-    // Convert boolean fields
-    if (data.isRemote) {
-      data.isRemote = data.isRemote === "true";
+      data.applicationDeadline = new Date(data.applicationDeadline).toISOString();
     }
 
     try {
@@ -97,10 +107,37 @@ export const action =
         message: "Job updated successfully",
       };
     } catch (error) {
-      return {
-        success: false,
-        error: error?.response?.data?.msg || "Failed to update job",
-      };
+      console.error('Update job error:', error.response?.data);
+      
+      // IMPROVED ERROR HANDLING-Show specific validation errors
+      const serverError = error?.response?.data;
+      
+      if (serverError?.errors && Array.isArray(serverError.errors)) {
+        // Show all validation errors
+        const errorMessages = serverError.errors.join(', ');
+        return {
+          success: false,
+          error: errorMessages,
+        };
+      } else if (serverError?.error) {
+        // Single error message
+        return {
+          success: false,
+          error: serverError.error,
+        };
+      } else if (serverError?.msg) {
+        // Alternative error format
+        return {
+          success: false,
+          error: serverError.msg,
+        };
+      } else {
+        // Fallback generic error
+        return {
+          success: false,
+          error: error?.response?.data?.msg || "Failed to update job",
+        };
+      }
     }
   };
 
@@ -111,6 +148,13 @@ const EditJob = () => {
   const actionData = useActionData();
   const navigation = useNavigation();
   const hasShownToastRef = React.useRef(false);
+
+  // Reset toast ref when form submission starts
+  React.useEffect(() => {
+    if (navigation.state === "submitting") {
+      hasShownToastRef.current = false;
+    }
+  }, [navigation.state]);
 
   // Handle loader errors
   React.useEffect(() => {
@@ -131,11 +175,18 @@ const EditJob = () => {
         toast.success("Success!", actionData.message);
         setTimeout(() => {
           navigate(`/dashboard/job-details/${id}`, {
-            state: { timestamp: Date.now() },
+            state: { timestamp: Date.now() }, // Force refresh
           });
         }, 1500);
       } else if (actionData.error) {
-        toast.error("Error", actionData.error);
+        let errorMessage = actionData.error;
+        if (actionData.error.includes(",")) {
+          const errors = actionData.error.split(", ");
+          errorMessage = `Please fix the following issues:\n• ${errors.join(
+            "\n• "
+          )}`;
+        }
+        toast.error("Validation Error", errorMessage);
       }
     }
   }, [actionData, toast, navigate, id]);
@@ -180,13 +231,14 @@ const EditJob = () => {
     : "";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-5 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <button
             onClick={() => navigate(`/dashboard/job-details/${job._id}`)}
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 mb-6 transition-colors duration-200 group"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 
+            hover:text-purple-600 dark:hover:text-purple-400 mb-6 transition-colors duration-200 group"
           >
             <FaArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back to Job Details</span>
@@ -207,19 +259,25 @@ const EditJob = () => {
               />
             </svg>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+          <h1
+            className="text-3xl lg:text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-3"
+          >
             Edit Job Position
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl !mx-auto">
             Update the job details below. All changes will be reflected
             immediately.
           </p>
         </div>
 
-        {/* Current Job Info Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        {/* Job Info Card */}
+        <div className=" rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3
+              className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+            >
               Current Job Details
             </h3>
             <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm font-medium">
@@ -249,21 +307,30 @@ const EditJob = () => {
         </div>
 
         {/* Edit Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Form Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-5">
-            <h2 className="text-xl font-bold text-white flex items-center gap-3">
-              <FaBriefcase className="w-6 h-6" />
+          <div
+            className="bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
+       to-[#c19ef3] px-6 py-5"
+          >
+            <h2
+              className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 flex items-center gap-3"
+            >
+              <FaBriefcase className="w-6 h-6 text-white" />
               Update Job Information
             </h2>
           </div>
 
-          <Form method="post" className="p-6 space-y-8">
+          <Form method="post" className="p-6 space-y-10">
             {/* Basic Information Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <FaBuilding className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3
+                  className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+                >
                   Basic Information
                 </h3>
               </div>
@@ -276,6 +343,7 @@ const EditJob = () => {
                   defaultValue={job.position}
                   placeholder="e.g., Senior Frontend Developer"
                   icon={<FaBriefcase className="w-4 h-4" />}
+                  className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
 
                 <FormRow
@@ -285,6 +353,7 @@ const EditJob = () => {
                   defaultValue={job.company}
                   placeholder="e.g., Tech Corp Inc."
                   icon={<FaBuilding className="w-4 h-4" />}
+                  className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
 
                 <FormRow
@@ -294,6 +363,7 @@ const EditJob = () => {
                   defaultValue={job.jobLocation}
                   placeholder="e.g., San Francisco, CA"
                   icon={<FaMapMarkerAlt className="w-4 h-4" />}
+                  className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
 
                 <FormRow
@@ -303,15 +373,19 @@ const EditJob = () => {
                   defaultValue={job.salary}
                   placeholder="e.g., $80,000 - $100,000"
                   icon={<FaDollarSign className="w-4 h-4" />}
+                  className="!px-10 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
               </div>
             </div>
 
             {/* Job Details Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3 pb-5 border-b border-gray-200 dark:border-gray-700">
                 <MdWork className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3
+                  className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+                >
                   Job Details
                 </h3>
               </div>
@@ -341,19 +415,32 @@ const EditJob = () => {
                   icon={<FaExclamationTriangle className="w-4 h-4" />}
                 />
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Remote Work
-                  </label>
-                  <select
-                    name="isRemote"
-                    defaultValue={job.isRemote?.toString() || "false"}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  >
-                    <option value="false">On-site</option>
-                    <option value="true">Remote</option>
-                  </select>
-                </div>
+                <FormRowSelect
+                  name="isRemote"
+                  labelText="Work Type"
+                  list={Object.values(JOB_REMOTE)}
+                  defaultValue={job.isRemote?.toString() || JOB_REMOTE.ONSITE}
+                  displayFormat={(value) => JOB_REMOTE_LABELS[value]}
+                  icon={<FaHome className="w-4 h-4" />}
+                />
+
+                <FormRowDate
+                  type="datetime-local"
+                  name="interviewDate"
+                  labelText="Interview Date & Time"
+                  defaultValue=""
+                  required={false}
+                  className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                />
+
+                <FormRowDate
+                  type="date"
+                  name="applicationDeadline"
+                  labelText="Application Deadline"
+                  defaultValue=""
+                  required={false}
+                  className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                />
               </div>
             </div>
 
@@ -361,7 +448,7 @@ const EditJob = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <MdDescription className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70">
                   Position Details
                 </h3>
               </div>
@@ -370,24 +457,33 @@ const EditJob = () => {
                 name="jobDescription"
                 labelText="Job Description"
                 defaultValue={job.jobDescription}
+                maxLength={2000}
                 placeholder="Describe the role, responsibilities, and what you'll be working on..."
                 rows={6}
+                resize="vertical"
+                className="!px-2 !py-2 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
 
               <FormRowTextarea
                 name="requirements"
                 labelText="Requirements & Qualifications"
                 defaultValue={job.requirements}
+                maxLength={1500}
                 placeholder="List the required skills, experience, and qualifications..."
                 rows={4}
+                resize="vertical"
+                className="!px-2 !py-2 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
 
               <FormRowTextarea
                 name="benefits"
                 labelText="Benefits & Perks"
                 defaultValue={job.benefits}
+                maxLength={1000}
                 placeholder="Describe the benefits, perks, and company culture..."
                 rows={4}
+                resize="vertical"
+                className="!px-2 !py-2 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
             </div>
 
@@ -395,12 +491,15 @@ const EditJob = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <FaEnvelope className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3
+                  className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70"
+                >
                   Contact & Application
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <FormRow
                   type="email"
                   name="contactEmail"
@@ -408,6 +507,7 @@ const EditJob = () => {
                   defaultValue={job.contactEmail}
                   placeholder="e.g., hiring@company.com"
                   icon={<FaEnvelope className="w-4 h-4" />}
+                  className="!px-10 !py-1 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
 
                 <FormRow
@@ -417,6 +517,7 @@ const EditJob = () => {
                   defaultValue={job.contactPhone}
                   placeholder="e.g., +1 (555) 123-4567"
                   icon={<FaPhone className="w-4 h-4" />}
+                  className="!px-10 !py-1 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
 
                 <FormRow
@@ -426,34 +527,7 @@ const EditJob = () => {
                   defaultValue={job.applicationUrl}
                   placeholder="e.g., https://company.com/careers/position"
                   icon={<FaGlobe className="w-4 h-4" />}
-                />
-              </div>
-            </div>
-
-            {/* Important Dates */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-                <FaCalendarAlt className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Important Dates
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <FormRow
-                  type="datetime-local"
-                  name="interviewDate"
-                  labelText="Interview Date & Time"
-                  defaultValue={interviewDate}
-                  icon={<FaCalendarAlt className="w-4 h-4" />}
-                />
-
-                <FormRow
-                  type="date"
-                  name="applicationDeadline"
-                  labelText="Application Deadline"
-                  defaultValue={applicationDeadline}
-                  icon={<FaCalendarAlt className="w-4 h-4" />}
+                  className="!px-10 !py-1 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
               </div>
             </div>
@@ -462,7 +536,7 @@ const EditJob = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <FaStickyNote className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70">
                   Additional Notes
                 </h3>
               </div>
@@ -473,6 +547,8 @@ const EditJob = () => {
                 defaultValue={job.notes}
                 placeholder="Add any additional notes, reminders, or thoughts about this application..."
                 rows={4}
+                resize="vertical"
+                className="!px-2 !py-2 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
             </div>
 
@@ -486,10 +562,11 @@ const EditJob = () => {
                 Cancel
               </button>
               <SubmitBtn
-                text="Update Job"
+                text="Edit Job"
                 submittingText="Updating Job..."
-                isSubmitting={navigation.state === "submitting"}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
+                className="text-white group relative !px-8 !py-4 bg-gradient-to-r from-purple-900 to-pink-800 
+            hover:from-purple-900 hover:to-pink-800 font-bold rounded-2xl shadow-2xl transition-all duration-300 
+            transform hover:scale-105 hover:shadow-2xl min-w-[150px] overflow-hidden"
               />
             </div>
           </Form>

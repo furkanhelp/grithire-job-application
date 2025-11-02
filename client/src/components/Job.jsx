@@ -11,6 +11,12 @@ import {
   FaRegStar,
   FaHome,
 } from "react-icons/fa";
+import {
+  FcMediumPriority,
+  FcLowPriority,
+  FcHighPriority,
+} from "react-icons/fc";
+import { FaDollarSign } from "react-icons/fa";
 import { Link, Form, useNavigate } from "react-router-dom";
 import JobInfo from "./JobInfo";
 import day from "dayjs";
@@ -95,11 +101,11 @@ const Job = ({
   const getPriorityIcon = (priority) => {
     switch (priority) {
       case "high":
-        return <FaStar className="w-3 h-3 text-red-400" />;
+        return <FcHighPriority className="w-5 h-5 text-red-400" />;
       case "medium":
-        return <FaStar className="w-3 h-3 text-yellow-400" />;
+        return <FcMediumPriority className="w-5 h-5 text-yellow-400" />;
       case "low":
-        return <FaRegStar className="w-3 h-3 text-green-400" />;
+        return <FcLowPriority className="w-5 h-5 text-green-400"/>;
       default:
         return <FaRegStar className="w-3 h-3 text-gray-400" />;
     }
@@ -134,13 +140,13 @@ const Job = ({
         </div>
         <div className="flex flex-col items-end gap-2 flex-shrink-0 ">
           <span
-            className={`px-1.5 py-1  rounded-full text-xs font-semibold border ${statusColor}`}
+            className={`px-3 py-1 rounded-full text-sm font-semibold border ${statusColor}`}
           >
             {jobStatus.charAt(0).toUpperCase() + jobStatus.slice(1)}
           </span>
           <div className="flex items-center gap-1 mt-1 mx-1">
             {getPriorityIcon(priority)}
-            <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+            <span className="text-xs text-gray-500 px-3 py-1 rounded-full font-semibold border dark:text-gray-400 capitalize">
               {priority}
             </span>
           </div>
@@ -162,7 +168,7 @@ const Job = ({
           <JobInfo icon={<FaHome className="w-4 h-4" />} text="Remote" />
         )}
         {salary && (
-          <JobInfo icon={<FaBriefcase className="w-4 h-4" />} text={salary} />
+          <JobInfo icon={<FaDollarSign className="w-4 h-4" />} text={salary} />
         )}
       </div>
 

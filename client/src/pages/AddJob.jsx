@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import customFetch from "../utils/customFetch";
 import {
   FormRow,
   FormRowSelect,
@@ -6,7 +7,7 @@ import {
 
   SubmitBtn,
 } from "../components";
-import { Form, useActionData, useNavigate } from "react-router-dom";
+import { Form, useActionData, useNavigate, useNavigation } from "react-router-dom";
 import {
   JOB_STATUS,
   JOB_TYPE,
@@ -29,11 +30,14 @@ import {
 } from "react-icons/fa";
 import FormRowDate from "../components/FormRowDate";
 
+// In AddJob action - update the error handling
 export const action =
   (queryClient) =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
+
+    console.log('AddJob Form data received:', data); // Debug log
 
     // Convert empty strings to null for optional fields
     Object.keys(data).forEach((key) => {
@@ -47,15 +51,15 @@ export const action =
       data.interviewDate = new Date(data.interviewDate).toISOString();
     }
     if (data.applicationDeadline) {
-      data.applicationDeadline = new Date(
-        data.applicationDeadline
-      ).toISOString();
+      data.applicationDeadline = new Date(data.applicationDeadline).toISOString();
     }
 
     // Convert boolean fields
     if (data.isRemote) {
       data.isRemote = data.isRemote === "true";
     }
+
+    console.log('AddJob Data after processing:', data); // Debug log
 
     try {
       await customFetch.post("/jobs", data);
@@ -65,10 +69,37 @@ export const action =
         message: "Job added successfully",
       };
     } catch (error) {
-      return {
-        success: false,
-        error: error?.response?.data?.msg,
-      };
+      console.error('AddJob error:', error.response?.data); // Debug log
+      
+      // IMPROVED ERROR HANDLING - Show specific validation errors
+      const serverError = error?.response?.data;
+      
+      if (serverError?.errors && Array.isArray(serverError.errors)) {
+        // Show all validation errors
+        const errorMessages = serverError.errors.join(', ');
+        return {
+          success: false,
+          error: errorMessages,
+        };
+      } else if (serverError?.error) {
+        // Single error message
+        return {
+          success: false,
+          error: serverError.error,
+        };
+      } else if (serverError?.msg) {
+        // Alternative error format
+        return {
+          success: false,
+          error: serverError.msg,
+        };
+      } else {
+        // Fallback generic error
+        return {
+          success: false,
+          error: error?.response?.data?.msg || "Failed to add job",
+        };
+      }
     }
   };
 
@@ -77,18 +108,41 @@ const AddJob = () => {
   const actionData = useActionData();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const navigation = useNavigation();
   const hasShownToastRef = useRef(false);
 
+  // Reset toast ref when form submission starts
+  useEffect(() => {
+    if (navigation.state === "submitting") {
+      hasShownToastRef.current = false;
+    }
+  }, [navigation.state]);
+
+  // Handle action data responses
   useEffect(() => {
     if (actionData && !hasShownToastRef.current) {
       hasShownToastRef.current = true;
+
       if (actionData.success) {
-        toast.success(actionData.message, "");
+        toast.success("Success!", actionData.message);
         setTimeout(() => {
-          navigate("/dashboard/all-jobs");
-        }, 2000);
-      } else {
-        toast.error("Error", actionData.error);
+          navigate("/dashboard/all-jobs", {
+            state: { timestamp: Date.now() }, // Add state to force refresh
+          });
+        }, 1500);
+      } else if (actionData.error) {
+        // Format the error message as plain text
+        let errorMessage = actionData.error;
+
+        // If it's multiple errors, format them as a simple text list
+        if (actionData.error.includes(",")) {
+          const errors = actionData.error.split(", ");
+          errorMessage = `Please fix the following issues:\n• ${errors.join(
+            "\n• "
+          )}`;
+        }
+
+        toast.error("Validation Error", errorMessage);
       }
     }
   }, [actionData, toast, navigate]);
@@ -97,8 +151,8 @@ const AddJob = () => {
     <div className="w-full">
       <div className="text-center !mb-8">
         <div
-          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr 
-           dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] rounded-2xl !mb-4 shadow-lg"
+          className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr dark:from-[#481f81]
+           dark:to-[#000000] from-[#7314f8] to-[#c19ef3] rounded-2xl !mb-4 shadow-lg"
         >
           <svg
             className="w-8 h-8 text-white"
@@ -265,15 +319,9 @@ const AddJob = () => {
           </div>
         </div>
 
-        {/* Job Description & Requirements */}
-        <div
-          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
-       to-[#c19ef3] border-gray-500/50"
-        >
-          <h3
-            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
-          >
+        {/* Job Description & Requirements Section */}
+        <div className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] border-gray-500/50">
+          <h3 className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3">
             <FaStickyNote className="w-6 h-6 text-purple-600" />
             Position Details
           </h3>
@@ -283,27 +331,33 @@ const AddJob = () => {
               name="jobDescription"
               labelText="Job Description"
               defaultValue=""
+              maxLength={2000}
               placeholder="Describe the role, responsibilities, and what you'll be working on..."
               rows={6}
-              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              resize="vertical"
+              className="!px-4 !py-4 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
             />
 
             <FormRowTextarea
               name="requirements"
               labelText="Requirements & Qualifications"
               defaultValue=""
+              maxLength={1500}
               placeholder="List the required skills, experience, and qualifications..."
               rows={4}
-              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              resize="vertical"
+              className="!px-4 !py-4 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
             />
 
             <FormRowTextarea
               name="benefits"
               labelText="Benefits & Perks"
               defaultValue=""
+              maxLength={1000}
               placeholder="Describe the benefits, perks, and company culture..."
               rows={4}
-              className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl  focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              resize="vertical"
+              className="!px-4 !py-4 rounded-2xl focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
             />
           </div>
         </div>
@@ -354,15 +408,9 @@ const AddJob = () => {
           </div>
         </div>
 
-        {/* Additional Notes */}
-        <div
-          className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8]
-       to-[#c19ef3] border-gray-500/50"
-        >
-          <h3
-            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
-          >
+        {/* Additional Notes Section */}
+        <div className="rounded-3xl !p-10 shadow-2xl border bg-gradient-to-tr dark:from-[#481f81] dark:to-[#000000] from-[#7314f8] to-[#c19ef3] border-gray-500/50">
+          <h3 className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3">
             <FaStickyNote className="w-6 h-6 text-purple-600" />
             Additional Notes
           </h3>
@@ -373,31 +421,20 @@ const AddJob = () => {
             defaultValue=""
             placeholder="Add any additional notes, reminders, or thoughts about this application..."
             rows={4}
+            resize="vertical"
             className="!px-4 !py-4 border-2 border-gray-700 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
           />
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-center !pt-6">
-          <button
+          <SubmitBtn
             text="Add Job"
             submittingText="Adding Job..."
             className="group relative !px-8 !py-4 bg-gradient-to-r from-purple-900 to-pink-800 
-          hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 
-          transform hover:scale-105 hover:shadow-2xl min-w-[150px] overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center justify-center !space-x-3">
-            
-              <FaCheck className="w-4 h-4" />
-              <span>Submit</span>
-            </span>
-
-            {/* Animated background effect */}
-            <div
-              className="absolute inset-0 bg-gradient-to-r from-pink-900 to-purple-900 
-            opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            ></div>
-          </button>
+    hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl shadow-2xl transition-all duration-300 
+    transform hover:scale-105 hover:shadow-2xl min-w-[150px] overflow-hidden"
+          />
         </div>
       </Form>
     </div>

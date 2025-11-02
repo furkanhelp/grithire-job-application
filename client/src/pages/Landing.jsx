@@ -1,27 +1,26 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import logo from "../assets/images/favicon.ico";
-import Iridescence from "../components/Iridescence";
-import React from "react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import useToast from "../hooks/useToast";
-import PillNav from "../components/PillNav";
-import SentenceFlip from "../components/SentenceFlip";
-import AnimatedGradientButton from "../components/Button";
-import LogoLoop from "../components/LogoLoop";
-import {
-  SiAmazon,
-  SiGoogle,
-  SiNetflix,
-  SiSpotify,
-  SiUber,
-  SiAirbnb,
-  SiStripe,
-  SiSlack,
-  SiFigma,
-} from "react-icons/si";
+import logo from "../assets/images/favicon.ico";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+//React Icons
+import { SiAmazon } from "react-icons/si";
+import { SiGoogle } from "react-icons/si";
+import { SiNetflix } from "react-icons/si";
+import { SiSpotify } from "react-icons/si";
+import { SiUber } from "react-icons/si";
+import { SiAirbnb } from "react-icons/si";
+import { SiStripe } from "react-icons/si";
+import { SiSlack } from "react-icons/si";
+import {SiFigma} from "react-icons/si";
 import { FaApple, FaSignOutAlt } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
+import PillNav from "../components/PillNav";
+import Iridescence from "../components/Iridescence";
+import SentenceFlip from "../components/SentenceFlip";
+import LogoLoop from "../components/LogoLoop";
 import ScrollReveal from "../components/ScrollReveal";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../components/ThemeContext";
@@ -31,6 +30,7 @@ import Testimonials from "../components/Testimonials";
 import PricingSection from "../components/PricingSection";
 import FAQSection from "../components/FAQSection";
 import Footer from "../components/Footer";
+import AnimatedGradientButton from "../components/Button";
 import LogoutContainer from "../components/LogoutContainer";
 
 const techLogos = [

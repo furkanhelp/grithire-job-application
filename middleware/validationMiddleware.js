@@ -27,29 +27,30 @@ const withValidationErrors = (validateValues) => {
 export const validateJobInput = withValidationErrors([
   body("company")
     .notEmpty()
+    .withMessage("Company name is required")
     .trim()
     .isLength({ max: 100 })
-    .withMessage("company is required"),
+    .withMessage("Company name must be less than 100 characters"),
 
   body("position")
+    .notEmpty()
+    .withMessage("Position is required")
     .trim()
     .isLength({ max: 100 })
-    .notEmpty()
-    .withMessage("position is required"),
+    .withMessage("Position must be less than 100 characters"),
 
   body("jobLocation")
+    .notEmpty()
+    .withMessage("Job location is required")
     .trim()
     .isLength({ max: 100 })
-    .notEmpty()
-    .withMessage("job location is required"),
+    .withMessage("Job location must be less than 100 characters"),
 
   body("jobStatus")
     .isIn(Object.values(JOB_STATUS))
-    .withMessage("invalid status value"),
+    .withMessage("Invalid job status"),
 
-  body("jobType")
-    .isIn(Object.values(JOB_TYPE))
-    .withMessage("invalid type value"),
+  body("jobType").isIn(Object.values(JOB_TYPE)).withMessage("Invalid job type"),
 
   body("priority")
     .optional()
@@ -65,18 +66,31 @@ export const validateJobInput = withValidationErrors([
   body("requirements")
     .optional()
     .trim()
-    .isLength({ max: 1000 })
-    .withMessage("Requirements must be less than 1000 characters"),
+    .isLength({ max: 1500 })
+    .withMessage("Requirements must be less than 1500 characters"),
+
+  body("benefits")
+    .optional()
+    .trim()
+    .isLength({ max: 1500 })
+    .withMessage("Benefits must be less than 1000 characters"),
 
   body("contactEmail")
     .optional()
     .isEmail()
-    .withMessage("Please provide a valid email"),
+    .withMessage("Please enter a valid email address (e.g., name@company.com)"),
+
+  body("contactPhone")
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage("Phone number must be less than 20 characters"),
 
   body("applicationUrl")
-    .optional()
+    .optional({ checkFalsy: true })
     .isURL()
-    .withMessage("Please provide a valid URL"),
+    .withMessage(
+      "Application URL must be a valid web address (e.g., https://example.com)"
+    ),
 
   body("interviewDate")
     .optional()
@@ -87,8 +101,12 @@ export const validateJobInput = withValidationErrors([
     .optional()
     .isISO8601()
     .withMessage("Please provide a valid date"),
-  
-    (req, res, next) => {
+
+  body("notes")
+    .optional()
+    .trim(),
+
+  (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((error) => error.msg);

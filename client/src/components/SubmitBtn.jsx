@@ -1,6 +1,8 @@
+// components/SubmitBtn.jsx
 import { useNavigation } from "react-router-dom";
+import { FaSpinner, FaCheck } from "react-icons/fa";
 
-const SubmitBtn = ({ formBtn = false, ...props }) => {
+const SubmitBtn = ({ text, submittingText, className = "", ...props }) => {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
@@ -8,15 +10,30 @@ const SubmitBtn = ({ formBtn = false, ...props }) => {
     <button
       type="submit"
       disabled={isSubmitting}
-      className={`btn btn-block ${
-        formBtn ? "form-btn" : ""
-      } bg-blue-500 hover:bg-blue-600 text-white 
-      dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-600
-      transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
-      ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`group relative !px-8 !py-4 bg-gradient-to-r from-purple-900 to-pink-800 
+                hover:from-purple-900 hover:to-pink-800 text-white font-bold rounded-2xl 
+                shadow-2xl transition-all duration-300 transform hover:scale-105 
+                hover:shadow-2xl min-w-[150px] overflow-hidden
+                flex items-center justify-center gap-3
+                ${isSubmitting ? "opacity-50 cursor-not-allowed transform-none" : ""} 
+                ${className}`}
       {...props}
-    >
-      {isSubmitting ? "submitting..." : props.children || "submit"}
+      >
+      
+      {/* Content */}
+      {isSubmitting ? (
+        <>
+          <FaSpinner className="w-4 h-4 animate-spin" />
+          <span>{submittingText}</span>
+        </>
+      ) : (
+        <>
+          <FaCheck className="w-4 h-4" />
+            {text}
+        </>
+      )}
+      
+      
     </button>
   );
 };

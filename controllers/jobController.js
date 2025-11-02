@@ -83,18 +83,53 @@ export const createJob = async (req, res) => {
 
 // GET SINGLE JOB
 export const getJob = async (req, res) => {
-  const job = await Job.findById(req.params.id);
-  res.status(StatusCodes.OK).json({ job });
+  try {
+    const job = await Job.findOne({
+      _id: req.params.id,
+      createdBy: req.user.userId,
+    });
+
+    if (!job) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: "Job not found",
+      });
+    }
+
+    res.status(StatusCodes.OK).json({ job });
+  } catch (error) {
+    console.error("Get job error:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Failed to fetch job",
+    });
+  }
 };
 
 // EDIT JOB
 export const updateJob = async (req, res) => {
-  const { id } = req.params;
-  const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({ job: updatedJob });
+  try {
+    const { id } = req.params;
+
+    // Check if job exists and belongs to user
+    const job = await Job.findOne({ _id: id, createdBy: req.user.userId });
+
+    if (!job) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: "Job not found",
+      });
+    }
+
+    const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(StatusCodes.OK).json({ job: updatedJob });
+  } catch (error) {
+    console.error("Update job error:", error);
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: error.message,
+    });
+  }
 };
 
  // DELETE JOB
@@ -103,83 +138,85 @@ export const deleteJob = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "job deleted", job: removedJob });
 };
 
+//STATS
 export const showStats = async (req, res) => {
-  let stats = await Job.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-    { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
-  ]);
+  try {
+    let stats = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+      { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
+    ]);
 
-  stats = stats.reduce((acc, curr) => {
-    const { _id: title, count } = curr;
-    acc[title] = count;
-    return acc;
-  }, {});
+    stats = stats.reduce((acc, curr) => {
+      const { _id: title, count } = curr;
+      acc[title] = count;
+      return acc;
+    }, {});
 
-  const defaultStats = {
-    pending: stats.pending || 0,
-    interview: stats.interview || 0,
-    declined: stats.declined || 0,
-    offer: stats.offer || 0,
-    accepted: stats.accepted || 0,
-    rejected: stats.rejected || 0,
-  };
+    const defaultStats = {
+      pending: stats.pending || 0,
+      interview: stats.interview || 0,
+      declined: stats.declined || 0,
+      offer: stats.offer || 0,
+      accepted: stats.accepted || 0,
+      rejected: stats.rejected || 0,
+    };
 
-  let monthlyApplications = await Job.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-    {
-      $group: {
-        _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
-        count: { $sum: 1 },
-      },
-    },
-    { $group: { _id: "$priority", count: { $sum: 1 } } },
-    { $sort: { "_id.year": -1, "_id.month": -1 } },
-    { $limit: 6 },
-  ]);
-  priorityStats = priorityStats.reduce((acc, curr) => {
-    const { _id: priority, count } = curr;
-    acc[priority] = count;
-    return acc;
-  }, {});
+    // Priority stats - FIXED: Separate aggregation
+    let priorityStats = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+      { $group: { _id: "$priority", count: { $sum: 1 } } },
+    ]);
 
-  // Monthly applications for the last 12 months
-  monthlyApplications = await Job.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-    {
-      $group: {
-        _id: {
-          year: { $year: "$createdAt" },
-          month: { $month: "$createdAt" },
+    priorityStats = priorityStats.reduce((acc, curr) => {
+      const { _id: priority, count } = curr;
+      acc[priority] = count;
+      return acc;
+    }, {});
+
+    // Monthly applications for the last 12 months
+    let monthlyApplications = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          count: { $sum: 1 },
         },
-        count: { $sum: 1 },
       },
-    },
-    { $sort: { "_id.year": -1, "_id.month": -1 } },
-    { $limit: 12 },
-  ]);
+      { $sort: { "_id.year": -1, "_id.month": -1 } },
+      { $limit: 12 },
+    ]);
 
-  monthlyApplications = monthlyApplications
-    .map((item) => {
-      const {
-        _id: { year, month },
-        count,
-      } = item;
+    monthlyApplications = monthlyApplications
+      .map((item) => {
+        const {
+          _id: { year, month },
+          count,
+        } = item;
 
-      const date = day()
-        .month(month - 1)
-        .year(year)
-        .format("MMM YY");
+        const date = day()
+          .month(month - 1)
+          .year(year)
+          .format("MMM YY");
 
-      return { date, count };
-    })
-    .reverse();
+        return { date, count };
+      })
+      .reverse();
 
-  res
-    .status(StatusCodes.OK)
-    .json({ defaultStats, monthlyApplications, priorityStats });
-
-  
-  };
+    res.status(StatusCodes.OK).json({
+      defaultStats,
+      monthlyApplications,
+      priorityStats,
+    });
+  } catch (error) {
+    console.error("Stats error:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Failed to fetch statistics",
+    });
+  }
+};
   
   export const getUpcomingInterviews = async (req, res) => {
     try {

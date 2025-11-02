@@ -1,4 +1,4 @@
-import React from "react";
+import { React, Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -47,13 +47,26 @@ const ProtectedRouteWrapper = ({ children }) => {
   return <ProtectedRoute>{children}</ProtectedRoute>;
 };
 
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+  </div>
+);
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
     errorElement: <Error />,
     children: [
-      { index: true, element: <Landing /> },
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Landing />
+          </Suspense>
+        ),
+      },
       {
         path: "register",
         element: <Register />,
@@ -105,10 +118,10 @@ const router = createBrowserRouter([
             loader: editJobLoader(queryClient),
             action: editJobAction(queryClient),
           },
-           {
+          {
             path: "job-details/:id",
             element: <JobDetails />,
-            loader: jobDetailsLoader(queryClient), 
+            loader: jobDetailsLoader(queryClient),
             errorElement: <ErrorElement />,
           },
           {
