@@ -36,8 +36,7 @@ export const action =
       };
     } catch (error) {
       console.error("Login action error:", error);
-
-      // network error vs server error
+      
       const serverMsg = error?.response?.data?.msg;
       const status = error?.response?.status;
       const message = serverMsg || error?.message || "Login failed.";

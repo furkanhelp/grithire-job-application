@@ -253,7 +253,7 @@ const JobDetails = () => {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
               onClick={handleDuplicateJob}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 
@@ -284,7 +284,7 @@ const JobDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-10">
             {/* Job Overview Card */}
             <div
               className="bg-gradient-to-tr 
@@ -292,7 +292,7 @@ const JobDetails = () => {
             >
               <h2
                 className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-6 flex items-center gap-3"
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-3"
               >
                 <MdWork className="w-6 h-6 text-purple-600" />
                 Job Overview
@@ -491,8 +491,8 @@ const JobDetails = () => {
               to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
             >
               <h3
-                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+                className="!text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10"
               >
                 Quick Actions
               </h3>
@@ -540,8 +540,8 @@ const JobDetails = () => {
               to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
             >
               <h3
-                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+                className="!text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10"
               >
                 Important Dates
               </h3>
@@ -578,12 +578,12 @@ const JobDetails = () => {
               to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
               >
                 <h3
-                  className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+                  className="!text-3xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10"
                 >
                   Contact Information
                 </h3>
-                <div className="space-y-5">
+                <div className="space-y-5 ">
                   {job.contactEmail && (
                     <ContactItem
                       icon={<FaEnvelope className="w-4 h-4" />}
@@ -619,8 +619,8 @@ const JobDetails = () => {
               to-[#c19ef3] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
             >
               <h3
-                className="text-xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5"
+                className="!text-4xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
+              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10"
               >
                 Status Overview
               </h3>
@@ -666,7 +666,7 @@ const Section = ({ title, content, icon }) => (
   <div>
     <h4
       className="text-lg !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-      bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-5 flex items-center gap-2"
+      bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-10 flex items-center gap-2"
       >
         <div className="text-black dark:text-white">
 
@@ -741,57 +741,73 @@ const ActionButton = ({
   );
 };
 
-const DateItem = ({ label, date, icon, isPast = false }) => (
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3 ">
-      <div
-        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-          isPast ? "bg-red-100 dark:bg-red-900" : "bg-gray-100 dark:bg-gray-700"
-        }`}
-      >
-        {icon}
-      </div>
-      <div>
-        <p className="text-sm font-medium text-gray-900 dark:text-white">
-          {label}
-        </p>
-        <p
-          className={`text-xs ${
+const DateItem = ({ label, date, icon, isPast = false }) => {
+  return (
+    <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Icon */}
+        <div
+          className={`w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center ${
             isPast
-              ? "text-red-600 dark:text-red-400"
-              : "text-gray-300 dark:text-gray-400"
+              ? "bg-red-100 dark:bg-red-900"
+              : "bg-gray-100 dark:bg-gray-700"
           }`}
         >
-          {date || "Not set"}
-        </p>
-      </div>
-    </div>
-    {isPast && date && (
-      <span className="px-2 py-1 text-xs bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded">
-        Past Due
-      </span>
-    )}
-  </div>
-);
+          {icon}
+        </div>
 
-const ContactItem = ({ icon, label, value, href, isExternal = false }) => (
-  <a
-    href={href}
-    target={isExternal ? "_blank" : "_self"}
-    rel={isExternal ? "noopener noreferrer" : ""}
-    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 
-    hover:border-purple-300 dark:hover:border-purple-600 transition-colors duration-200"
-  >
-    <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-      {icon}
+        {/* Text block */}
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-gray-900 dark:text-white truncate sm:truncate-none break-words">
+            {label}
+          </p>
+          <p
+            className={`text-xs break-words ${
+              isPast
+                ? "text-red-600 dark:text-red-400"
+                : "text-gray-500 dark:text-gray-400"
+            }`}
+          >
+            {date || "Not set"}
+          </p>
+        </div>
+      </div>
+
+      {/* Status chip */}
+      {isPast && date && (
+        <span className="px-2 py-1 text-xs whitespace-nowrap bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded self-start">
+          Past Due
+        </span>
+      )}
     </div>
-    <div className="flex-1">
-      <p className="text-sm text-gray-900 dark:text-gray-400">{label}</p>
-      <p className="font-medium text-gray-300 dark:text-white">{value}</p>
-    </div>
-    {isExternal && <FaExternalLinkAlt className="w-4 h-4 text-gray-400" />}
-  </a>
-);
+  );
+};
+
+const ContactItem = ({ icon, label, value, href, isExternal }) => {
+  const Tag = href ? "a" : "div";
+  return (
+    <Tag
+      href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      className="block"
+    >
+      <div className="flex items-center gap-4 p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white/5">
+        <div className="flex-shrink-0">{icon}</div>
+
+        {/* IMPORTANT: min-w-0 allows this to shrink inside flex */}
+        <div className="min-w-0">
+          <div className="text-xs text-gray-400">{label}</div>
+
+          {/* use break-words to wrap; use break-all for very long no-break strings like some URLs */}
+          <div className="text-sm font-medium max-w-full break-words overflow-hidden">
+            {value}
+          </div>
+        </div>
+      </div>
+    </Tag>
+  );
+};
 
 const StatusItem = ({ label, value, color }) => (
   <div className="flex items-center justify-between">
