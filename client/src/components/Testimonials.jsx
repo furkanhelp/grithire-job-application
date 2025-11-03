@@ -206,7 +206,7 @@ export default function TestimonialsSection() {
         {/* First Auto-scrolling Testimonials Grid */}
         <div className="relative">
           <div
-            ref={scrollContainerRef1} // Use separate ref for first grid
+            ref={scrollContainerRef1}
             className="flex overflow-x-hidden !space-x-9 !py-4 scrollbar-hide"
           >
             {[...testimonials, ...testimonials].map((testimonial, index) => (
@@ -253,7 +253,7 @@ export default function TestimonialsSection() {
         {/* Second Auto-scrolling Testimonials Grid */}
         <div className="relative">
           <div
-            ref={scrollContainerRef2} // Use separate ref for second grid
+            ref={scrollContainerRef2}
             className="flex overflow-x-hidden !space-x-9 !py-4 scrollbar-hide"
           >
             {[...testimonials2, ...testimonials2].map((testimonial, index) => (

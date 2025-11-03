@@ -26,7 +26,7 @@ export const ToastProvider = ({ children }) => {
   const addToast = useCallback((toast) => {
     const id = Math.random().toString(36).substr(2, 9);
 
-    // Prevent duplicates by checking if similar toast already exists
+    // Prevents duplicates by checking if similar toast already exists
     const toastKey = `${toast.type}-${toast.message}-${toast.description}`;
     if (toastIdsRef.current.has(toastKey)) {
       return id; 
@@ -56,7 +56,7 @@ export const ToastProvider = ({ children }) => {
     });
   }, []);
 
-  // Clear duplicate prevention when all toasts are gone
+  // Clears duplicate prevention when all toasts are gone
   useEffect(() => {
     if (toasts.length === 0) {
       toastIdsRef.current.clear();

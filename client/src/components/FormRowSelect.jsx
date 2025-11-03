@@ -6,6 +6,7 @@ const FormRowSelect = ({
   labelText,
   list,
   defaultValue = "",
+  value,
   className = "",
   icon,
   required = false,
@@ -14,8 +15,18 @@ const FormRowSelect = ({
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(defaultValue);
+  const [selectedValue, setSelectedValue] = useState(value || defaultValue);
   const dropdownRef = useRef(null);
+  const hiddenSelectRef = useRef(null);
+
+  // Update selectedValue when value or defaultValue changes
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelectedValue(value);
+    } else {
+      setSelectedValue(defaultValue);
+    }
+  }, [value, defaultValue]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,16 +43,24 @@ const FormRowSelect = ({
     setSelectedValue(value);
     setIsOpen(false);
 
-   
-    const syntheticEvent = {
-      target: {
-        name,
-        value,
-        type: "select",
-      },
-    };
+    // Update the hidden select element
+    if (hiddenSelectRef.current) {
+      hiddenSelectRef.current.value = value;
 
+      // Trigger change event for React Router form handling
+      const changeEvent = new Event("change", { bubbles: true });
+      hiddenSelectRef.current.dispatchEvent(changeEvent);
+    }
+
+    // Call custom onChange if provided
     if (onChange) {
+      const syntheticEvent = {
+        target: {
+          name: name,
+          value: value,
+          type: "select-one",
+        },
+      };
       onChange(syntheticEvent);
     }
   };
@@ -50,10 +69,29 @@ const FormRowSelect = ({
     setIsOpen(!isOpen);
   };
 
+  const displayValue = selectedValue
+    ? displayFormat(selectedValue)
+    : "Select an option";
+
+  // Determine if we should use value or defaultValue
+  const selectProps = {};
+  if (value !== undefined) {
+    selectProps.value = selectedValue;
+    // If using value prop, we MUST provide onChange to avoid React warning
+    if (!onChange) {
+      selectProps.onChange = () => {};
+    }
+  } else {
+    selectProps.defaultValue = defaultValue;
+  }
+
   return (
     <div className="space-y-2">
       {labelText && (
-        <label className="text-sm font-semibold text-gray-800 dark:text-gray-300 uppercase tracking-wide">
+        <label
+          htmlFor={name}
+          className="text-sm font-semibold text-gray-800 dark:text-gray-300 uppercase tracking-wide"
+        >
           {labelText} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -61,14 +99,16 @@ const FormRowSelect = ({
       <div className={`w-full relative ${className}`} ref={dropdownRef}>
         {/* Hidden native select for form submission */}
         <select
+          ref={hiddenSelectRef}
           name={name}
           id={name}
-          defaultValue={selectedValue}
-          className="hidden"
-          onChange={onChange}
           required={required}
+          className="sr-only"
+          onChange={onChange}
+          {...selectProps}
           {...props}
         >
+          <option value="">Select an option</option>
           {list.map((itemValue) => (
             <option key={itemValue} value={itemValue}>
               {itemValue}
@@ -90,9 +130,7 @@ const FormRowSelect = ({
                          : ""
                      }`}
         >
-          <span className="text-current">
-            {displayFormat(selectedValue) || "Select an option"}
-          </span>
+          <span className="text-current capitalize">{displayValue}</span>
           <FaChevronDown
             className={`text-current transition-transform duration-300 ${
               isOpen ? "rotate-180" : ""
@@ -118,13 +156,13 @@ const FormRowSelect = ({
                             ${
                               selectedValue === itemValue
                                 ? "bg-purple-600 text-white"
-                                : "hover:bg-gray-800 text-white"
+                                : "hover:bg-purple-500/20 text-white dark:hover:bg-purple-900"
                             }
                             ${index === 0 ? "rounded-t-2xl" : ""}
                             ${index === list.length - 1 ? "rounded-b-2xl" : ""}
                             border-b border-gray-700 last:border-b-0`}
                 >
-                  <span className="font-medium group-hover:translate-x-1 transition-transform">
+                  <span className="font-medium group-hover:translate-x-1 transition-transform capitalize">
                     {displayFormat(itemValue)}
                   </span>
                   {selectedValue === itemValue && (

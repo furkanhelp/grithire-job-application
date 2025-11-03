@@ -614,10 +614,10 @@ const PillNav = ({
         <div className="flex flex-col !p-6 !pt-8 !h-[calc(100vh-80px)] !overflow-y-auto">
           {/* Navigation Links */}
           <ul className="!space-y-3 !mb-8">
-            {items.map((item) => {
+            {items.map((item, index) => {
               const isActive = activeHref === item.href;
               return (
-                <li key={item.href}>
+                <li key={item.id || index}>
                   {isRouterLink(item.href) ? (
                     <Link
                       to={item.href}

@@ -12,6 +12,7 @@
 <br>
 <br>
 
+
 ## 📸 Preview
 <p>Light</p>
 
@@ -127,3 +128,8 @@ If you like this project or want to collaborate:
 [Instagram](https://instagram.com/furkan_help)
 
 Email: frknyrdm0@gmail.com
+
+## License
+
+This project is licensed under the MIT License.
+For questions about commercial use or partnerships, feel free to reach out via email.

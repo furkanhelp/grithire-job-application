@@ -117,17 +117,31 @@ export const validateJobInput = withValidationErrors([
 ]);
 
 export const validateIdParam = withValidationErrors([
-    param('id').custom(async (value, {req })=> {
-    const isValIdMongoId = mongoose.Types.ObjectId.isValid(value);
-    if (!isValIdMongoId) throw new BadRequestError("invalid MongoDB id");
+  param("id").custom(async (value, { req }) => {
+    const isValidMongoId = mongoose.Types.ObjectId.isValid(value);
+    if (!isValidMongoId) throw new BadRequestError("invalid MongoDB id");
 
     const job = await Job.findById(value);
-      if (!job) throw new NotFoundError(`no job with id ${value}`);
-      // TO DON'T REACH OUT THE INFO EXCEPT THE ADMIN
-      const isAdmin = req.user.role === 'admin'
-      const isOwner = req.user.useId === job.createdBy.toString();
-      if(!isAdmin && !isOwner) throw new UnauthorizedError('not authorized to access this route')
-}),
+    if (!job) throw new NotFoundError(`no job with id ${value}`);
+
+    // Gets the HTTP method
+    const method = req.method;
+    const isDemoUser =
+      req.user?.email === "demo@demo.com" ||
+      req.user?.email === "test@test.com";
+    const isAdmin = req.user.role === "admin";
+    const isOwner = req.user.userId === job.createdBy.toString();
+
+    // Allows demo users to view any job
+    if (method === "GET") {
+      return;
+    }
+
+    // Restricts to owners and admins
+    if (!isAdmin && !isOwner) {
+      throw new UnauthorizedError("not authorized to access this route");
+    }
+  }),
 ]);
 
 // REGISTER

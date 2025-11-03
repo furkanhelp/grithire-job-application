@@ -66,7 +66,7 @@ const Register = () => {
     }
   }, [actionData, toast, navigate]);
 
-  // Reset the ref when the form is submitted again
+  // Resets the ref when the form is submitted again
   React.useEffect(() => {
     if (navigation.state === "submitting") {
       hasShownToastRef.current = false;
@@ -133,7 +133,7 @@ const Register = () => {
 
       <div className="min-h-screen flex items-center justify-center !p-4">
         <div className="w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
-          {/* Left Side - Illustration */}
+          {/* Left Side */}
           <div className="md:w-2/5 bg-gradient-to-b from-primary-600 to-primary-800 !p-10 flex flex-col justify-center items-center text-white">
             <div className="text-center !mb-6">
               <div className="w-16 h-16 bg-black/50 dark:bg-white/20 rounded-full flex items-center justify-center !mx-auto !mb-4">
@@ -204,7 +204,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Right Side - Form */}
+          {/* Right Side*/}
           <div className="md:w-3/5 !p-5">
             <div className="text-center !mb-2 items-center justify-center flex">
               <Link to="/">
@@ -242,12 +242,14 @@ const Register = () => {
                   name="name"
                   placeholder="First Name"
                   simpleLayout={true}
+                  className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
                 <FormRow
                   type="text"
                   name="lastName"
                   placeholder="Last Name"
                   simpleLayout={true}
+                  className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
               </div>
               <FormRow
@@ -255,18 +257,21 @@ const Register = () => {
                 name="location"
                 placeholder="Location"
                 simpleLayout={true}
+                className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
               <FormRow
                 type="email"
                 name="email"
                 placeholder="Email Address"
                 simpleLayout={true}
+                className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
               <FormRow
                 type="password"
                 name="password"
                 placeholder="Password"
                 simpleLayout={true}
+                className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
               />
 
               {/* Custom Submit Button */}

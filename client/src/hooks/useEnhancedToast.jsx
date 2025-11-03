@@ -6,7 +6,6 @@ export const useEnhancedToast = () => {
   const enhancedToast = {
     ...toast,
 
-    // Professional success toast
     success: (message, description, options = {}) => {
       return toast.success(message, {
         description,
@@ -31,7 +30,6 @@ export const useEnhancedToast = () => {
       });
     },
 
-    // Professional error toast
     error: (message, description, options = {}) => {
       return toast.error(message, {
         description,
@@ -56,7 +54,6 @@ export const useEnhancedToast = () => {
       });
     },
 
-    // Professional warning toast
     warning: (message, description, options = {}) => {
       return toast.warning(message, {
         description,
@@ -81,7 +78,7 @@ export const useEnhancedToast = () => {
       });
     },
 
-    // Professional info toast
+
     info: (message, description, options = {}) => {
       return toast.info(message, {
         description,
@@ -106,7 +103,7 @@ export const useEnhancedToast = () => {
       });
     },
 
-    // Loading toast
+
     loading: (message, description, options = {}) => {
       return toast(message, {
         description,
@@ -119,7 +116,6 @@ export const useEnhancedToast = () => {
       });
     },
 
-    // Promise-based toast
     promise: async (promise, messages, options = {}) => {
       const { loading, success, error } = messages;
 
@@ -137,7 +133,6 @@ export const useEnhancedToast = () => {
       }
     },
 
-    // Action toast with buttons
     action: (message, description, actions, options = {}) => {
       return toast(message, {
         description,

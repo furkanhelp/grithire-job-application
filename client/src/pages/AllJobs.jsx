@@ -6,7 +6,8 @@ import { React, useContext, createContext, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const allJobsQuery = (params) => {
-  const { search, jobStatus, jobType, sort, page } = params;
+  const { search, jobStatus, jobType, sort, priority, isRemote, page } = params;
+
   return {
     queryKey: [
       "jobs",
@@ -14,6 +15,8 @@ const allJobsQuery = (params) => {
       jobStatus ?? "all",
       jobType ?? "all",
       sort ?? "newest",
+      priority ?? "all",
+      isRemote ?? "all",
       page ?? 1,
     ],
     queryFn: async () => {
@@ -28,23 +31,50 @@ const allJobsQuery = (params) => {
 export const loader =
   (queryClient) =>
   async ({ request }) => {
-    const params = Object.fromEntries([
-      ...new URL(request.url).searchParams.entries(),
-    ]);
+    try {
+      const url = new URL(request.url);
+      const params = Object.fromEntries(url.searchParams.entries());
 
-    await queryClient.ensureQueryData(allJobsQuery(params));
-    return { searchValues: { ...params } };
+      const searchParams = {
+        search: params.search || "",
+        jobStatus: params.jobStatus || "all",
+        jobType: params.jobType || "all",
+        sort: params.sort || "newest",
+        priority: params.priority || "all",
+        isRemote: params.isRemote || "all",
+        page: params.page || 1,
+      };
+
+      await queryClient.ensureQueryData(allJobsQuery(searchParams));
+      return { searchValues: searchParams };
+    } catch (error) {
+      toast.error("Failed to load jobs");
+      return { searchValues: {} };
+    }
   };
 
 const AllJobsContext = createContext();
 
 const AllJobs = () => {
   const { searchValues } = useLoaderData();
-  const { data } = useQuery(allJobsQuery(searchValues));
+  const location = useLocation();
+  const { data, isLoading, error } = useQuery(allJobsQuery(searchValues));
 
+  // Log any errors
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to load jobs");
+    }
+  }, [error]);
 
   return (
-    <AllJobsContext.Provider value={{ data, searchValues }}>
+    <AllJobsContext.Provider
+      value={{
+        data,
+        searchValues,
+        isLoading,
+      }}
+    >
       <div className="w-full">
         <div className="space-y-8 w-full">
           <SearchContainer />
@@ -55,6 +85,12 @@ const AllJobs = () => {
   );
 };
 
-export const useAllJobsContext = () => useContext(AllJobsContext);
+export const useAllJobsContext = () => {
+  const context = useContext(AllJobsContext);
+  if (!context) {
+    throw new Error("useAllJobsContext must be used within an AllJobsProvider");
+  }
+  return context;
+};
 
 export default AllJobs;

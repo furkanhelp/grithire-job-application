@@ -49,9 +49,16 @@ export const loader =
   (queryClient) =>
   async ({ params }) => {
     try {
-      await queryClient.ensureQueryData(singleJobQuery(params.id));
-      return params.id;
+      const data = await queryClient.ensureQueryData(singleJobQuery(params.id));
+
+     
+      if (!data?.job) {
+        throw new Error("Job not found");
+      }
+
+      return { jobData: data, jobId: params.id };
     } catch (error) {
+      console.error("Loader error:", error);
       return {
         error: true,
         message: error?.response?.data?.msg || "Failed to load job details",
@@ -66,11 +73,15 @@ const JobDetails = () => {
   const navigate = useNavigate();
   const { id: paramId } = useParams();
 
+  const { jobData, jobId, error: loaderError } = useLoaderData();
   const {
-    data: { job },
+    data,
     isLoading,
-    error,
-  } = useQuery(singleJobQuery(id));
+    error: queryError,
+  } = useQuery(singleJobQuery(jobId));
+
+  const job = data?.job || jobData?.job;
+  const error = queryError || loaderError;
 
   // Status color mapping
   const statusColors = {
@@ -158,24 +169,21 @@ const JobDetails = () => {
     );
   }
 
-  if (error) {
+  if (!job && !isLoading && !error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <FaTimesCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2
-            className="text-2xl !font-sans !font-bold !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent 
-              bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 mb-2"
-          >
-            Failed to Load Job
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Job Not Found
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {error?.response?.data?.msg ||
-              "An error occurred while loading the job details"}
+            The job you're looking for doesn't exist or you don't have
+            permission to view it.
           </p>
           <button
             onClick={() => navigate("/dashboard/all-jobs")}
-            className="bg-purple-600 text-gray-600 dark:text-gray-400 px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
           >
             Back to Jobs
           </button>

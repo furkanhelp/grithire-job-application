@@ -47,7 +47,7 @@ const Login = () => {
   const { toast } = useToast();
   const actionData = useActionData();
   const navigate = useNavigate();
-  const hasShownToastRef = React.useRef(false); // Prevent multiple toasts
+  const hasShownToastRef = React.useRef(false); // Prevents multiple toasts
  
   const { data: currentUser, refetch } = useQuery({
     queryKey: ["user"],
@@ -117,7 +117,9 @@ const Login = () => {
         <div className="w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
           <div className="w-full !p-8">
             <div className="text-center items-center justify-center flex !mb-5">
-              <Logo />
+              <Link to="/">
+                <Logo />
+              </Link>
             </div>
             <h2 className="!text-4xl whitespace-nowrap !font-bold text-center !font-sans !tracking-[-0.025em] !leading-[1.5] bg-clip-text text-transparent bg-gradient-to-r dark:to-[#a5b4fc] dark:from-white to-[#4818a0] from-black/70 !mb-2">
               Welcome Back
@@ -127,8 +129,18 @@ const Login = () => {
             </p>
 
             <Form method="post" className="!space-y-5 capitalize">
-              <FormRow type="email" name="email" placeholder="Email Address" />
-              <FormRow type="password" name="password" placeholder="Password" />
+              <FormRow
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              />
+              <FormRow
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="!px-2 !py-4 border-2 border-gray-700 rounded-2xl bg-white dark:bg-black focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+              />
 
               <div className="flex items-center justify-between !pt-2">
                 <div className="flex items-center">

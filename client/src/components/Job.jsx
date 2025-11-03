@@ -1,4 +1,3 @@
-// components/Job.jsx
 import React, { useState } from "react";
 import {
   FaLocationArrow,

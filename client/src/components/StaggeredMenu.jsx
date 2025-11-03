@@ -568,7 +568,7 @@ export const StaggeredMenu = ({
            dark:from-[#481f81] dark:to-[#000000] from-[#cec1e0] to-[#9950ff]
             flex flex-col overflow-y-auto !z-10 backdrop-blur-[12px] w-full sm:w-80"
           style={{ WebkitBackdropFilter: "blur(12px)" }}
-          aria-hidden={!open}
+          inert={!open}
         >
           <div className="sm-panel-inner flex-1 flex flex-col !gap-4 sm:!gap-6">
             {/* Sidebar Header */}

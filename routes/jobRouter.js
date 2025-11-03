@@ -10,7 +10,7 @@ import {
   showStats,
   getUpcomingInterviews,
 } from "../controllers/jobController.js";
-import {validateJobInput, validateIdParam} from '../middleware/validationMiddleware.js';
+import {validateJobInput, validateIdParam, } from '../middleware/validationMiddleware.js';
 import {
   checkForTestUser,
   authenticateUser,

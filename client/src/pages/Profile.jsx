@@ -74,7 +74,7 @@ const Profile = () => {
     }
   }, [actionData, toast, navigate]);
 
-  // Reset the ref when form is submitted again
+  // Resets the ref when form is submitted again
   useEffect(() => {
     if (navigation.state === "submitting") {
       hasShownToastRef.current = false;
@@ -103,7 +103,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen !py-8 !px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen !py-8 !px-4 sm:px-6 lg:px-8" >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center !mb-8">

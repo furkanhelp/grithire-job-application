@@ -141,41 +141,63 @@ export const deleteJob = async (req, res) => {
 //STATS
 export const showStats = async (req, res) => {
   try {
+    // 1. Basic status counts
     let stats = await Job.aggregate([
-      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-      { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
+      {
+        $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) },
+      },
+      {
+        $group: {
+          _id: "$jobStatus",
+          count: { $sum: 1 },
+        },
+      },
     ]);
 
-    stats = stats.reduce((acc, curr) => {
-      const { _id: title, count } = curr;
-      acc[title] = count;
-      return acc;
-    }, {});
+    // 2. Job type distribution
+    let jobTypeStats = await Job.aggregate([
+      {
+        $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) },
+      },
+      {
+        $group: {
+          _id: "$jobType",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-    const defaultStats = {
-      pending: stats.pending || 0,
-      interview: stats.interview || 0,
-      declined: stats.declined || 0,
-      offer: stats.offer || 0,
-      accepted: stats.accepted || 0,
-      rejected: stats.rejected || 0,
-    };
-
-    // Priority stats - FIXED: Separate aggregation
+    // 3. Priority distribution
     let priorityStats = await Job.aggregate([
-      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-      { $group: { _id: "$priority", count: { $sum: 1 } } },
+      {
+        $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) },
+      },
+      {
+        $group: {
+          _id: "$priority",
+          count: { $sum: 1 },
+        },
+      },
     ]);
 
-    priorityStats = priorityStats.reduce((acc, curr) => {
-      const { _id: priority, count } = curr;
-      acc[priority] = count;
-      return acc;
-    }, {});
+    // 4. Remote vs On-site
+    let remoteStats = await Job.aggregate([
+      {
+        $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) },
+      },
+      {
+        $group: {
+          _id: "$isRemote",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-    // Monthly applications for the last 12 months
+    // 5. Monthly applications (last 12 months for more data)
     let monthlyApplications = await Job.aggregate([
-      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+      {
+        $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) },
+      },
       {
         $group: {
           _id: {
@@ -185,10 +207,59 @@ export const showStats = async (req, res) => {
           count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": -1, "_id.month": -1 } },
-      { $limit: 12 },
+      {
+        $sort: { "_id.year": -1, "_id.month": -1 },
+      },
+      {
+        $limit: 12, // Last 12 months for more data points
+      },
     ]);
 
+    // 6. Application success rate (interview/offer/accepted vs total)
+    const totalJobs = await Job.countDocuments({
+      createdBy: new mongoose.Types.ObjectId(req.user.userId),
+    });
+
+    const successfulJobs = await Job.countDocuments({
+      createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      jobStatus: { $in: ["interview", "offer", "accepted"] },
+    });
+
+    const successRate = totalJobs > 0 ? (successfulJobs / totalJobs) * 100 : 0;
+
+    // 7. Recent activity (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentActivity = await Job.countDocuments({
+      createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      createdAt: { $gte: thirtyDaysAgo },
+    });
+
+    // Format the data
+    const defaultStats = stats.reduce((acc, curr) => {
+      const { _id: title, count } = curr;
+      acc[title] = count;
+      return acc;
+    }, {});
+
+    const jobTypeDistribution = jobTypeStats.reduce((acc, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    }, {});
+
+    const priorityDistribution = priorityStats.reduce((acc, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    }, {});
+
+    const remoteDistribution = remoteStats.reduce((acc, curr) => {
+      const key = curr._id ? "remote" : "onsite";
+      acc[key] = curr.count;
+      return acc;
+    }, {});
+
+    // Format monthly applications
     monthlyApplications = monthlyApplications
       .map((item) => {
         const {
@@ -199,7 +270,7 @@ export const showStats = async (req, res) => {
         const date = day()
           .month(month - 1)
           .year(year)
-          .format("MMM YY");
+          .format("MMM YYYY");
 
         return { date, count };
       })
@@ -208,12 +279,29 @@ export const showStats = async (req, res) => {
     res.status(StatusCodes.OK).json({
       defaultStats,
       monthlyApplications,
-      priorityStats,
+      additionalStats: {
+        totalJobs,
+        successRate: Math.round(successRate),
+        recentActivity,
+        jobTypeDistribution,
+        priorityDistribution,
+        remoteDistribution,
+        successfulJobs,
+        responseRate:
+          totalJobs > 0 ? Math.round((successfulJobs / totalJobs) * 100) : 0,
+        averageApplicationsPerMonth:
+          monthlyApplications.length > 0
+            ? Math.round(
+                monthlyApplications.reduce((sum, item) => sum + item.count, 0) /
+                  monthlyApplications.length
+              )
+            : 0,
+      },
     });
   } catch (error) {
-    console.error("Stats error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: "Failed to fetch statistics",
+    console.error("Get stats error:", error);
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: error.message,
     });
   }
 };

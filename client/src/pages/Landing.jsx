@@ -353,10 +353,6 @@ const handleLogout = async () => {
         </div>
       </div>
 
-      {/* Always Visible Theme Toggle - Mobile */}
-      {/* <div className="fixed top-4 right-4 z-50 hidden lg:block">
-        <ThemeToggle />
-      </div> */}
 
       {/* Main Content */}
       <div className="w-full h-screen relative pointer-events-auto">

@@ -30,23 +30,20 @@ import {
 } from "react-icons/fa";
 import FormRowDate from "../components/FormRowDate";
 
-// In AddJob action - update the error handling
 export const action =
   (queryClient) =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
 
-    console.log('AddJob Form data received:', data); // Debug log
-
-    // Convert empty strings to null for optional fields
+    // Converts empty strings to null
     Object.keys(data).forEach((key) => {
       if (data[key] === "") {
         data[key] = null;
       }
     });
 
-    // Convert date strings to ISO format
+    // Converts date strings to ISO format
     if (data.interviewDate) {
       data.interviewDate = new Date(data.interviewDate).toISOString();
     }
@@ -54,12 +51,10 @@ export const action =
       data.applicationDeadline = new Date(data.applicationDeadline).toISOString();
     }
 
-    // Convert boolean fields
+    // Converts boolean fields
     if (data.isRemote) {
       data.isRemote = data.isRemote === "true";
     }
-
-    console.log('AddJob Data after processing:', data); // Debug log
 
     try {
       await customFetch.post("/jobs", data);
@@ -69,9 +64,7 @@ export const action =
         message: "Job added successfully",
       };
     } catch (error) {
-      console.error('AddJob error:', error.response?.data); // Debug log
-      
-      // IMPROVED ERROR HANDLING - Show specific validation errors
+   
       const serverError = error?.response?.data;
       
       if (serverError?.errors && Array.isArray(serverError.errors)) {
@@ -127,14 +120,14 @@ const AddJob = () => {
         toast.success("Success!", actionData.message);
         setTimeout(() => {
           navigate("/dashboard/all-jobs", {
-            state: { timestamp: Date.now() }, // Add state to force refresh
+            state: { timestamp: Date.now() },
           });
         }, 1500);
       } else if (actionData.error) {
         // Format the error message as plain text
         let errorMessage = actionData.error;
 
-        // If it's multiple errors, format them as a simple text list
+        // If it's multiple errors, formats them as a simple text list
         if (actionData.error.includes(",")) {
           const errors = actionData.error.split(", ");
           errorMessage = `Please fix the following issues:\n• ${errors.join(
@@ -282,7 +275,6 @@ const AddJob = () => {
               name="priority"
               labelText="Priority Level"
               list={Object.values(JOB_PRIORITY)}
-              defaultValue={JOB_PRIORITY.MEDIUM}
               displayFormat={(value) =>
                 value.charAt(0).toUpperCase() + value.slice(1)
               }

@@ -1,4 +1,3 @@
-// components/SubmitBtn.jsx
 import { useNavigation } from "react-router-dom";
 import { FaSpinner, FaCheck } from "react-icons/fa";
 

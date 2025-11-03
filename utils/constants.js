@@ -68,3 +68,12 @@ export const JOB_TYPE_LABELS = {
   [JOB_TYPE.REMOTE]: "Remote",
   [JOB_TYPE.HYBRID]: "Hybrid",
 };
+
+export const JOB_SORT_BY_LABELS = {
+  [JOB_SORT_BY.NEWEST_FIRST]: "Newest",
+  [JOB_SORT_BY.OLDEST_FIRST]: "Oldest",
+  [JOB_SORT_BY.ASCENDING]: "A-Z",
+  [JOB_SORT_BY.DESCENDING]: "Z-A",
+  [JOB_SORT_BY.PRIORITY]: "Priority",
+  [JOB_SORT_BY.STATUS]: "Status",
+};
