@@ -35,18 +35,28 @@ export const action =
         user: userData,
       };
     } catch (error) {
+      console.error("Login action error:", error);
+
+      // network error vs server error
+      const serverMsg = error?.response?.data?.msg;
+      const status = error?.response?.status;
+      const message = serverMsg || error?.message || "Login failed.";
+
       return {
         success: false,
-        error: error?.response?.data?.msg || "Login failed.",
+        error: message,
+        status,
       };
     }
   };
+
 
 const Login = () => {
   const { login } = useAuth();
   const { toast } = useToast();
   const actionData = useActionData();
   const navigate = useNavigate();
+  const navigation = useNavigation(); 
   const hasShownToastRef = React.useRef(false); // Prevents multiple toasts
  
   const { data: currentUser, refetch } = useQuery({
@@ -96,10 +106,10 @@ const Login = () => {
 
   // Reset the ref when the form is submitted again
   React.useEffect(() => {
-    if (navigation.state === "submitting") {
+    if (navigation?.state === "submitting") {
       hasShownToastRef.current = false;
     }
-  }, [navigation.state]);
+  }, [navigation]);
 
   return (
     <>
